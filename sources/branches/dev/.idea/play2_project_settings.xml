@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Play2ExcludedModulesSettings">
+    <option name="INFO">
+      <map>
+        <entry key="root">
+          <value>
+            <ProjectSettingsEntry>
+              <option name="version" value="2.3.7" />
+              <option name="sourceDir" value="E:\Scala\taxi\sources\branches\dev\conf" />
+              <option name="confDir" value="E:\Scala\taxi\sources\branches\dev\app" />
+              <option name="routesImports">
+                <list>
+                  <option value="controllers.Assets.Asset" />
+                </list>
+              </option>
+              <option name="uri" value="/E:/Scala/taxi/sources/branches/dev" />
+            </ProjectSettingsEntry>
+          </value>
+        </entry>
+        <entry key="taxi">
+          <value>
+            <ProjectSettingsEntry>
+              <option name="playDistrPath" value="$USER_HOME$/.ivy2/cache/com.typesafe.play/play_2.11/jars/play_2.11-2.3.7.jar" />
+            </ProjectSettingsEntry>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
