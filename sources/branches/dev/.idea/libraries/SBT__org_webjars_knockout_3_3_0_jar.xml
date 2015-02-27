@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="SBT: org.webjars:knockout:3.3.0:jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.ivy2/cache/org.webjars/knockout/jars/knockout-3.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
