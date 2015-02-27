@@ -3,6 +3,7 @@
 ## Дано
 
 * Машина с установленной IDE [IntelliJ IDEA Ultimate](https://www.jetbrains.com/idea/download/)
+* Установлен [Git](http://git-scm.com/)
 * Доступ в интернет
 
 ##Предустановки
