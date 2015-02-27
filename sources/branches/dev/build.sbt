@@ -1,5 +1,5 @@
-name         := """taxi"""
-organization := "pl.japila"
+name         := "taxi"
+organization := "ru.taxi"
 version      := "1.0"
 scalaVersion := "2.11.5"
 
