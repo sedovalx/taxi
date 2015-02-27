@@ -6,6 +6,20 @@
 * sources - исходные коды
 * sources/branches - ветки исходных кодов. Допустим, могут быть отдельные ветки для каждого из релизов, а так же ветка для текущей разработки
 * sources/branches/dev - ветка разработки
+ 
+## Ссылки для изучения
+
+* [Scala](http://twitter.github.io/scala_school/ru/)
+* [Play!](https://playframework.com/documentation/2.3.x/Home)
+* [Slick](http://slick.typesafe.com/doc/2.1.0/)
+* [Принцип MVC со стороны сервера](https://www.playframework.com/documentation/1.0/main)
+* [Ember.js](http://emberjs.com/guides/)
+* [Ember-cli](http://www.ember-cli.com/#overview)
+* [Bower](http://bower.io/)
+* [Twitter bootstrap](http://getbootstrap.com/css/)
+* [JavaScript](http://www.codecademy.com/en/tracks/javascript)
+* [CoffeeScript](http://coffeescript.org/)
+* [HTMl & CSS](http://www.codecademy.com/en/tracks/web)
 
 ## Работа с Git из IntelliJ IDEA
 
