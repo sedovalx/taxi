@@ -14,12 +14,9 @@ object Global extends GlobalSettings {
 
     database withSession { implicit session =>
       import scala.slick.jdbc.meta.MTable
-      if (MTable.getTables(CarClasses.objects.baseTableRow.tableName).list.isEmpty) {
-        CarClasses.objects.ddl.create
-      }
-
-      if (MTable.getTables(Cars.objects.baseTableRow.tableName).list.isEmpty) {
-        Cars.objects.ddl.create
+      if (MTable.getTables(Users.objects.baseTableRow.tableName).list.isEmpty) {
+        Users.objects.ddl.create
+        Users.createAdmin
       }
     }
   }
