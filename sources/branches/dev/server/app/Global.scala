@@ -1,3 +1,4 @@
+import models.repos.UsersRepo
 import play.api.Application
 import play.api.GlobalSettings
 import play.api.Play.current
@@ -14,9 +15,9 @@ object Global extends GlobalSettings {
 
     database withSession { implicit session =>
       import scala.slick.jdbc.meta.MTable
-      if (MTable.getTables(Users.objects.baseTableRow.tableName).list.isEmpty) {
-        Users.objects.ddl.create
-        Users.createAdmin
+      if (MTable.getTables(UsersRepo.objects.baseTableRow.tableName).list.isEmpty) {
+        UsersRepo.objects.ddl.create
+        UsersRepo.createAdmin
       }
     }
   }
