@@ -26,7 +26,7 @@
 * [Twitter bootstrap](http://getbootstrap.com/css/)
 * [JavaScript](http://www.codecademy.com/en/tracks/javascript)
 * [CoffeeScript](http://coffeescript.org/)
-* [HTMl & CSS](http://www.codecademy.com/en/tracks/web)
+* [HTML & CSS](http://www.codecademy.com/en/tracks/web)
 
 ## Работа с Git из IntelliJ IDEA
 
