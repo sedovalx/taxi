@@ -22,6 +22,8 @@ object UsersRepo extends Repository[User] {
     }
   }
 
+  def getById(id: Long): User = ???
+
   override def create(entity: User)(implicit session: Session): User = ???
 
   override def update(entity: User)(implicit session: Session): User = ???
