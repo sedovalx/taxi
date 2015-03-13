@@ -7,13 +7,9 @@ import models.tables.Users
 
 import scala.slick.driver.PostgresDriver.simple._
 
-object UsersRepo {
+object UsersRepo extends Repository[User] {
 
   val objects = TableQuery[Users]
-
-  def all(implicit session: Session): List[User] = {
-    objects.list
-  }
 
   def createAdmin(implicit session: Session): User = {
     val admin = objects.filter(u => u.role === Role.Administrator).firstOption
@@ -26,8 +22,14 @@ object UsersRepo {
     }
   }
 
-  def insert(user: User): User = {
-    null
+  override def create(entity: User)(implicit session: Session): User = ???
+
+  override def update(entity: User)(implicit session: Session): User = ???
+
+  override def delete(id: Long)(implicit session: Session): Boolean = ???
+
+  override def read(implicit session: Session): List[User] = {
+    objects.list
   }
 }
 

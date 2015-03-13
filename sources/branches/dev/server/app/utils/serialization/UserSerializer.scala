@@ -1,4 +1,4 @@
-package models.serialization
+package utils.serialization
 
 import java.text.SimpleDateFormat
 

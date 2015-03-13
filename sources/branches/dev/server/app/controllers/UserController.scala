@@ -1,23 +1,23 @@
 package controllers
 
-import models.serialization.UserSerializer
 import models.repos.UsersRepo
+import play.api.Play.current
 import play.api.db.DB
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.{Action, Controller}
-import play.api.Play.current
+import play.api.mvc.Action
+import utils.serialization.UserSerializer
 
 import scala.slick.driver.PostgresDriver.simple._
 
-object UserController extends Controller{
+object UserController extends BaseController{
 
   // сериализация объектов пользователей в json
   implicit val userWrites = UserSerializer.writes
 
-  def all = Action {
+  def read = Action {
     val usersJson = withDb { session =>
       // получаем всех пользователей из БД
-      val users = UsersRepo.all(session)
+      val users = UsersRepo.read(session)
       // преобразуем их в json. тут неявно используется сериалайзер выше
       JsObject(Seq(
         "users" -> Json.toJson(users)
