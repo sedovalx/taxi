@@ -12,6 +12,7 @@
 ## Ссылки для изучения
 
 * [Беглое ознакомление с Scala от Twitter](http://twitter.github.io/scala_school/ru/)
+* [Курс по функциональному программированию на Scala](https://www.coursera.org/course/progfun)
 * [Курс по реактивному программированию на Scala](https://www.coursera.org/course/reactive)
 * [Scala Core](http://docs.scala-lang.org/overviews/?_ga=1.38818155.975264336.1424212558)
 * [Scala Tutorial](http://docs.scala-lang.org/tutorials/)
@@ -25,7 +26,7 @@
 * [Twitter bootstrap](http://getbootstrap.com/css/)
 * [JavaScript](http://www.codecademy.com/en/tracks/javascript)
 * [CoffeeScript](http://coffeescript.org/)
-* [HTMl & CSS](http://www.codecademy.com/en/tracks/web)
+* [HTML & CSS](http://www.codecademy.com/en/tracks/web)
 
 ## Работа с Git из IntelliJ IDEA
 
