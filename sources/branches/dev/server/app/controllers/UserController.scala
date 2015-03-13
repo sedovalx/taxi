@@ -1,13 +1,9 @@
 package controllers
 
 import models.repos.UsersRepo
-import play.api.Play.current
-import play.api.db.DB
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Action
 import utils.serialization.UserSerializer
-
-import scala.slick.driver.PostgresDriver.simple._
 
 object UserController extends BaseController{
 
@@ -24,11 +20,5 @@ object UserController extends BaseController{
       ))
     }
     Ok(usersJson)
-  }
-
-  private def withDb[T](f: Session => T) = {
-    Database.forDataSource(DB.getDataSource()) withSession { session =>
-      f(session)
-    }
   }
 }
