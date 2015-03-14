@@ -11,7 +11,6 @@ import play.api.mvc.{RequestHeader, Result}
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 
-// Example
 trait AuthConfigImpl extends AuthConfig with DbAccessor {
 
   /**
@@ -51,20 +50,23 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
   /**
    * Where to redirect the user after a successful login.
    */
-  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(routes.LoginController.authenticate()))
+  def loginSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
+    val uri = request.session.get("access_uri").getOrElse(controllers.routes.IndexController.index("").url)
+    Future.successful(Redirect(uri).withSession(request.session - "access_uri"))
+  }
 
   /**
    * Where to redirect the user after logging out
    */
-  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
+  def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] = {
     Future.successful(Redirect(controllers.auth.routes.LoginController.login()))
+  }
 
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
    */
   def authenticationFailed(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(routes.LoginController.login()))
+    Future.successful(Redirect(routes.LoginController.login()).withSession("access_uri" -> request.uri))
 
   /**
    * If authorization failed (usually incorrect password) redirect the user as follows:
@@ -90,7 +92,7 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
   override lazy val cookieSecureOption: Boolean = play.api.Play.isProd(play.api.Play.current)
 
   /**
-   * Whether a login session is closed when the brower is terminated.
+   * Whether a login session is closed when the browser is terminated.
    * default is false.
    */
   override lazy val isTransientCookie: Boolean = false
