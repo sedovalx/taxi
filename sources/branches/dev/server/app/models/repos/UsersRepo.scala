@@ -35,7 +35,9 @@ object UsersRepo extends Repository[User] {
    * @param id идентификатор пользователя
    * @return найденный пользователь
    */
-  def getById(id: Long): Option[User] = ???
+  def getById(id: Long)(implicit session: Session): Option[User] = {
+    objects.filter(_.id === id).run.headOption
+  }
 
   override def create(entity: User)(implicit session: Session): User = ???
 
