@@ -19,6 +19,7 @@ project/target
 
 # Idea specific
 .idea/workspace.xml
+**/*.sc
 
 # Play! specific
 public
