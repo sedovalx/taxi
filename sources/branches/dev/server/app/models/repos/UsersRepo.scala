@@ -24,7 +24,7 @@ object UsersRepo extends Repository[User] {
     admin match {
       case Some(user) => user
       case None =>
-        val user = User(0, " - ", " - ", None, Role.Administrator, new Date(new java.util.Date().getTime), None, None, None)
+        val user = User(0, "admin", "", " - ", " - ", None, Role.Administrator, new Date(new java.util.Date().getTime), None, None, None)
         val userId = (objects returning objects.map(_.id)) += user
         user.copy(id = userId)
     }
@@ -37,6 +37,11 @@ object UsersRepo extends Repository[User] {
    */
   def getById(id: Long)(implicit session: Session): Option[User] = {
     objects.filter(_.id === id).run.headOption
+  }
+
+  //todo: убрать отсюда - клиентский код должен вызывать метод read с параметрами фильтрации
+  def authenticate(login: String, passwordMD5: String)(implicit session: Session): Option[User] = {
+    None
   }
 
   override def create(entity: User)(implicit session: Session): User = ???

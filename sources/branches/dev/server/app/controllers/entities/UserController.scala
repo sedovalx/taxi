@@ -1,5 +1,6 @@
-package controllers
+package controllers.entities
 
+import controllers.BaseController
 import models.repos.UsersRepo
 import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Action

@@ -1,7 +1,8 @@
-package controllers
+package controllers.util
 
+import controllers.BaseController
 import models.repos.UsersRepo
-import play.api.mvc.{AnyContent, Action}
+import play.api.mvc.{Action, AnyContent}
 
 import scala.slick.driver.PostgresDriver.simple._
 

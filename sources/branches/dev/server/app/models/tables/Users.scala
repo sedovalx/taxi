@@ -11,6 +11,8 @@ import scala.slick.driver.PostgresDriver.simple._
  */
 class Users(tag: Tag) extends Table[User](tag, "user") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def login         = column[String]("login")
+  def password      = column[String]("password")
   def lastName      = column[String]("last_name")
   def firstName     = column[String]("first_name")
   def middleName    = column[Option[String]]("middle_name")
@@ -20,8 +22,10 @@ class Users(tag: Tag) extends Table[User](tag, "user") {
   def creatorId     = column[Option[Long]]("creator_id")
   def editorId      = column[Option[Long]]("editor_id")
 
-  def * = (id, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> (User.tupled, User.unapply)
+  def * = (id, login, password, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> (User.tupled, User.unapply)
 
   def creatorRef = foreignKey("fk_user_creator", creatorId, UsersRepo.objects)(_.id)
   def editorRef = foreignKey("fk_user_editor", editorId, UsersRepo.objects)(_.id)
+
+  def uniqueLogin = index("idx_login_uq", login, unique = true)
 }

@@ -2,27 +2,32 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
+GET         /                           controllers.auth.LoginController.login
+POST        /login                      controllers.auth.LoginController.authenticate
+GET         /logout                     controllers.auth.LoginController.logout
+
 # Home page
-GET        /                           controllers.Application.index(path = "")
+GET         /index                      controllers.IndexController.index(path ?= "")
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file               controllers.Assets.at(path="/public/assets", file)
+GET         /assets/*file               controllers.Assets.at(path="/public/assets", file)
 
 ############################### Storage ###########################################
-GET        /api/db/sql/drop            controllers.StorageController.dropSql
-GET        /api/db/drop                controllers.StorageController.drop
+GET         /api/db/sql/drop            controllers.util.StorageController.dropSql
+GET         /api/db/drop                controllers.util.StorageController.drop
 
-GET        /api/db/sql/create          controllers.StorageController.createSql
-GET        /api/db/create              controllers.StorageController.create
+GET         /api/db/sql/create          controllers.util.StorageController.createSql
+GET         /api/db/create              controllers.util.StorageController.create
 
-GET        /api/db/sql/recreate        controllers.StorageController.recreateSql
-GET        /api/db/recreate            controllers.StorageController.recreate
+GET         /api/db/sql/recreate        controllers.util.StorageController.recreateSql
+GET         /api/db/recreate            controllers.util.StorageController.recreate
 
-GET        /api/db/init                controllers.StorageController.init
+GET         /api/db/init                controllers.util.StorageController.init
 
 ############################# Entity routes #######################################
 # User routes
-GET        /api/users                  controllers.UserController.read
+GET         /api/users                  controllers.entities.UserController.read
 
 
 
@@ -30,7 +35,7 @@ GET        /api/users                  controllers.UserController.read
 
 
 # Every other page (should be the last route)
-GET        /*path                      controllers.Application.index(path)
+GET         /*path                      controllers.IndexController.index(path)
 
 
 

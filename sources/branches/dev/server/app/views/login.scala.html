@@ -1,0 +1,37 @@
+@(form: Form[Option[models.entities.User]])(implicit flash: Flash)
+<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+@helper.form(controllers.auth.routes.LoginController.authenticate()) {
+
+    <h1>Sign in</h1>
+
+    @form.globalError.map { error =>
+        <p class="error">
+            @error.message
+        </p>
+    }
+
+    @flash.get("success").map { message =>
+        <p class="success">
+            @message
+        </p>
+    }
+
+    <p>
+        <input type="text" name="login" placeholder="Login" id="login" value="@form("login").value">
+    </p>
+    <p>
+        <input type="password" name="password" id="password" placeholder="Password">
+    </p>
+    <p>
+        <button type="submit" id="loginbutton">Login</button>
+    </p>
+
+}
+</body>
+</html>
