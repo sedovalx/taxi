@@ -11,6 +11,7 @@ GET         /logout                     controllers.auth.LoginController.logout
 GET         /index                      controllers.IndexController.index(path ?= "")
 
 # Map static resources from the /public folder to the /assets URL path
+GET         /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
 GET         /assets/*file               controllers.Assets.at(path="/public/assets", file)
 
 ############################### Storage ###########################################

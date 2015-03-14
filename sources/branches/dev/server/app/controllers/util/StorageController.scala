@@ -1,21 +1,23 @@
 package controllers.util
 
 import controllers.BaseController
+import controllers.auth.AuthConfigImpl
+import jp.t2v.lab.play2.auth.AuthElement
+import models.entities.Role
 import models.repos.UsersRepo
-import play.api.mvc.{Action, AnyContent}
 
 import scala.slick.driver.PostgresDriver.simple._
 
 /**
  * Контроллер операций над БД
  */
-object StorageController extends BaseController{
-  private val statementSeparator = ";\n";
+object StorageController extends BaseController with AuthElement with AuthConfigImpl {
+  private val statementSeparator = ";\n"
 
   /**
    * @return SQL-выражения по удалению схемы в БД
    */
-  def dropSql = Action {
+  def dropSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     Ok(getDropSql)
   }
 
@@ -23,7 +25,7 @@ object StorageController extends BaseController{
    * Выполняет удаление схемы в БД вместе с данными
    * @return статус операции
    */
-  def drop(): Action[AnyContent] = Action {
+  def drop() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     withDbAction(doDrop)
     Ok("all ddl gone")
   }
@@ -31,7 +33,7 @@ object StorageController extends BaseController{
   /**
    * @return SQL-выражения по созданию схемы в БД
    */
-  def createSql = Action {
+  def createSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     Ok(getCreateSql)
   }
 
@@ -39,7 +41,7 @@ object StorageController extends BaseController{
    * Выполняет создание схемы в БД
    * @return статус операции
    */
-  def create(): Action[AnyContent] = Action {
+  def create() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     withDbAction(doCreate)
     Ok("ddl created")
   }
@@ -48,7 +50,7 @@ object StorageController extends BaseController{
    * Выполняет наполнение БД первичными данными
    * @return статус операции
    */
-  def init(): Action[AnyContent] = Action {
+  def init() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     withDb(doInit)
     Ok("init completed")
   }
@@ -56,7 +58,7 @@ object StorageController extends BaseController{
   /**
    * @return SQL-выражения по пересозданию схемы БД
    */
-  def recreateSql = Action {
+  def recreateSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     Ok(getDropSql + statementSeparator + getCreateSql)
   }
 
@@ -64,7 +66,7 @@ object StorageController extends BaseController{
    * Выполняет пересоздание БД с наполнением первичными данными
    * @return статус операции
    */
-  def recreate() = Action {
+  def recreate() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     withDbAction { session =>
       doDrop(session)
       doCreate(session)
