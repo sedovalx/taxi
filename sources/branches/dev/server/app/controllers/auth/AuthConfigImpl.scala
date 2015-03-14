@@ -1,5 +1,6 @@
 package controllers.auth
 
+import controllers.DbAccessor
 import jp.t2v.lab.play2.auth.AuthConfig
 import models.entities.Role
 import models.entities.Role.Role
@@ -11,7 +12,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect._
 
 // Example
-trait AuthConfigImpl extends AuthConfig {
+trait AuthConfigImpl extends AuthConfig with DbAccessor {
 
   /**
    * A type that is used to identify a user.
@@ -43,7 +44,9 @@ trait AuthConfigImpl extends AuthConfig {
    * A function that returns a `User` object from an `Id`.
    * You can alter the procedure to suit your application.
    */
-  def resolveUser(id: Id)(implicit ctx: ExecutionContext): Future[Option[User]] = Future.apply(UsersRepo.getById(id))
+  def resolveUser(id: Id)(implicit ctx: ExecutionContext)= Future {
+    withDb { session => UsersRepo.getById(id)(session)}
+  }
 
   /**
    * Where to redirect the user after a successful login.

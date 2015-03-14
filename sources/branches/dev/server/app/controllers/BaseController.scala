@@ -5,11 +5,7 @@ import play.api.mvc.Controller
 import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 
-/**
- * Базовый класс всех контроллеров приложения
- */
-class BaseController extends Controller{
-
+trait DbAccessor {
   /**
    * Выполнение функции в контексте сессии к БД
    * @param f функция, требующая сессию
@@ -31,4 +27,11 @@ class BaseController extends Controller{
       f(session)
     }
   }
+}
+
+/**
+ * Базовый класс всех контроллеров приложения
+ */
+class BaseController extends Controller with DbAccessor{
+
 }
