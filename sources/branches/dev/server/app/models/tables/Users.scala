@@ -6,6 +6,9 @@ import models.entities.User
 import models.repos.UsersRepo
 import scala.slick.driver.PostgresDriver.simple._
 
+/**
+ * Маппинг доменной сущности на таблицу в БД
+ */
 class Users(tag: Tag) extends Table[User](tag, "user") {
   def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def lastName      = column[String]("last_name")

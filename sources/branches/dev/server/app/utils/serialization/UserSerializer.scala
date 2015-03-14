@@ -5,7 +5,12 @@ import java.text.SimpleDateFormat
 import models.entities.User
 import play.api.libs.json.{Json, Writes}
 
+/**
+ * Реализация сериализации/десереализации пользователей в json
+ */
 object UserSerializer {
+
+  // сериализация
   val writes = new Writes[User] {
     val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     def writes(user: User) = Json.obj(

@@ -5,14 +5,28 @@ import play.api.mvc.Controller
 import play.api.Play.current
 import scala.slick.driver.PostgresDriver.simple._
 
+/**
+ * Базовый класс всех контроллеров приложения
+ */
 class BaseController extends Controller{
+
+  /**
+   * Выполнение функции в контексте сессии к БД
+   * @param f функция, требующая сессию
+   * @tparam T тип возвращаемых данных
+   * @return результат работы функции
+   */
   protected def withDb[T](f: Session => T) = {
     Database.forDataSource(DB.getDataSource()) withSession { session =>
       f(session)
     }
   }
 
-  protected def withDbAction[T](f: Session => Unit) = {
+  /**
+   * Выполнение действия, непребуюущего результата, в контексте сессии к БД
+   * @param f действие
+   */
+  protected def withDbAction(f: Session => Unit) = {
     Database.forDataSource(DB.getDataSource()) withSession { session =>
       f(session)
     }

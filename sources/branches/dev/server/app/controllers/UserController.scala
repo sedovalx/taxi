@@ -5,11 +5,18 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Action
 import utils.serialization.UserSerializer
 
-object UserController extends BaseController{
+/**
+ * Контроллер операций над пользователями
+ */
+object UserController extends BaseController {
 
   // сериализация объектов пользователей в json
   implicit val userWrites = UserSerializer.writes
 
+  /**
+   * Возвращает список пользователей в json-формате
+   * @return
+   */
   def read = Action {
     val usersJson = withDb { session =>
       // получаем всех пользователей из БД

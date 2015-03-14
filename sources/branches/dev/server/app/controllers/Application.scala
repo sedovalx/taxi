@@ -3,9 +3,13 @@ package controllers
 import java.io.File
 
 import play.Play
-import play.api.mvc._
+import play.api.mvc.Action
 
-object Application extends Controller {
+
+/**
+ * Контроллер, отдающий index.html клиентского приложения
+ */
+object Application extends BaseController {
 
   def index(path: String) = Action {
     val projectRoot = Play.application().path()

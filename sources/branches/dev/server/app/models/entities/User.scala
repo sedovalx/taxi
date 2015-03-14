@@ -4,6 +4,14 @@ import java.sql.Date
 
 import models.entities.Role._
 
+/**
+ * Доменный класс пользователя системы
+ * @param id идентификатор
+ * @param lastName фамилия
+ * @param firstName имя
+ * @param middleName отчество
+ * @param role роль в системе
+ */
 case class User(
  id: Long,
  lastName: String,

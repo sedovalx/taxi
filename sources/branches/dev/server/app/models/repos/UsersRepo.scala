@@ -7,10 +7,18 @@ import models.tables.Users
 
 import scala.slick.driver.PostgresDriver.simple._
 
+/**
+ * Репозиторий пользователей системы
+ */
 object UsersRepo extends Repository[User] {
 
   val objects = TableQuery[Users]
 
+  /**
+   * Создать запись пользователяс правами администратора
+   * @param session сессия к БД
+   * @return созданный пользователь
+   */
   def createAdmin(implicit session: Session): User = {
     val admin = objects.filter(u => u.role === Role.Administrator).firstOption
     admin match {
@@ -22,7 +30,12 @@ object UsersRepo extends Repository[User] {
     }
   }
 
-  def getById(id: Long): User = ???
+  /**
+   * Получить пользователя по идентификатору
+   * @param id идентификатор пользователя
+   * @return найденный пользователь
+   */
+  def getById(id: Long): Option[User] = ???
 
   override def create(entity: User)(implicit session: Session): User = ???
 
