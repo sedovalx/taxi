@@ -27,7 +27,7 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
    * A type that is defined by every action for authorization.
    * This sample uses the following trait:
    */
-  type Authority = Role
+  type Authority = Set[Role]
 
   /**
    * A `ClassTag` is used to retrieve an id from the Cache API.
@@ -58,7 +58,7 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
    * Where to redirect the user after logging out
    */
   def logoutSucceeded(request: RequestHeader)(implicit ctx: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(controllers.routes.IndexController.index("")))
+    Future.successful(Redirect(controllers.auth.routes.LoginController.login()))
 
   /**
    * If the user is not logged in and tries to access a protected resource then redirct them as follows:
@@ -78,11 +78,8 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
    */
   def authorize(user: User, authority: Authority)(implicit ctx: ExecutionContext): Future[Boolean] = Future.successful {
     (user.role, authority) match {
-      case (Role.Administrator, _)       => true
-      case (Role.Repairman, Role.Repairman) => true
-      case (Role.Accountant, Role.Accountant) => true
-      case (Role.Cashier, Role.Cashier) => true
-      case _                        => false
+      case (Role.Administrator, _) => true
+      case _ => authority.isEmpty || authority.contains(user.role)
     }
   }
 

@@ -17,7 +17,7 @@ object LoginController extends BaseController with LoginLogout with AuthConfigIm
     withDb { implicit session =>
       Form {
         mapping("login" -> text, "password" -> text)(UsersRepo.authenticate)(_.map(u => (u.login, "")))
-          .verifying("Invalid email or password", result => result.isDefined)
+          .verifying("Invalid login or password", result => result.isDefined)
       }
     }
   }
@@ -39,7 +39,9 @@ object LoginController extends BaseController with LoginLogout with AuthConfigIm
    */
   def logout = Action.async { implicit request =>
     // do something...
-    gotoLogoutSucceeded
+    gotoLogoutSucceeded.map(_.flashing(
+      "success" -> "You've been logged out"
+    ))
   }
 
   /**

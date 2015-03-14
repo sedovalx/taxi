@@ -40,8 +40,8 @@ object UsersRepo extends Repository[User] {
   }
 
   //todo: убрать отсюда - клиентский код должен вызывать метод read с параметрами фильтрации
-  def authenticate(login: String, passwordMD5: String)(implicit session: Session): Option[User] = {
-    None
+  def authenticate(login: String, password: String)(implicit session: Session): Option[User] = {
+    objects.filter(u => u.login === login && u.password === password).run.headOption
   }
 
   override def create(entity: User)(implicit session: Session): User = ???
