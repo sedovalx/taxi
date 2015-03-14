@@ -9,11 +9,11 @@
       <sourceFolder url="file://$MODULE_DIR$/../../target/scala-2.11/twirl/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../conf" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../../public" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.." />
       <excludeFolder url="file://$MODULE_DIR$/../../logs" />
       <excludeFolder url="file://$MODULE_DIR$/../../project/project" />
       <excludeFolder url="file://$MODULE_DIR$/../../project/target" />
+      <excludeFolder url="file://$MODULE_DIR$/../../public" />
       <excludeFolder url="file://$MODULE_DIR$/../../target" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/resolution-cache" />
       <excludeFolder url="file://$MODULE_DIR$/../../target/streams" />
