@@ -5,6 +5,7 @@ import controllers.auth.AuthConfigImpl
 import jp.t2v.lab.play2.auth.AuthElement
 import models.entities.Role
 import models.repos.UsersRepo
+import play.api.mvc.Action
 
 import scala.slick.driver.PostgresDriver.simple._
 
@@ -17,7 +18,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
   /**
    * @return SQL-выражения по удалению схемы в БД
    */
-  def dropSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def dropSql = Action { implicit request =>
     Ok(getDropSql)
   }
 
@@ -33,7 +34,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
   /**
    * @return SQL-выражения по созданию схемы в БД
    */
-  def createSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def createSql = Action { implicit request =>
     Ok(getCreateSql)
   }
 
@@ -58,7 +59,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
   /**
    * @return SQL-выражения по пересозданию схемы БД
    */
-  def recreateSql = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def recreateSql = Action { implicit request =>
     Ok(getDropSql + statementSeparator + getCreateSql)
   }
 

@@ -1,5 +1,5 @@
 import play.api.GlobalSettings
-import play.api.mvc.{EssentialAction, Result, RequestHeader, Filter}
+import play.api.mvc.{EssentialAction, Filter, RequestHeader, Result}
 
 import scala.concurrent.Future
 
