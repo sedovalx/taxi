@@ -24,7 +24,7 @@ object UsersRepo extends Repository[User] {
     admin match {
       case Some(user) => user
       case None =>
-        val user = User(0, "admin", "", " - ", " - ", None, Role.Administrator, new Date(new java.util.Date().getTime), None, None, None)
+        val user = User(0, "admin", "", None, None, None, Role.Administrator, new Date(new java.util.Date().getTime), None, None, None)
         val userId = (objects returning objects.map(_.id)) += user
         user.copy(id = userId)
     }
