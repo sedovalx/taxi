@@ -1,17 +1,19 @@
 package controllers.auth
 
 import controllers.BaseController
-import jp.t2v.lab.play2.auth.LoginLogout
+import controllers.entities.UserController._
+import jp.t2v.lab.play2.auth.{AuthElement, LoginLogout}
 import models.repos.UsersRepo
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json.{Json, JsObject}
 import play.api.mvc.Action
 import views.html
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object LoginController extends BaseController with LoginLogout with AuthConfigImpl {
+object LoginController extends BaseController with LoginLogout with AuthElement with AuthConfigImpl {
   /** Your application's login form.  Alter it to fit your application */
   val loginForm = {
     withDb { implicit session =>
@@ -55,5 +57,13 @@ object LoginController extends BaseController with LoginLogout with AuthConfigIm
       formWithErrors => Future.successful(BadRequest(html.login(formWithErrors))),
       user => gotoLoginSucceeded(user.get.id)
     )
+  }
+
+  def currentUser = StackAction(AuthorityKey -> Set()) { implicit request =>
+    val user = loggedIn
+    val userJson = JsObject(Seq(
+      "user" -> Json.toJson(user)
+    ))
+    Ok(userJson)
   }
 }

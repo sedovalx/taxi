@@ -15,6 +15,7 @@ object UserSerializer {
     val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
     def writes(user: User) = Json.obj(
       "id" -> user.id,
+      "login" -> user.login,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,
