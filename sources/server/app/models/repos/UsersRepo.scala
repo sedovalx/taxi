@@ -5,7 +5,7 @@ import java.sql.Date
 import models.entities.{Role, User}
 import models.tables.Users
 
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 /**
  * Репозиторий пользователей системы

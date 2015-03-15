@@ -7,7 +7,7 @@ import models.entities.Role
 import models.repos.UsersRepo
 import play.api.mvc.Action
 
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 /**
  * Контроллер операций над БД

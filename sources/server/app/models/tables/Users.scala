@@ -4,7 +4,7 @@ import java.sql.Date
 import models.entities.Role._
 import models.entities.User
 import models.repos.UsersRepo
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 /**
  * Маппинг доменной сущности на таблицу в БД

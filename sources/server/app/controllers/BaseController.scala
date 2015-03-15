@@ -3,7 +3,7 @@ package controllers
 import play.api.db.DB
 import play.api.mvc.Controller
 import play.api.Play.current
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 trait DbAccessor {
   /**

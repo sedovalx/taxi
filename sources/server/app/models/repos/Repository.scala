@@ -1,7 +1,7 @@
 package models.repos
 
 import models.entities.Entity
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 /**
  * Базовый класс для всех репозиториев доменных данных

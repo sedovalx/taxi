@@ -1,6 +1,6 @@
 package models.entities
 
-import scala.slick.driver.PostgresDriver.simple._
+import play.api.db.slick.Config.driver.simple._
 
 object Role extends Enumeration {
   type Role = Value
