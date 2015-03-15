@@ -2,13 +2,13 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-
-GET         /                           controllers.auth.LoginController.login
-POST        /login                      controllers.auth.LoginController.authenticate
-GET         /logout                     controllers.auth.LoginController.logout
-
 # Home page
-GET         /index                      controllers.IndexController.index(path ?= "")
+GET         /                           controllers.IndexController.index(path ?= "")
+
+# Authentication
+GET         /auth/login                 controllers.auth.LoginController.login
+POST        /auth/authenticate          controllers.auth.LoginController.authenticate
+GET         /auth/logout                controllers.auth.LoginController.logout
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
