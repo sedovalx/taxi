@@ -3,9 +3,9 @@ package controllers.entities
 import controllers.BaseController
 import controllers.auth.AuthConfigImpl
 import jp.t2v.lab.play2.auth.AuthElement
+import models.entities.Role
 import models.repos.UsersRepo
 import play.api.libs.json.{JsObject, Json}
-import play.api.mvc.Action
 import utils.serialization.UserSerializer
 
 /**
@@ -20,7 +20,7 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
    * Возвращает список пользователей в json-формате
    * @return
    */
-  def read = StackAction(AuthorityKey -> Set()) { implicit request =>
+  def read = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     val usersJson = withDb { session =>
       // получаем всех пользователей из БД
       val users = UsersRepo.read(session)
@@ -30,5 +30,15 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
       ))
     }
     Ok(usersJson)
+  }
+
+  def getById(id: Long) = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+    val userJson = withDb { session =>
+      val user = UsersRepo.getById(id)(session)
+      JsObject(Seq(
+        "user" -> Json.toJson(user)
+      ))
+    }
+    Ok(userJson)
   }
 }

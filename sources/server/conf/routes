@@ -30,7 +30,7 @@ GET         /api/db/init                controllers.util.StorageController.init
 ############################# Entity routes #######################################
 # User routes
 GET         /api/users                  controllers.entities.UserController.read
-
+GET         /api/users/:id               controllers.entities.UserController.getById(id: Long)
 
 
 
