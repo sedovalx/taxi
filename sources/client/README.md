@@ -49,6 +49,10 @@
 bower-зависимости нужно выполнить команду `ember install:bower bootstrap`. После чего в файле Brocfile.js [прописать
 установленную зависимость](http://www.ember-cli.com/#managing-dependencies). 
 
+## Билд клиентского проекта
+
+Билд выполняется с помощью ember-cli, под Windows он работает [довольно медленно](http://www.ember-cli.com/#windows). Если во время выполненеия оптимизации происходят ошибки, то смотрим [сюда](https://github.com/felixrieseberg/ember-cli-windows/issues/3). Если запускать команду билда под администратором, то он собирается заметно быстрее. 
+
 
 # Client
 
