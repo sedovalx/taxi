@@ -6,6 +6,7 @@
         <entryData>
           <resourceRoots>
             <path value="file://$PROJECT_DIR$" />
+            <path value="file://$PROJECT_DIR$/bower_components" />
           </resourceRoots>
         </entryData>
       </entry>

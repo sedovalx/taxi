@@ -16,14 +16,15 @@ object UserSerializer {
     def writes(user: User) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
+      "password" -> "*******",
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,
       "role" -> user.role.toString,
       "creationDate" -> dateIso8601Format.format(user.creationDate),
       "editDate" -> user.editDate,
-      "creatorId" -> user.creatorId,
-      "editorId" -> user.editorId
+      "creator" -> user.creatorId,
+      "editor" -> user.editorId
     )
   }
 }
