@@ -21,6 +21,9 @@ app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {
   destDir: 'assets'
 });
+//app.import('bower_components/jquery-mousewheel/jquery.mousewheel.js')
+//app.import('bower_components/ember-table/dist/ember-table.js');
+//app.import('bower_components/ember-table/dist/ember-table.css');
 
 
 module.exports = app.toTree();
