@@ -4,13 +4,14 @@ import java.sql.Date
 import models.entities.Role._
 import models.entities.User
 import models.repos.UsersRepo
+import models.utils.GenericTable
 import play.api.db.slick.Config.driver.simple._
 
 /**
  * Маппинг доменной сущности на таблицу в БД
  */
-class Users(tag: Tag) extends Table[User](tag, "user") {
-  def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+class Users(tag: Tag) extends GenericTable[User](tag, "user") {
+
   def login         = column[String]("login")
   def password      = column[String]("password")
   def lastName      = column[Option[String]]("last_name")
@@ -24,8 +25,9 @@ class Users(tag: Tag) extends Table[User](tag, "user") {
 
   def * = (id, login, password, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> (User.tupled, User.unapply)
 
-  def creatorRef = foreignKey("fk_user_creator", creatorId, UsersRepo.objects)(_.id)
-  def editorRef = foreignKey("fk_user_editor", editorId, UsersRepo.objects)(_.id)
+  def creatorRef = foreignKey("fk_user_creator", creatorId, UsersRepo.tableQuery)(_.id)
+  def editorRef = foreignKey("fk_user_editor", editorId, UsersRepo.tableQuery)(_.id)
 
   def uniqueLogin = index("idx_login_uq", login, unique = true)
+
 }

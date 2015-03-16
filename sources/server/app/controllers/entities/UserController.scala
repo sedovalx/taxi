@@ -34,7 +34,7 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
 
   def getById(id: Long) = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
     val userJson = withDb { session =>
-      val user = UsersRepo.getById(id)(session)
+      val user = UsersRepo.findById(id)(session)
       JsObject(Seq(
         "user" -> Json.toJson(user)
       ))

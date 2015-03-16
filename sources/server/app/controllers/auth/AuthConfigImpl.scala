@@ -44,7 +44,7 @@ trait AuthConfigImpl extends AuthConfig with DbAccessor {
    * You can alter the procedure to suit your application.
    */
   def resolveUser(id: Id)(implicit ctx: ExecutionContext)= Future {
-    withDb { session => UsersRepo.getById(id)(session)}
+    withDb { session => UsersRepo.findById(id)(session)}
   }
 
   /**

@@ -76,9 +76,9 @@ object StorageController extends BaseController with AuthElement with AuthConfig
     Ok("recreate completed")
   }
 
-  private def doDrop(session: Session) = UsersRepo.objects.ddl.drop(session)
-  private def doCreate(session: Session) = UsersRepo.objects.ddl.create(session)
+  private def doDrop(session: Session) = UsersRepo.tableQuery.ddl.drop(session)
+  private def doCreate(session: Session) = UsersRepo.tableQuery.ddl.create(session)
   private def doInit(session: Session) = UsersRepo.createAdmin(session)
-  private def getDropSql = UsersRepo.objects.ddl.dropStatements.mkString(statementSeparator)
-  private def getCreateSql = UsersRepo.objects.ddl.createStatements.mkString(statementSeparator)
+  private def getDropSql = UsersRepo.tableQuery.ddl.dropStatements.mkString(statementSeparator)
+  private def getCreateSql = UsersRepo.tableQuery.ddl.createStatements.mkString(statementSeparator)
 }
