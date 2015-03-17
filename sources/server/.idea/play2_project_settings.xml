@@ -7,14 +7,14 @@
           <value>
             <ProjectSettingsEntry>
               <option name="version" value="2.3.7" />
-              <option name="sourceDir" value="E:\Scala\taxi\sources\server\conf" />
-              <option name="confDir" value="E:\Scala\taxi\sources\server\app" />
+              <option name="sourceDir" value="$PROJECT_DIR$/../server\app" />
+              <option name="confDir" value="$PROJECT_DIR$/../server\conf" />
               <option name="routesImports">
                 <list>
                   <option value="controllers.Assets.Asset" />
                 </list>
               </option>
-              <option name="uri" value="/E:/Scala/taxi/sources/server" />
+              <option name="uri" value="$PROJECT_DIR$" />
             </ProjectSettingsEntry>
           </value>
         </entry>
