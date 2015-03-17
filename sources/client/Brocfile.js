@@ -17,9 +17,23 @@ var app = new EmberApp();
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
 
+// Twitter Bootstrap
+app.import('bower_components/bootstrap/dist/js/bootstrap.js');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css');
 app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', {
   destDir: 'assets'
 });
+
+// Ember Table
+app.import('bower_components/jquery-ui/ui/jquery.ui.core.js');
+app.import('bower_components/jquery-ui/ui/jquery.ui.widget.js');
+app.import('bower_components/jquery-ui/ui/jquery.ui.mouse.js');
+app.import('bower_components/jquery-ui/ui/jquery.ui.resizable.js');
+app.import('bower_components/jquery-ui/ui/jquery.ui.sortable.js');
+app.import('bower_components/jquery-mousewheel/jquery.mousewheel.js');
+app.import('bower_components/antiscroll/antiscroll.js');
+app.import('bower_components/antiscroll/antiscroll.css');
+app.import('bower_components/ember-table/dist/ember-table.js');
+app.import('bower_components/ember-table/dist/ember-table.css');
 
 module.exports = app.toTree();
