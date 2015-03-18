@@ -6,9 +6,9 @@
   selection=selectedRow}}
 
    <div class="list-commands btn-group pull-right" role="group">
-       <a class="btn btn-primary" {{action "create"}}>
+       <button type="button" class="btn btn-primary" {{action "create"}}>
            <i class="fa fa-user-plus"></i> Создать
-       </a>
+       </button>
        <button type="button" class="btn btn-primary" {{action "view"}} {{bind-attr disabled=selectionEmpty}}>
            <i class="fa fa-eye"></i> Просмотр
        </button>
