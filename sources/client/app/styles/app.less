@@ -1,3 +1,16 @@
+@import "list";
+
+@main-content-side-margin: 50px;
+
 html, body {
   height: 100%;
+}
+
+body > .ember-view, .application {
+  height: 100%;
+}
+
+.main-content {
+  margin-left: @main-content-side-margin;
+  margin-right: @main-content-side-margin;
 }

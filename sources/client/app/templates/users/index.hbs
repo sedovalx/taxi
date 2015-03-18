@@ -1,3 +1,15 @@
-<h1>Список пользователей</h1>
+<div class="list">
+  {{table-component
+  columns=columns
+  content=users
+  hasFooter=false
+  selection=selectedRow}}
 
-{{table-component columns=columns content=users}}
+   <div class="list-commands btn-group pull-right" role="group">
+       <button type="button" class="btn btn-primary" {{action "create"}}>Создать</button>
+       <button type="button" class="btn btn-primary" {{action "view"}} {{bind-attr disabled=selectionEmpty}}>Просмотр</button>
+       <button type="button" class="btn btn-primary" {{action "edit"}} {{bind-attr disabled=selectionEmpty}}>Редактировать</button>
+       <button type="button" class="btn btn-primary" {{action "remove"}} {{bind-attr disabled=selectionEmpty}}>Удалить</button>
+   </div>
+
+</div>

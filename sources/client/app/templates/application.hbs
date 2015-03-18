@@ -1,28 +1,30 @@
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Таксопарк</a>
-            <ul class="nav navbar-nav">
-              {{#link-to 'users' tagName="li"}}
-                  <a {{bind-attr href="view.href"}}>
-                      Пользователи
-                  </a>
-              {{/link-to}}
-              {{#link-to 'cars' tagName="li"}}
-                  <a {{bind-attr href="view.href"}}>
-                      Машины
-                  </a>
-              {{/link-to}}
-            </ul>
+<div class="application">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Таксопарк</a>
+                <ul class="nav navbar-nav">
+                  {{#link-to 'users' tagName="li"}}
+                      <a {{bind-attr href="view.href"}}>
+                          Пользователи
+                      </a>
+                  {{/link-to}}
+                  {{#link-to 'cars' tagName="li"}}
+                      <a {{bind-attr href="view.href"}}>
+                          Машины
+                      </a>
+                  {{/link-to}}
+                </ul>
+            </div>
+            <div class="collapse navbar-collapse">
+                <p class="navbar-text navbar-right">Текущий пользователь: <a href="#" class="navbar-link">Mark Otto</a></p>
+            </div>
         </div>
-        <div class="collapse navbar-collapse">
-            <p class="navbar-text navbar-right">Текущий пользователь: <a href="#" class="navbar-link">Mark Otto</a></p>
-        </div>
-    </div>
-</nav>
+    </nav>
 
-<div class="main-content panel panel-default">
-  {{outlet}}
+    <div class="main-content">
+      {{outlet}}
+    </div>
 </div>
 
 
