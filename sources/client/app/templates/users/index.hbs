@@ -6,10 +6,18 @@
   selection=selectedRow}}
 
    <div class="list-commands btn-group pull-right" role="group">
-       <button type="button" class="btn btn-primary" {{action "create"}}>Создать</button>
-       <button type="button" class="btn btn-primary" {{action "view"}} {{bind-attr disabled=selectionEmpty}}>Просмотр</button>
-       <button type="button" class="btn btn-primary" {{action "edit"}} {{bind-attr disabled=selectionEmpty}}>Редактировать</button>
-       <button type="button" class="btn btn-primary" {{action "remove"}} {{bind-attr disabled=selectionEmpty}}>Удалить</button>
+       <a class="btn btn-primary" {{action "create"}}>
+           <i class="fa fa-user-plus"></i> Создать
+       </a>
+       <button type="button" class="btn btn-primary" {{action "view"}} {{bind-attr disabled=selectionEmpty}}>
+           <i class="fa fa-eye"></i> Просмотр
+       </button>
+       <button type="button" class="btn btn-primary" {{action "edit"}} {{bind-attr disabled=selectionEmpty}}>
+           <i class="fa fa-pencil"></i> Редактировать
+       </button>
+       <button type="button" class="btn btn-primary" {{action "remove"}} {{bind-attr disabled=selectionEmpty}}>
+           <i class="fa fa-user-times"></i> Удалить
+       </button>
    </div>
 
 </div>

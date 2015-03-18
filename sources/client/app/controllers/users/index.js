@@ -6,6 +6,23 @@ export default Ember.ArrayController.extend({
   selectionEmpty: function(){
     return this.get("selectedRow") == null;
   }.property("selectedRow"),
+
+  actions: {
+    edit: function(){
+      alert(this.get("selectedRow"));
+    },
+    view: function(){
+
+    },
+    create: function(){
+      this.transitionToRoute("users.new");
+    },
+    remove: function(){
+
+    }
+  },
+
+  // Ember Table
   columns: function(){
     let loginColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -41,19 +58,5 @@ export default Ember.ArrayController.extend({
   }.property(),
   users: function(){
     return this;
-  }.property("@each"),
-  actions: {
-    edit: function(){
-      alert(this.get("selectedRow"));
-    },
-    view: function(){
-
-    },
-    create: function(){
-
-    },
-    remove: function(){
-
-    }
-  }
+  }.property("@each")
 });

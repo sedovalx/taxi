@@ -13,6 +13,7 @@
     "ember-qunit-notifications": "0.0.7",
     "qunit": "~1.17.1",
     "bootstrap": "~3.3.2",
-    "ember-table": "ember-1.10"
+    "ember-table": "ember-1.10",
+    "font-awesome": "~4.3.0"
   }
 }

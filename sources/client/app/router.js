@@ -6,16 +6,15 @@ let Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  let dsl = this;
-  dsl.resource("users", () => {
-    dsl.route("new");
+  this.resource("users", function() {
+    this.route("new");
   });
-  dsl.resource("user", { path: "/users/:user_id" }, () => {
-    dsl.route("edit");
-    dsl.route("view");
+  this.resource("user", { path: "/users/:user_id" }, function() {
+    this.route("edit");
+    this.route("view");
   });
-  dsl.resource("cars", () => {
-    dsl.route("new");
+  this.resource("cars", function() {
+    this.route("new");
   });
 });
 
