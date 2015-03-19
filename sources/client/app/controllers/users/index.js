@@ -11,9 +11,6 @@ export default Ember.ArrayController.extend({
     edit: function(){
       alert(this.get("selectedRow"));
     },
-    view: function(){
-
-    },
     create: function(){
       this.transitionToRoute("users.new");
     },
