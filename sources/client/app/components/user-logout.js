@@ -5,28 +5,21 @@ import Ember from "ember";
 import $ from "jquery";
 
 export default Ember.Component.extend({
-  onInsert: function() {
+  didInsertElement: function() {
     var component = this;
-    var username;
-    this.set('login',"testotron");
-    username = $.getJSON("/auth/current", function(json) {
-      var login = null;
-      var lastname = null;
-      var firstName = null;
-      var middleName = null;
-      var DisplayName = null;
-      login = json.user.login;
-      lastname = json.user.lastName;
-      firstName = json.user.firstName;
-      middleName = json.user.middleName;
+    var username = $.getJSON("/auth/current", function(json) {
+      var login = json.user.login;
+      var lastname = json.user.lastName;
+      var firstName = json.user.firstName;
+      var middleName = json.user.middleName;
       if (lastname!==null && firstName !==null){
-        DisplayName = firstName + ' ' + lastname;
+        var displayName = firstName + ' ' + lastname;
       }
       else {
-        DisplayName = login;
+        var displayName = login;
       }
-      component.set('DisplayName',DisplayName);
+      component.set('displayName',displayName);
     });
-  }.on('didInsertElement'),
-  DisplayName: null
+  },
+  displayName: null
 });
