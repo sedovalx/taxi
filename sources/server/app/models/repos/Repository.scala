@@ -12,9 +12,9 @@ abstract class Repository[T <: Entity] {
    * Создать новый объект
    * @param entity данные создаваемого объекта
    * @param session сессия к БД
-   * @return созданный объект
+   * @return id созданного объекта
    */
-  def create(entity: T)(implicit session: Session): T
+  def create(entity: T)(implicit session: Session): Long
 
   /**
    * Вернуть отфильтрованных пользователей
@@ -27,9 +27,9 @@ abstract class Repository[T <: Entity] {
    * Обновить данные пользователя
    * @param entity обновленные данные
    * @param session сессия к БД
-   * @return обновленные данные
+   * @return true, если объект был найден, и данные обновлены
    */
-  def update(entity: T)(implicit session: Session): T
+  def update(entity: T)(implicit session: Session): Boolean
 
   /**
    * Удалить пользователя

@@ -14,7 +14,7 @@ GET         /auth/current               controllers.auth.LoginController.current
 # Map static resources from the /public folder to the /assets URL path
 GET         /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
 GET         /assets/*file               controllers.Assets.at(path="/public/assets", file)
-GET         /fonts/*file               	controllers.Assets.at(path="/public/fonts", file)
+GET         /fonts/*file                controllers.Assets.at(path="/public/fonts", file)
 
 ############################### Storage ###########################################
 GET         /api/db/sql/drop            controllers.util.StorageController.dropSql
@@ -31,8 +31,8 @@ GET         /api/db/init                controllers.util.StorageController.init
 ############################# Entity routes #######################################
 # User routes
 GET         /api/users                  controllers.entities.UserController.read
-GET         /api/users/:id               controllers.entities.UserController.getById(id: Long)
-
+GET         /api/users/:id              controllers.entities.UserController.getById(id: Long)
+POST        /api/users                  controllers.entities.UserController.create
 
 
 

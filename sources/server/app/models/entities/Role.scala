@@ -1,7 +1,5 @@
 package models.entities
 
-import play.api.db.slick.Config.driver.simple._
-
 object Role extends Enumeration {
   type Role = Value
   // администратор
@@ -12,6 +10,4 @@ object Role extends Enumeration {
   val Cashier = Value("Cashier")
   // ремонтник
   val Repairman = Value("Repairman")
-
-  implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 }

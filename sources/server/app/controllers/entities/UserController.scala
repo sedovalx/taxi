@@ -41,4 +41,9 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
     }
     Ok(userJson)
   }
+
+  def create = StackAction(AuthorityKey -> Set(Role.Administrator)) { request =>
+
+    Ok
+  }
 }

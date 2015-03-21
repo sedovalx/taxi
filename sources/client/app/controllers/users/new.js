@@ -12,7 +12,12 @@ export default Ember.ObjectController.extend({
   actions: {
     save: function(){
       let that = this;
-      this.get("model")
+	  let model = this.get("model");
+	  model.setProperties({
+		  id: 0,
+		  role: this.get("selectedRole").id
+	  });
+      model
         .save()
         .then(() => that.transitionToRoute("users"))
         .catch(error => {
@@ -34,5 +39,9 @@ export default Ember.ObjectController.extend({
   },
   _isDirty: function(model){
     return !$.isEmptyObject(model.changedAttributes());
-  }
+  },
+  hasErrors: function(){
+	  let model = this.get("model");
+	  return !(model.get("login") && this.get("selectedRole"));
+  }.property("model.login", "selectedRole")
 });

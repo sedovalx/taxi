@@ -7,6 +7,10 @@ import java.sql.Date
  */
 trait Entity {
   /**
+   * Идентификатор
+   */
+  val id: Long
+  /**
    * Дата создания
    */
   val creationDate: Date

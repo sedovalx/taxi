@@ -4,6 +4,7 @@ import java.sql.Date
 
 import models.entities.{Role, User}
 import models.tables.Users
+import models.mappings.RoleColumn._
 
 import play.api.db.slick.Config.driver.simple._
 
@@ -34,16 +35,5 @@ object UsersRepo extends GenericCRUD[Users, User]{
   def authenticate(login: String, password: String)(implicit session: Session): Option[User] = {
     tableQuery.filter(u => u.login === login && u.password === password).run.headOption
   }
-
-  override def create(entity: User)(implicit session: Session): User = {
-    val userId = insert(entity)
-    entity.copy(id = userId)
-  }
-
-  override def update(entity: User)(implicit session: Session): User = {
-    updateById(entity.id, entity)
-    entity
-  }
-
 }
 
