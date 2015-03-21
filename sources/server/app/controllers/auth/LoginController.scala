@@ -1,7 +1,6 @@
 package controllers.auth
 
 import controllers.BaseController
-import controllers.entities.UserController._
 import jp.t2v.lab.play2.auth.{AuthElement, LoginLogout}
 import models.repos.UsersRepo
 import play.api.data.Form
@@ -9,6 +8,7 @@ import play.api.data.Forms._
 import play.api.libs.json.{Json, JsObject}
 import play.api.mvc.Action
 import views.html
+import utils.serialization.UserSerializer._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

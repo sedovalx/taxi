@@ -6,15 +6,12 @@ import jp.t2v.lab.play2.auth.AuthElement
 import models.entities.Role
 import models.repos.UsersRepo
 import play.api.libs.json.{JsObject, Json}
-import utils.serialization.UserSerializer
+import utils.serialization.UserSerializer._
 
 /**
  * Контроллер операций над пользователями
  */
 object UserController extends BaseController  with AuthElement with AuthConfigImpl {
-
-  // сериализация объектов пользователей в json
-  implicit val userWrites = UserSerializer.writes
 
   /**
    * Возвращает список пользователей в json-формате
