@@ -33,7 +33,7 @@ GET         /api/db/init                controllers.util.StorageController.init
 GET         /api/users                  controllers.entities.UserController.read
 GET         /api/users/:id              controllers.entities.UserController.getById(id: Long)
 POST        /api/users                  controllers.entities.UserController.create
-
+PUT         /api/users/:id              controllers.entities.UserController.update(id: Long)
 
 
 

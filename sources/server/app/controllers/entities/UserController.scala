@@ -20,41 +20,48 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
    * Возвращает список пользователей в json-формате
    * @return
    */
-  def read = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
-    val usersJson = withDb { session =>
-      // получаем всех пользователей из БД
-      val users = UsersRepo.read(session)
-      // преобразуем их в json. тут неявно используется сериалайзер выше
-      JsObject(Seq(
-        "users" -> Json.toJson(users)
-      ))
-    }
+  def read = StackAction(AuthorityKey -> Set()) { implicit request =>
+    val users = withDb { session => UsersRepo.read(session) }
+    val usersJson = makeJson("users", users)
     Ok(usersJson)
   }
 
-  def getById(id: Long) = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
-    val userJson = withDb { session =>
-      val user = UsersRepo.findById(id)(session)
-      JsObject(Seq(
-        "user" -> Json.toJson(user)
-      ))
-    }
+  def getById(id: Long) = StackAction(AuthorityKey -> Set()) { implicit request =>
+    val user = withDb { session => UsersRepo.findById(id)(session) }
+    val userJson = makeJson("user", user)
     Ok(userJson)
   }
 
-  def create = StackAction(BodyParsers.parse.json, AuthorityKey -> Set(Role.Administrator)) { request =>
-    val json = (request.body \ "user")
+  def create = StackAction(BodyParsers.parse.json, AuthorityKey -> Set()) { request =>
+    val json = request.body \ "user"
     json.validate[User].fold(
       errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
       user => {
+        //todo: перенести установку создателя в единую точку
         val toSave: User = user.copy(creatorId = Some(loggedIn(request).id))
         val id = withDb { session => UsersRepo.create(toSave)(session) }
         val toSend = toSave.copy(id = id)
-        val userJson = JsObject(Seq(
-          "user" -> Json.toJson(toSend)
-        ))
+        val userJson = makeJson("user", toSend)
         Ok(userJson)
       }
     )
   }
+
+  def update(id: Long) = StackAction(BodyParsers.parse.json) { request =>
+    val json = request.body \ "user"
+    json.validate[User].fold(
+      errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
+      user => {
+        if (id != user.id)
+          throw new Exception("Переданные данные не соответствуют маршруту.")
+        // todo: перенести установку времени редактирования в единую точку
+        val toSave = user.copy(editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(loggedIn(request).id))
+        withDbAction { session => UsersRepo.update(toSave)(session) }
+        val userJson = makeJson("user", toSave)
+        Ok(userJson)
+      }
+    )
+  }
+
+  private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))
 }
