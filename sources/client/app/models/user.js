@@ -10,6 +10,6 @@ export default DS.Model.extend({
   role: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
-  creator: DS.belongsTo("user", {inverse: null}),
-  editor: DS.belongsTo("user", {inverse: null})
+  creator: DS.belongsTo("user", {inverse: null, async: true}),
+  editor: DS.belongsTo("user", {inverse: null, async: true})
 });

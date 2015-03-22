@@ -11,7 +11,6 @@ Router.map(function() {
   });
   this.resource("user", { path: "/users/:user_id" }, function() {
     this.route("edit");
-    this.route("view");
   });
   this.resource("cars", function() {
     this.route("new");

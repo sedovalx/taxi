@@ -31,7 +31,7 @@ abstract class GenericCRUD[T <: GenericTable[A], A <: Entity] extends Repository
    * Update a specific entity by id. If successfully completed return true, else false
    */
   def update(entity: A) (implicit session: Session) = {
-      tableQuery.update(entity) > 0
+      tableQuery.filter(_.id === entity.id).update(entity) > 0
   }
 
   def create(entity: A) (implicit session: Session) : Long = {

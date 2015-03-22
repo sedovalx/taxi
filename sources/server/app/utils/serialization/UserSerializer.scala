@@ -20,7 +20,7 @@ object UserSerializer {
 
   // десериализация
   implicit val userReads = (
-      (JsPath \ "id").read[Long].orElse(Reads.pure(0)) and
+      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toLong case None => 0 } and
       (JsPath \ "login").read[String] and
       (JsPath \ "password").read[String] and
       (JsPath \ "lastName").readNullable[String] and
@@ -29,8 +29,8 @@ object UserSerializer {
       (JsPath \ "role").read[Role] and
       (JsPath \ "creationDate").read[Date].orElse(Reads.pure(new Date(new java.util.Date().getTime))) and
       (JsPath \ "editDate").readNullable[Date] and
-      (JsPath \ "creator").readNullable[Long] and
-      (JsPath \ "editor").readNullable[Long]
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) }
     )(User.apply _)
 
   // сериализация
@@ -38,13 +38,13 @@ object UserSerializer {
     def writes(user: User) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
-      "password" -> "secured",
+      "password" -> user.password,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,
       "role" -> user.role.toString,
       "creationDate" -> dateIso8601Format.format(user.creationDate),
-      "editDate" -> (if (user.editDate.isEmpty) "null" else dateIso8601Format.format(user.editDate.get)),
+      "editDate" -> (if (user.editDate.isEmpty) None else Some(dateIso8601Format.format(user.editDate.get))),
       "creator" -> user.creatorId,
       "editor" -> user.editorId
     )

@@ -9,7 +9,10 @@ export default Ember.ArrayController.extend({
 
   actions: {
     edit: function(){
-      alert(this.get("selectedRow"));
+      let row = this.get("selectedRow");
+      if (row) {
+        this.transitionToRoute("user.edit", row.id);
+      }
     },
     create: function(){
       this.transitionToRoute("users.new");

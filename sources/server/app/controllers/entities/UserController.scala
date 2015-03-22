@@ -47,15 +47,13 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
     )
   }
 
-  def update(id: Long) = StackAction(BodyParsers.parse.json) { request =>
+  def update(id: Long) = StackAction(BodyParsers.parse.json, AuthorityKey -> Set()) { request =>
     val json = request.body \ "user"
     json.validate[User].fold(
       errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
       user => {
-        if (id != user.id)
-          throw new Exception("Переданные данные не соответствуют маршруту.")
         // todo: перенести установку времени редактирования в единую точку
-        val toSave = user.copy(editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(loggedIn(request).id))
+        val toSave = user.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(loggedIn(request).id))
         withDbAction { session => UsersRepo.update(toSave)(session) }
         val userJson = makeJson("user", toSave)
         Ok(userJson)
