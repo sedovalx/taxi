@@ -13,10 +13,7 @@ export default Ember.ObjectController.extend({
     save: function(){
       let that = this;
 	  let model = this.get("model");
-	  model.setProperties({
-		  id: 0,
-		  role: this.get("selectedRole").id
-	  });
+	  model.set("role", this.get("selectedRole").id);
       model
         .save()
         .then(() => that.transitionToRoute("users"))
