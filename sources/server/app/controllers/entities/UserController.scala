@@ -61,5 +61,13 @@ object UserController extends BaseController  with AuthElement with AuthConfigIm
     )
   }
 
+  def delete(id: Long) = StackAction(AuthorityKey -> Set()) { request =>
+    val wasDeleted = withDb { session => UsersRepo.delete(id)(session) }
+    if (wasDeleted)
+      Ok(Json.parse("{}"))
+    else
+      NotFound(Json.obj("status" -> s"Пользователь с id=$id не найден"))
+  }
+
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))
 }

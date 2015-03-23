@@ -18,7 +18,11 @@ export default Ember.ArrayController.extend({
       this.transitionToRoute("users.new");
     },
     remove: function(){
-
+	  let row = this.get("selectedRow");
+	  if (row && confirm("Вы подтверждаете удаление пользователя?")) {
+		row.deleteRecord();
+		row.save();
+	  }
     }
   },
 

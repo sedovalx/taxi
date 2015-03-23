@@ -16,9 +16,12 @@ project/target
 # Scala-IDE specific
 .scala_dependencies
 .worksheet
+.settings/
+.classpath
+.project
 
 # Idea specific
-.idea/workspace.xml
+.idea/
 **/*.sc
 
 # Play! specific
