@@ -18,7 +18,7 @@ project/target
 .worksheet
 
 # Idea specific
-.idea/workspace.xml
+.idea/
 **/*.sc
 
 # Play! specific

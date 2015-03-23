@@ -3,42 +3,42 @@
 # ~~~~
 
 # Home page
-GET         /                           controllers.IndexController.index(path = "")
+GET           /                           controllers.IndexController.index(path = "")
 
 # Authentication
-GET         /auth/login                 controllers.auth.LoginController.login
-POST        /auth/authenticate          controllers.auth.LoginController.authenticate
-GET         /auth/logout                controllers.auth.LoginController.logout
-GET         /auth/current               controllers.auth.LoginController.currentUser
+GET           /auth/login                 controllers.auth.LoginController.login
+POST          /auth/authenticate          controllers.auth.LoginController.authenticate
+GET           /auth/logout                controllers.auth.LoginController.logout
+GET           /auth/current               controllers.auth.LoginController.currentUser
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
-GET         /assets/*file               controllers.Assets.at(path="/public/assets", file)
-GET         /fonts/*file                controllers.Assets.at(path="/public/fonts", file)
+GET           /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
+GET           /assets/*file               controllers.Assets.at(path="/public/assets", file)
+GET           /fonts/*file                controllers.Assets.at(path="/public/fonts", file)
 
 ############################### Storage ###########################################
-GET         /api/db/sql/drop            controllers.util.StorageController.dropSql
-GET         /api/db/drop                controllers.util.StorageController.drop
+GET           /api/db/sql/drop            controllers.util.StorageController.dropSql
+GET           /api/db/drop                controllers.util.StorageController.drop
 
-GET         /api/db/sql/create          controllers.util.StorageController.createSql
-GET         /api/db/create              controllers.util.StorageController.create
+GET           /api/db/sql/create          controllers.util.StorageController.createSql
+GET           /api/db/create              controllers.util.StorageController.create
 
-GET         /api/db/sql/recreate        controllers.util.StorageController.recreateSql
-GET         /api/db/recreate            controllers.util.StorageController.recreate
+GET           /api/db/sql/recreate        controllers.util.StorageController.recreateSql
+GET           /api/db/recreate            controllers.util.StorageController.recreate
 
-GET         /api/db/init                controllers.util.StorageController.init
+GET           /api/db/init                controllers.util.StorageController.init
 
 ############################# Entity routes #######################################
 # User routes
-GET         /api/users                  controllers.entities.UserController.read
-GET         /api/users/:id              controllers.entities.UserController.getById(id: Long)
-POST        /api/users                  controllers.entities.UserController.create
-PUT         /api/users/:id              controllers.entities.UserController.update(id: Long)
-
+GET           /api/users                  controllers.entities.UserController.read
+GET           /api/users/:id              controllers.entities.UserController.getById(id: Long)
+POST          /api/users                  controllers.entities.UserController.create
+PUT           /api/users/:id              controllers.entities.UserController.update(id: Long)
+DELETE        /api/users/:id              controllers.entities.UserController.delete(id: Long)
 
 
 # Every other page (should be the last route)
-GET         /*path                      controllers.IndexController.index(path)
+GET           /*path                      controllers.IndexController.index(path)
 
 
 
