@@ -4,7 +4,7 @@
 import DS from "ember-data";
 
 let attr = DS.attr;
-var driversmodel = DS.Model.extend({
+var DriversModel = DS.Model.extend({
   lastName: attr("string"),
   firstName: attr("string"),
   middleName: attr("string"),
@@ -13,7 +13,7 @@ var driversmodel = DS.Model.extend({
     return fio;
   }.property('lastName','firstName', 'middleName'),
   passport: attr("number"),
-  drivingLicense: attr("number"),
+  drivingLicense: attr("Number"),
   mainTel: attr("number"),
   addTel: attr("number"),
   notes: attr("string"),
@@ -23,7 +23,8 @@ var driversmodel = DS.Model.extend({
   editor: DS.belongsTo("user", {inverse: null, async: true})
 });
 
-driversmodel.FIXTURES = [
+DriversModel.reopenClass({
+  FIXTURES: [
   {
     id: 1,
     lastName: 'Попов',
@@ -34,7 +35,18 @@ driversmodel.FIXTURES = [
     mainTel: 1234345,
     addTel: 45647,
     notes: 'test notes'
+  },
+  {
+    id: 2,
+    lastName: 'Попов',
+    firstName: 'Иван',
+    middleName: 'Петрович',
+    passport: 453463,
+    drivingLicense: '4567567845',
+    mainTel: 1234345,
+    addTel: 45647,
+    notes: 'test notes'
   }
-];
+]});
 
-export default driversmodel;
+export default DriversModel;

@@ -12,9 +12,6 @@ Router.map(function() {
   this.resource("user", { path: "/users/:user_id" }, function() {
     this.route("edit");
   });
-  this.resource("cars", function() {
-    this.route("new");
-  });
   this.resource("drivers", function() {
     this.route("new");
   });
@@ -22,4 +19,3 @@ Router.map(function() {
 
 
 export default Router;
-

@@ -19,7 +19,7 @@ export default Ember.ArrayController.extend({
     },
     remove: function(){
 	  let row = this.get("selectedRow");
-	  if (row && confirm("Вы подтверждаете удаление пользователя?")) {
+	  if (row && confirm("Вы подтверждаете удаление водителя?")) {
 		row.deleteRecord();
 		row.save();
 	  }
@@ -64,31 +64,31 @@ export default Ember.ArrayController.extend({
       headerCellName: "Примечания",
       contentPath: "notes"
     });
-    let lastNameColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Фамилия",
-      contentPath: "lastName"
-    });
-    let firstNameColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Имя",
-      contentPath: "firstName"
-    });
-    let middleNameColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Отчество",
-      contentPath: "middleName"
-    });
+    //let lastNameColumn = Ember.Table.ColumnDefinition.create({
+    //  savedWidth: 200,
+    //  canAutoResize: true,
+    //  headerCellName: "Фамилия",
+    //  contentPath: "lastName"
+    //});
+    //let firstNameColumn = Ember.Table.ColumnDefinition.create({
+    //  savedWidth: 200,
+    //  canAutoResize: true,
+    //  headerCellName: "Имя",
+    //  contentPath: "firstName"
+    //});
+    //let middleNameColumn = Ember.Table.ColumnDefinition.create({
+    //  savedWidth: 200,
+    //  canAutoResize: true,
+    //  headerCellName: "Отчество",
+    //  contentPath: "middleName"
+    //});
     let fioColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "ФИО",
       contentPath: "fio"
     });
-    return [lastNameColumn, firstNameColumn, middleNameColumn, fioColumn, passportColumn, drivingLicenseColumn, mainPhoneColumn, addPhoneColumn, addressColumn, notesColumn];
+    return [fioColumn, passportColumn, drivingLicenseColumn, mainPhoneColumn, addPhoneColumn, addressColumn, notesColumn];
   }.property(),
   drivers: function(){
     return this;
