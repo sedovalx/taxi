@@ -35,6 +35,12 @@ GET           /api/users/:id              controllers.entities.UserController.ge
 POST          /api/users                  controllers.entities.UserController.create
 PUT           /api/users/:id              controllers.entities.UserController.update(id: Long)
 DELETE        /api/users/:id              controllers.entities.UserController.delete(id: Long)
+# Drivers routes
+GET           /api/drivers                  controllers.entities.UserController.read
+GET           /api/drivers/:id              controllers.entities.UserController.getById(id: Long)
+POST          /api/drivers                  controllers.entities.UserController.create
+PUT           /api/drivers/:id              controllers.entities.UserController.update(id: Long)
+DELETE        /api/drivers/:id              controllers.entities.UserController.delete(id: Long)
 
 
 # Every other page (should be the last route)

@@ -21,3 +21,4 @@ class Users(tag: Tag) extends TableBase[User](tag, "user") {
 
   def uniqueLogin = index("idx_login_uq", login, unique = true)
 }
+
