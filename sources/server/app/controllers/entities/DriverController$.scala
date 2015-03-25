@@ -14,7 +14,7 @@ import models.entities.Driver
 /**
  * Контроллер операций над пользователями
  */
-object DriverController$ extends BaseController  with AuthElement with AuthConfigImpl {
+object DriverController extends BaseController  with AuthElement with AuthConfigImpl {
 
   /**
    * Возвращает список пользователей в json-формате
