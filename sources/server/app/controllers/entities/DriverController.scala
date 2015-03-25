@@ -6,13 +6,14 @@ import controllers.BaseController
 import models.repos.DriversRepo
 import play.api.libs.json._
 import play.api.mvc.{Action, BodyParsers}
+import scaldi.{Injectable, Injector}
 import utils.serialization.DriverSerializer._
 import models.entities.Driver
 
 /**
  * Контроллер операций над пользователями
  */
-object DriverController extends BaseController {
+class DriverController(implicit lnj: Injector) extends BaseController  with Injectable {
 
   /**
    * Возвращает список пользователей в json-формате

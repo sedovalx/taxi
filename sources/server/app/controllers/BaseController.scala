@@ -4,6 +4,7 @@ import play.api.db.DB
 import play.api.mvc.Controller
 import play.api.Play.current
 import play.api.db.slick.Config.driver.simple._
+import scaldi.Injectable
 
 trait DbAccessor {
   /**
@@ -32,6 +33,6 @@ trait DbAccessor {
 /**
  * Базовый класс всех контроллеров приложения
  */
-class BaseController extends Controller with DbAccessor{
+abstract class BaseController extends Controller with DbAccessor{
 
 }

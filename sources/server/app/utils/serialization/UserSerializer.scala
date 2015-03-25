@@ -38,7 +38,7 @@ object UserSerializer {
     def writes(user: User) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
-      "password" -> user.password,
+      "password" -> user.passwordHash,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,

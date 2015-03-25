@@ -11,13 +11,13 @@ import models.mappings.RoleColumn._
  */
 class Users(tag: Tag) extends TableBase[User](tag, "user") {
   def login         = column[String]("login")
-  def password      = column[String]("password")
+  def passwordHash  = column[String]("password_hash")
   def lastName      = column[Option[String]]("last_name")
   def firstName     = column[Option[String]]("first_name")
   def middleName    = column[Option[String]]("middle_name")
   def role          = column[Role]("role")
 
-  def * = (id, login, password, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> (User.tupled, User.unapply)
+  def * = (id, login, passwordHash, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> (User.tupled, User.unapply)
 
   def uniqueLogin = index("idx_login_uq", login, unique = true)
 }

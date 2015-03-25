@@ -1,16 +1,16 @@
 package controllers.util
 
 import controllers.BaseController
-import models.entities.Role
 import models.repos.UsersRepo
 import play.api.mvc.Action
 
 import play.api.db.slick.Config.driver.simple._
+import scaldi.{Injectable, Injector}
 
 /**
  * Контроллер операций над БД
  */
-object StorageController extends BaseController {
+class StorageController(implicit inj: Injector) extends BaseController with Injectable  {
   private val statementSeparator = ";\n"
 
   /**

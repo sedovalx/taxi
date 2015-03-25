@@ -3,16 +3,17 @@ package controllers.entities
 import java.sql.Date
 
 import controllers.BaseController
-import models.entities.{User, Role}
+import models.entities.User
 import models.repos.UsersRepo
 import play.api.libs.json._
 import play.api.mvc.{Action, BodyParsers}
+import scaldi.{Injectable, Injector}
 import utils.serialization.UserSerializer._
 
 /**
  * Контроллер операций над пользователями
  */
-object UserController extends BaseController {
+class UserController(implicit lnj: Injector) extends BaseController  with Injectable {
 
   /**
    * Возвращает список пользователей в json-формате

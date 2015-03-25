@@ -2,13 +2,14 @@ package models.entities
 
 import java.sql.Date
 
+import com.mohiva.play.silhouette.api.Identity
 import models.entities.Role._
 
 /**
  * Доменный класс пользователя системы
  * @param id идентификатор
  * @param login логин пользователя в системе
- * @param password хеш пароля пользователя
+ * @param passwordHash хеш пароля пользователя
  * @param lastName фамилия
  * @param firstName имя
  * @param middleName отчество
@@ -17,7 +18,7 @@ import models.entities.Role._
 case class User(
  id: Long,
  login: String,
- password: String,
+ passwordHash: String,
  lastName: Option[String],
  firstName: Option[String],
  middleName: Option[String],
@@ -26,4 +27,4 @@ case class User(
  editDate: Option[Date],
  creatorId: Option[Long],
  editorId: Option[Long]
-) extends Entity
+) extends Entity with Identity

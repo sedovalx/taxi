@@ -3,6 +3,9 @@ import play.api.mvc._
 import java.io.File
 import play.api._
 import java.net.InetAddress;
+import scaldi.Injector
+import scaldi.play.{ControllerInjector, ScaldiSupport}
+
 import scala.concurrent.Future
 import com.typesafe.config.ConfigFactory
 import play.filters.gzip.GzipFilter
@@ -14,11 +17,13 @@ object RoutesLoggingFilter extends Filter {
   }
 }
 
-object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with GlobalSettings {
+object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with GlobalSettings with ScaldiSupport {
   override def onLoadConfig(config: Configuration, path: File, classloader: ClassLoader, mode: Mode.Mode): Configuration = {
     val host = InetAddress.getLocalHost
     val hostName = host.getHostName
     val machineSpecificConfig = config ++ Configuration(ConfigFactory.load(s"application.$hostName.override.conf"))
     super.onLoadConfig(machineSpecificConfig, path, classloader, mode)
   }
+
+  override def applicationModule: Injector = new ControllerInjector
 }

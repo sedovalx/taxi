@@ -33,7 +33,7 @@ object UsersRepo extends GenericCRUD[Users, User]{
 
   //todo: убрать отсюда - клиентский код должен вызывать метод read с параметрами фильтрации
   def authenticate(login: String, password: String)(implicit session: Session): Option[User] = {
-    tableQuery.filter(u => u.login === login && u.password === password).run.headOption
+    tableQuery.filter(u => u.login === login && u.passwordHash === password).run.headOption
   }
 }
 
