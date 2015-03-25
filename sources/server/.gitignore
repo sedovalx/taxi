@@ -27,3 +27,4 @@ project/target
 # Play! specific
 public
 conf/*.override.conf
+/bin/

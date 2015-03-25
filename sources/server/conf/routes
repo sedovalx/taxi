@@ -5,12 +5,6 @@
 # Home page
 GET           /                           controllers.IndexController.index(path = "")
 
-# Authentication
-GET           /auth/login                 controllers.auth.LoginController.login
-POST          /auth/authenticate          controllers.auth.LoginController.authenticate
-GET           /auth/logout                controllers.auth.LoginController.logout
-GET           /auth/current               controllers.auth.LoginController.currentUser
-
 # Map static resources from the /public folder to the /assets URL path
 GET           /favicon.ico                controllers.Assets.at(path="/public", file = "favicon.ico")
 GET           /assets/*file               controllers.Assets.at(path="/public/assets", file)

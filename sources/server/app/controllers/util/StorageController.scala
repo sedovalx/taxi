@@ -1,8 +1,6 @@
 package controllers.util
 
 import controllers.BaseController
-import controllers.auth.AuthConfigImpl
-import jp.t2v.lab.play2.auth.AuthElement
 import models.entities.Role
 import models.repos.UsersRepo
 import play.api.mvc.Action
@@ -12,7 +10,7 @@ import play.api.db.slick.Config.driver.simple._
 /**
  * Контроллер операций над БД
  */
-object StorageController extends BaseController with AuthElement with AuthConfigImpl {
+object StorageController extends BaseController {
   private val statementSeparator = ";\n"
 
   /**
@@ -26,7 +24,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
    * Выполняет удаление схемы в БД вместе с данными
    * @return статус операции
    */
-  def drop() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def drop() = Action { implicit request =>
     withDbAction(doDrop)
     Ok("all ddl gone")
   }
@@ -42,7 +40,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
    * Выполняет создание схемы в БД
    * @return статус операции
    */
-  def create() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def create() = Action { implicit request =>
     withDbAction(doCreate)
     Ok("ddl created")
   }
@@ -51,7 +49,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
    * Выполняет наполнение БД первичными данными
    * @return статус операции
    */
-  def init() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def init() = Action { implicit request =>
     withDb(doInit)
     Ok("init completed")
   }
@@ -67,7 +65,7 @@ object StorageController extends BaseController with AuthElement with AuthConfig
    * Выполняет пересоздание БД с наполнением первичными данными
    * @return статус операции
    */
-  def recreate() = StackAction(AuthorityKey -> Set(Role.Administrator)) { implicit request =>
+  def recreate() = Action { implicit request =>
     withDbAction { session =>
       doDrop(session)
       doCreate(session)
