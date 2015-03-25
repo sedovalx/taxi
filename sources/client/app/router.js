@@ -15,6 +15,9 @@ Router.map(function() {
   this.resource("cars", function() {
     this.route("new");
   });
+  this.resource("drivers", function() {
+    this.route("new");
+  });
 });
 
 
