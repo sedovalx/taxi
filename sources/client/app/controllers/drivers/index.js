@@ -58,6 +58,12 @@ export default Ember.ArrayController.extend({
       headerCellName: "Дополнительный телефон",
       contentPath: "addPhone"
     });
+    let notesColumn = Ember.Table.ColumnDefinition.create({
+      savedWidth: 200,
+      canAutoResize: true,
+      headerCellName: "Примечания",
+      contentPath: "notes"
+    });
     let lastNameColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
@@ -76,7 +82,13 @@ export default Ember.ArrayController.extend({
       headerCellName: "Отчество",
       contentPath: "middleName"
     });
-    return [lastNameColumn, firstNameColumn, middleNameColumn, passportColumn, drivingLicenseColumn, addressColumn];
+    let fioColumn = Ember.Table.ColumnDefinition.create({
+      savedWidth: 200,
+      canAutoResize: true,
+      headerCellName: "ФИО",
+      contentPath: "fio"
+    });
+    return [lastNameColumn, firstNameColumn, middleNameColumn, fioColumn, passportColumn, drivingLicenseColumn, mainPhoneColumn, addPhoneColumn, addressColumn, notesColumn];
   }.property(),
   drivers: function(){
     return this;
