@@ -17,14 +17,12 @@
 * [Scala Tutorial](http://docs.scala-lang.org/tutorials/)
 * [Play!](https://playframework.com/documentation/2.3.x/Home)
 * [Slick](http://slick.typesafe.com/doc/2.1.0/)
-* [Принцип MVC со стороны сервера](https://www.playframework.com/documentation/1.0/main)
 * [Ember.js](http://emberjs.com/guides/)
 * [Ember-cli](http://www.ember-cli.com/#overview)
 * [Handlebars](http://handlebarsjs.com/)
 * [Bower](http://bower.io/)
 * [Twitter bootstrap](http://getbootstrap.com/css/)
 * [JavaScript](http://www.codecademy.com/en/tracks/javascript)
-* [CoffeeScript](http://coffeescript.org/)
 * [HTML & CSS](http://www.codecademy.com/en/tracks/web)
 
 ## Работа с Git из IntelliJ IDEA
