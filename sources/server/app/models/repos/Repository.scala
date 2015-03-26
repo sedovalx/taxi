@@ -7,7 +7,7 @@ import play.api.db.slick.Config.driver.simple._
  * Базовый класс для всех репозиториев доменных данных
  * @tparam T доменный тип
  */
-abstract class Repository[T <: Entity] {
+trait Repository[T <: Entity] {
   /**
    * Создать новый объект
    * @param entity данные создаваемого объекта

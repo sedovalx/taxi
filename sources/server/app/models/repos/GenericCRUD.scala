@@ -9,7 +9,7 @@ import models.utils.GenericTable
 import play.api.db.slick.Config.driver.simple._
 
 
-abstract class GenericCRUD[T <: GenericTable[A], A <: Entity] extends Repository[A]{
+trait GenericCRUD[T <: GenericTable[A], A <: Entity] extends Repository[A]{
 
   val tableQuery: TableQuery[T]
 
@@ -41,6 +41,4 @@ abstract class GenericCRUD[T <: GenericTable[A], A <: Entity] extends Repository
    def read(implicit session: Session): List[A] = {
     tableQuery.list
   }
-
-
 }

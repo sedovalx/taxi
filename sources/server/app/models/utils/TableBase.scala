@@ -1,7 +1,6 @@
 package models.utils
 
 import java.sql.Date
-
 import models.repos.UsersRepo
 import play.api.db.slick.Config.driver.simple._
 

@@ -47,6 +47,8 @@ class UserController(implicit lnj: Injector) extends BaseController  with Inject
     )
   }
 
+  val j = Json.obj("status" -> "Validation errors")
+
   def update(id: Long) = Action(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
     json.validate[User].fold(
@@ -63,10 +65,8 @@ class UserController(implicit lnj: Injector) extends BaseController  with Inject
 
   def delete(id: Long) = Action { request =>
     val wasDeleted = withDb { session => UsersRepo.delete(id)(session) }
-    if (wasDeleted)
-      Ok(Json.parse("{}"))
-    else
-      NotFound(Json.obj("status" -> s"Пользователь с id=$id не найден"))
+    if (wasDeleted) Ok(Json.parse("{}"))
+    else NotFound(Json.obj("status" -> s"Пользователь с id=$id не найден"))
   }
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))

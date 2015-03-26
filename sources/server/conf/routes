@@ -10,18 +10,6 @@ GET           /favicon.ico                controllers.Assets.at(path="/public", 
 GET           /assets/*file               controllers.Assets.at(path="/public/assets", file)
 GET           /fonts/*file                controllers.Assets.at(path="/public/fonts", file)
 
-############################### Storage ###########################################
-GET           /api/db/sql/drop            @controllers.util.StorageController.dropSql
-GET           /api/db/drop                @controllers.util.StorageController.drop
-
-GET           /api/db/sql/create          @controllers.util.StorageController.createSql
-GET           /api/db/create              @controllers.util.StorageController.create
-
-GET           /api/db/sql/recreate        @controllers.util.StorageController.recreateSql
-GET           /api/db/recreate            @controllers.util.StorageController.recreate
-
-GET           /api/db/init                @controllers.util.StorageController.init
-
 ############################# Entity routes #######################################
 # User routes
 GET           /api/users                  @controllers.entities.UserController.read

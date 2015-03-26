@@ -3,12 +3,12 @@ package controllers.entities
 import java.sql.Date
 
 import controllers.BaseController
+import models.entities.Driver
 import models.repos.DriversRepo
 import play.api.libs.json._
 import play.api.mvc.{Action, BodyParsers}
 import scaldi.{Injectable, Injector}
 import utils.serialization.DriverSerializer._
-import models.entities.Driver
 
 /**
  * Контроллер операций над пользователями

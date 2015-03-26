@@ -19,12 +19,17 @@ case class User(
  id: Long,
  login: String,
  passwordHash: String,
- lastName: Option[String],
- firstName: Option[String],
- middleName: Option[String],
+ lastName: Option[String] = None,
+ firstName: Option[String] = None,
+ middleName: Option[String] = None,
  role: Role,
  creationDate: Date,
- editDate: Option[Date],
- creatorId: Option[Long],
- editorId: Option[Long]
+ editDate: Option[Date] = None,
+ creatorId: Option[Long] = None,
+ editorId: Option[Long] = None
 ) extends Entity with Identity
+
+object User {
+ def create(login: String, password: String, role: Role) =
+  new User(id = 0, login = login, passwordHash = password, role = role, creationDate = new Date((new java.util.Date).getTime))
+}
