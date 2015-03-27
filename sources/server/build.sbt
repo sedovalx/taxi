@@ -6,6 +6,8 @@ version      := "1.0"
 
 scalaVersion := "2.11.6"
 
+resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: resolvers.value
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 libraryDependencies ++= Seq(
