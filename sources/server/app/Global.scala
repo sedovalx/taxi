@@ -1,15 +1,15 @@
-import configuration.di.SilhouetteModule
-import play.api.GlobalSettings
-import play.api.mvc._
 import java.io.File
-import play.api._
 import java.net.InetAddress
+
+import com.typesafe.config.ConfigFactory
+import configuration.di._
+import play.api.{GlobalSettings, _}
+import play.api.mvc._
+import play.filters.gzip.GzipFilter
 import scaldi.Injector
-import scaldi.play.{ControllerInjector, ScaldiSupport}
+import scaldi.play.ScaldiSupport
 
 import scala.concurrent.Future
-import com.typesafe.config.ConfigFactory
-import play.filters.gzip.GzipFilter
 
 object RoutesLoggingFilter extends Filter {
   override def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
@@ -26,5 +26,5 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
     super.onLoadConfig(machineSpecificConfig, path, classLoader, mode)
   }
 
-  override def applicationModule: Injector = new ControllerInjector ++ new SilhouetteModule
+  override def applicationModule: Injector = new SilhouetteModule ++ new PlayModule
 }

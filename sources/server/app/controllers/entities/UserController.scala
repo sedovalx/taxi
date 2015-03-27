@@ -2,36 +2,35 @@ package controllers.entities
 
 import java.sql.Date
 
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import models.entities.User
 import models.repos.UsersRepo
 import play.api.libs.json._
-import play.api.mvc.{Action, BodyParsers}
-import scaldi.{Injectable, Injector}
+import play.api.mvc._
 import utils.serialization.UserSerializer._
 
 /**
  * Контроллер операций над пользователями
  */
-class UserController(implicit lnj: Injector) extends BaseController  with Injectable {
+class UserController(implicit val env: Environment[User, JWTAuthenticator]) extends BaseController with Silhouette[User, JWTAuthenticator] {
 
   /**
    * Возвращает список пользователей в json-формате
    * @return
    */
-  def read = Action { implicit request =>
+  def read = SecuredAction { implicit request =>
     val users = withDb { session => UsersRepo.read(session) }
-    val usersJson = makeJson("users", users)
-    Ok(usersJson)
+    Ok(makeJson("users", users))
   }
 
-  def getById(id: Long) = Action { implicit request =>
+  def getById(id: Long) = SecuredAction { implicit request =>
     val user = withDb { session => UsersRepo.findById(id)(session) }
-    val userJson = makeJson("user", user)
-    Ok(userJson)
+    Ok(makeJson("user", user))
   }
 
-  def create = Action(BodyParsers.parse.json) { request =>
+  def create = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
     json.validate[User].fold(
       errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
@@ -47,9 +46,7 @@ class UserController(implicit lnj: Injector) extends BaseController  with Inject
     )
   }
 
-  val j = Json.obj("status" -> "Validation errors")
-
-  def update(id: Long) = Action(BodyParsers.parse.json) { request =>
+  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
     json.validate[User].fold(
       errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
@@ -63,7 +60,7 @@ class UserController(implicit lnj: Injector) extends BaseController  with Inject
     )
   }
 
-  def delete(id: Long) = Action { request =>
+  def delete(id: Long) = SecuredAction { request =>
     val wasDeleted = withDb { session => UsersRepo.delete(id)(session) }
     if (wasDeleted) Ok(Json.parse("{}"))
     else NotFound(Json.obj("status" -> s"Пользователь с id=$id не найден"))
