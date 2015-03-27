@@ -7,6 +7,7 @@ import models.repos.UsersRepo
 import play.api.libs.json._
 import utils.db.DbAccessor
 import play.api.Logger
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -35,10 +36,10 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
     val password = user.passwordHash
 
     // пробуем десериализовать пароль
-    Json.fromJson(Json.parse(password)) match {
-      case JsSuccess(pi) => Some(pi)
-      case JsError(e) =>
-        Logger.error(s"Ошибка при десериализации хеша пароля: ${e.toString()}")
+    Json.parse(password).validate[PasswordInfo] match {
+      case s: JsSuccess[PasswordInfo] => Some(s.get)
+      case e: JsError =>
+        Logger.error(s"Ошибка при десериализации хеша пароля: ${e.toString}")
         None
     }
   }
