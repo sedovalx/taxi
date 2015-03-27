@@ -1,4 +1,4 @@
-package models.utils
+package models.base
 
 import play.api.db.slick.Config.driver.simple._
 

@@ -1,32 +1,29 @@
 package configuration.di
 
-import com.mohiva.play.silhouette.api.{EventBus, Environment, Provider}
-import com.mohiva.play.silhouette.api.services.{AuthenticatorService, IdentityService}
-import com.mohiva.play.silhouette.api.util.{PasswordInfo, Clock, IDGenerator, PasswordHasher}
-import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticatorService, JWTAuthenticator, JWTAuthenticatorSettings}
-import com.mohiva.play.silhouette.impl.daos.{DelegableAuthInfoDAO, AuthenticatorDAO}
+import com.mohiva.play.silhouette.api.EventBus
+import com.mohiva.play.silhouette.api.util.{Clock, PasswordHasher}
+import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticatorService, JWTAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
-import com.mohiva.play.silhouette.impl.util.{SecureRandomIDGenerator, BCryptPasswordHasher}
-import models.entities.User
+import com.mohiva.play.silhouette.impl.util.{BCryptPasswordHasher, SecureRandomIDGenerator}
 import scaldi.Module
-import utils.auth.{PasswordInfoDAO, LoginInfoDAO}
+import utils.auth.{Environment, LoginInfoDAO, PasswordInfoDAO}
 
 
 
 /**
  * DI контейнер для auth
- * @see http://scaldi.org/learn/#overview
- *      http://silhouette.mohiva.com/v2.0/docs/introduction
+ * @see DI вообще: http://habrahabr.ru/post/131993/
+ *      DI в частности: http://scaldi.org/learn/#overview
+ *      Аутентификация: http://silhouette.mohiva.com/v2.0/docs/introduction
  */
 class SilhouetteModule extends Module {
   // хешер
-  bind [PasswordHasher] to new BCryptPasswordHasher
-
-  binding to EventBus()
+  val passwordHasher = new BCryptPasswordHasher
+  val eventBus = EventBus()
 
   // настройки аутентификации
-  binding to JWTAuthenticatorSettings(
+  val authSettings = JWTAuthenticatorSettings(
     headerName = inject [String] (identified by "silhouette.authenticator.headerName" and by default "X-Auth-Token"),
     issuerClaim = inject [String] (identified by "silhouette.authenticator.issueClaim" and by default "play-silhouette"),
     encryptSubject = inject [Boolean] (identified by "silhouette.authenticator.encryptSubject" and by default true),
@@ -36,7 +33,7 @@ class SilhouetteModule extends Module {
   )
 
   // токен
-  bind [AuthenticatorService[JWTAuthenticator]] to new JWTAuthenticatorService(
+  val authService = new JWTAuthenticatorService(
     settings = inject [JWTAuthenticatorSettings],
     dao = None,
     idGenerator = new SecureRandomIDGenerator,
@@ -44,35 +41,24 @@ class SilhouetteModule extends Module {
   )
 
   // хранение паролей
-  bind [DelegableAuthInfoDAO[PasswordInfo]] to new PasswordInfoDAO
+  val passwordInfoDAO = new PasswordInfoDAO
 
   // сервис доступа к хранению паролей
-  binding to new DelegableAuthInfoService(injectAllOfType [DelegableAuthInfoDAO[PasswordInfo]] :_*)
+  val authInfoService = new DelegableAuthInfoService(passwordInfoDAO)
 
   // провайдер... ну вы поняли
-  binding to new CredentialsProvider(inject [DelegableAuthInfoService], inject [PasswordHasher], Seq(inject [PasswordHasher]))
+  val credentialsProvider = new CredentialsProvider(authInfoService, passwordHasher, Seq(passwordHasher))
 
   // хранение логинов
-  bind [IdentityService[User]] to new LoginInfoDAO
+  val loginInfoDAO = new LoginInfoDAO
 
-  binding to createEnvironment(
-    inject [IdentityService[User]],
-    inject [AuthenticatorService[JWTAuthenticator]],
-    inject [CredentialsProvider],
-    inject [EventBus]
+  // экспорт
+  binding to Environment(
+    loginInfoDAO,
+    authService,
+    Map(credentialsProvider.id -> credentialsProvider),
+    eventBus
   )
-
-  def createEnvironment(identityService: IdentityService[User],
-                        authService: AuthenticatorService[JWTAuthenticator],
-                        credentialsProvider: CredentialsProvider,
-                        eventBus: EventBus) = {
-    Environment[User, JWTAuthenticator](
-      identityService,
-      authService,
-      Map(credentialsProvider.id -> credentialsProvider),
-      eventBus
-    )
-  }
-
-
+  bind [PasswordHasher] to passwordHasher
+  bind [DelegableAuthInfoService] to authInfoService
 }

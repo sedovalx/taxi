@@ -28,7 +28,7 @@ object DriverSerializer {
       (JsPath \ "phone").read[Long] and
       (JsPath \ "secPhone").read[Long] and
       (JsPath \ "comment").read[String] and
-      (JsPath \ "creationDate").read[Date].orElse(Reads.pure(new Date(new java.util.Date().getTime))) and
+      (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) }
@@ -46,8 +46,8 @@ object DriverSerializer {
       "phone" -> driver.phone,
       "secPhone" -> driver.secPhone,
       "comment" -> driver.comment,
-      "creationDate" -> dateIso8601Format.format(driver.creationDate),
-      "editDate" -> dateIso8601Format.format(driver.editDate.get),
+      "creationDate" -> driver.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> driver.editDate.map { d => dateIso8601Format.format(d)},
       "creator" -> driver.creatorId,
       "editor" -> driver.editorId
     )

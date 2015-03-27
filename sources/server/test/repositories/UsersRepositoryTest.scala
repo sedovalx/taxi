@@ -5,11 +5,17 @@ import models.entities.Role.Role
 import models.entities.{Role, User}
 import models.repos.UsersRepo
 import play.api.db.slick.{DB, Session}
+import utils.extensions.SqlDate
 
 
 class UsersRepositoryTest extends SpecificationWithFixtures {
 
   val users = UsersRepo
+
+  private object User {
+    def create(login: String, password: String, role: Role) =
+      new User(id = 0, login = login, password = password, role = role, creationDate = Some(SqlDate.now))
+  }
 
   private def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
     val user = User.create(login, pass, role)

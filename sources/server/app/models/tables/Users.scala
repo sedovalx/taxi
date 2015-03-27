@@ -2,7 +2,7 @@ package models.tables
 
 import models.entities.Role._
 import models.entities.{Role, User}
-import models.utils.TableBase
+import models.base.TableBase
 import play.api.db.slick.Config.driver.simple._
 import models.mappings.RoleColumn._
 

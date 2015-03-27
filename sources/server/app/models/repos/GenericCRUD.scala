@@ -5,7 +5,7 @@ package models.repos
  */
 
 import models.entities.Entity
-import models.utils.GenericTable
+import models.base.GenericTable
 import play.api.db.slick.Config.driver.simple._
 
 

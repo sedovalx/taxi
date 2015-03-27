@@ -1,7 +1,7 @@
 package models.tables
 
 import models.entities.Driver
-import models.utils.TableBase
+import models.base.TableBase
 import play.api.db.slick.Config.driver.simple._
 
 /**

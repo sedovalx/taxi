@@ -13,7 +13,7 @@ trait Entity {
   /**
    * Дата создания
    */
-  val creationDate: Date
+  val creationDate: Option[Date]
   /**
    * Дата последнего редактирования
    */

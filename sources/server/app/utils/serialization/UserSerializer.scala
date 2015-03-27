@@ -27,7 +27,7 @@ object UserSerializer {
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "role").read[Role] and
-      (JsPath \ "creationDate").read[Date].orElse(Reads.pure(new Date(new java.util.Date().getTime))) and
+      (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) }
@@ -38,13 +38,13 @@ object UserSerializer {
     def writes(user: User) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
-      "password" -> user.passwordHash,
+      "password" -> user.password,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,
       "role" -> user.role.toString,
-      "creationDate" -> dateIso8601Format.format(user.creationDate),
-      "editDate" -> (if (user.editDate.isEmpty) None else Some(dateIso8601Format.format(user.editDate.get))),
+      "creationDate" -> user.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> user.editDate.map { d => dateIso8601Format.format(d)},
       "creator" -> user.creatorId,
       "editor" -> user.editorId
     )

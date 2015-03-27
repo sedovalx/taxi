@@ -1,11 +1,11 @@
-package models.utils
+package models.base
 
 import java.sql.Date
 import models.repos.UsersRepo
 import play.api.db.slick.Config.driver.simple._
 
 abstract class TableBase[T](tag: Tag, name: String) extends GenericTable[T](tag, name) {
-  def creationDate  = column[Date]("creation_date")
+  def creationDate  = column[Option[Date]]("creation_date")
   def editDate      = column[Option[Date]]("edit_date")
   def creatorId     = column[Option[Long]]("creator_id")
   def editorId      = column[Option[Long]]("editor_id")

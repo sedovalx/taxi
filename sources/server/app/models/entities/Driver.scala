@@ -24,7 +24,7 @@ case class Driver(
  phone: Long,
  secPhone: Long,
  comment: String,
- creationDate: Date,
+ creationDate: Option[Date],
  editDate: Option[Date],
  creatorId: Option[Long],
  editorId: Option[Long]

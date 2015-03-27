@@ -1,20 +1,19 @@
 package configuration.di
 
-import com.mohiva.play.silhouette.api.Environment
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
+import com.mohiva.play.silhouette.api.util.PasswordHasher
+import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import controllers.IndexController
+import controllers.auth.AuthController
 import controllers.entities._
-import models.entities.User
 import scaldi.Module
+import utils.auth.Environment
 
 /**
  * Инициализация контроллеров
  */
 class PlayModule extends Module {
-
-  implicit val env = inject[Environment[User, JWTAuthenticator]]
-
   binding to new IndexController
-  binding to new UserController
+  binding to new UserController(inject [Environment], inject [PasswordHasher], inject [DelegableAuthInfoService])
   binding to new DriverController
+  binding to new AuthController(inject [Environment])
 }

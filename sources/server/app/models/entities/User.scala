@@ -4,12 +4,13 @@ import java.sql.Date
 
 import com.mohiva.play.silhouette.api.Identity
 import models.entities.Role._
+import utils.extensions.SqlDate
 
 /**
  * Доменный класс пользователя системы
  * @param id идентификатор
  * @param login логин пользователя в системе
- * @param passwordHash хеш пароля пользователя
+ * @param password хеш пароля пользователя
  * @param lastName фамилия
  * @param firstName имя
  * @param middleName отчество
@@ -18,18 +19,14 @@ import models.entities.Role._
 case class User(
  id: Long,
  login: String,
- passwordHash: String,
+ password: String,
  lastName: Option[String] = None,
  firstName: Option[String] = None,
  middleName: Option[String] = None,
  role: Role,
- creationDate: Date,
+ creationDate: Option[Date] = None,
  editDate: Option[Date] = None,
  creatorId: Option[Long] = None,
  editorId: Option[Long] = None
 ) extends Entity with Identity
 
-object User {
- def create(login: String, password: String, role: Role) =
-  new User(id = 0, login = login, passwordHash = password, role = role, creationDate = new Date((new java.util.Date).getTime))
-}
