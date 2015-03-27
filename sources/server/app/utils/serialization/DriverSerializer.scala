@@ -45,6 +45,7 @@ object DriverSerializer {
       "middleName" -> driver.middleName,
       "phone" -> driver.phone,
       "secPhone" -> driver.secPhone,
+      "address" -> driver.address,
       "comment" -> driver.comment,
       "creationDate" -> dateIso8601Format.format(driver.creationDate),
       "editDate" -> dateIso8601Format.format(driver.editDate.get),

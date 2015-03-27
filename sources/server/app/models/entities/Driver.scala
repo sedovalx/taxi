@@ -12,6 +12,7 @@ import java.sql.Date
  * @param middleName отчество
  * @param phone телефон
  * @param secPhone дополнительный телефон
+ * @param address адресс
 
  */
 case class Driver(
@@ -24,6 +25,7 @@ case class Driver(
  phone: Long,
  secPhone: Long,
  comment: String,
+ address: String,
  creationDate: Date,
  editDate: Option[Date],
  creatorId: Option[Long],
