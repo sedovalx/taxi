@@ -15,11 +15,11 @@ class Drivers(tag: Tag) extends TableBase[Driver](tag, "driver") {
   def middleName        = column[Option[String]]("middle_name")
   def phone             = column[Long]("phone")
   def secPhone          = column[Long]("secPhone")
-  def address           = column[Long]("address")
   def comment           = column[String]("comment")
+  def address           = column[String]("address")
 
 
-  def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, address, comment, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
+  def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
 
   def uniqueLicense = index("idx_license_uq", license, unique = true)
   def uniquePass = index("idx_pass_uq", pass, unique = true)
