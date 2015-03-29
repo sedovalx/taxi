@@ -4,7 +4,7 @@ import java.sql.Date
 
 import controllers.BaseController
 import models.entities.Driver
-import models.repos.DriversRepo
+import utils.db.repos.DriversRepo
 import play.api.libs.json._
 import play.api.mvc.{Action, BodyParsers}
 import utils.serialization.DriverSerializer._

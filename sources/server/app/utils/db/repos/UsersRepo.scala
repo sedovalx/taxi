@@ -1,4 +1,4 @@
-package models.repos
+package utils.db.repos
 
 import models.entities.User
 import models.tables.Users
@@ -14,6 +14,10 @@ object UsersRepo extends GenericCRUD[Users, User] {
 
   def findByLogin(login: String)(implicit session: Session): Option[User] = {
     tableQuery.filter(_.login === login).run.headOption
+  }
+
+  def isEmpty(implicit session: Session): Boolean = {
+    tableQuery.length.run > 0
   }
 }
 

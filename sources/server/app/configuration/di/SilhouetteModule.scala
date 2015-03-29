@@ -1,11 +1,15 @@
 package configuration.di
 
 import com.mohiva.play.silhouette.api.EventBus
+import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.{Clock, PasswordHasher}
 import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticatorService, JWTAuthenticatorSettings}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import com.mohiva.play.silhouette.impl.util.{BCryptPasswordHasher, SecureRandomIDGenerator}
+import models.entities.User
+import play.api.Play
+import play.api.Play.current
 import scaldi.Module
 import utils.auth.{Environment, LoginInfoDAO, PasswordInfoDAO}
 
@@ -24,17 +28,17 @@ class SilhouetteModule extends Module {
 
   // настройки аутентификации
   val authSettings = JWTAuthenticatorSettings(
-    headerName = inject [String] (identified by "silhouette.authenticator.headerName" and by default "X-Auth-Token"),
-    issuerClaim = inject [String] (identified by "silhouette.authenticator.issueClaim" and by default "play-silhouette"),
-    encryptSubject = inject [Boolean] (identified by "silhouette.authenticator.encryptSubject" and by default true),
-    authenticatorIdleTimeout = Some(inject [Int] (identified by "silhouette.authenticator.authenticatorIdleTimeout" and by default 1800)),
-    authenticatorExpiry = inject [Int] (identified by "silhouette.authenticator.authenticatorExpiry" and by default 12 * 60 * 60),
-    sharedSecret = inject [String] (identified by "application.secret")
+    headerName = Play.configuration.getString("silhouette.authenticator.headerName").getOrElse { "X-Auth-Token" },
+    issuerClaim = Play.configuration.getString("silhouette.authenticator.issueClaim").getOrElse { "play-silhouette" },
+    encryptSubject = Play.configuration.getBoolean("silhouette.authenticator.encryptSubject").getOrElse { true },
+    authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout"),
+    authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").getOrElse { 12 * 60 * 60 },
+    sharedSecret = Play.configuration.getString("application.secret").get
   )
 
   // токен
   val authService = new JWTAuthenticatorService(
-    settings = inject [JWTAuthenticatorSettings],
+    settings = authSettings,
     dao = None,
     idGenerator = new SecureRandomIDGenerator,
     clock = Clock()
@@ -61,4 +65,5 @@ class SilhouetteModule extends Module {
   )
   bind [PasswordHasher] to passwordHasher
   bind [DelegableAuthInfoService] to authInfoService
+  bind [IdentityService[User]] to loginInfoDAO
 }

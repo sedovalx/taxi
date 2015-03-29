@@ -3,17 +3,14 @@ package controllers.entities
 import java.sql.Date
 
 import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.util.PasswordHasher
-import com.mohiva.play.silhouette.api.{LoginInfo, Silhouette}
+import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
-import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
-import controllers.{BaseController, UserAlreadyExistsException}
+import controllers.BaseController
 import models.entities.User
-import models.repos.UsersRepo
 import play.api.libs.json._
 import play.api.mvc._
-import utils.auth.Environment
+import utils.auth.{Environment, UserService}
+import utils.db.repos.UsersRepo
 import utils.extensions.SqlDate
 import utils.serialization.UserSerializer._
 
@@ -23,10 +20,8 @@ import scala.concurrent._
 /**
  * Контроллер операций над пользователями
  */
-class UserController(
-                      val env: Environment,
-                      passwordHasher: PasswordHasher,
-                      authInfoService: DelegableAuthInfoService)
+class UserController(val env: Environment,
+                      userService: UserService)
   extends BaseController with Silhouette[User, JWTAuthenticator] {
 
   /**
@@ -50,7 +45,7 @@ class UserController(
       user => {
         //todo: перенести установку создателя в единую точку
         val toSave: User = user.copy(creatorId = Some(request.identity.id), creationDate = Some(SqlDate.now))
-        createUser(toSave, env) map { createdUser =>
+        userService.createUser(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
@@ -80,29 +75,6 @@ class UserController(
   }
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
-
-  private def createUser(user: User, env: Environment): Future[User] = {
-    // тут мы должны сделать хеш пароля и сохранить его
-    val loginInfo = LoginInfo(CredentialsProvider.ID, user.login)
-    env.identityService.retrieve(loginInfo) flatMap {
-      case None =>
-        // пользователя с таким логином в БД нет
-        // хешируем пароль
-        val authInfo = passwordHasher.hash(user.password)
-        Future {
-          // сохраняем пользователя
-          val id = withDb { session => UsersRepo.create(user.copy(password = ""))(session) }
-          user.copy(id = id)
-        } map { u =>
-          // сохраняем хешированный пароль
-          authInfoService.save(loginInfo, authInfo)
-          u
-        }
-      case Some(u) =>
-        // пользователь уже существует
-        throw new UserAlreadyExistsException(user.login)
-    }
-  }
 }
 
 

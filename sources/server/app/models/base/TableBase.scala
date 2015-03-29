@@ -1,7 +1,7 @@
 package models.base
 
 import java.sql.Date
-import models.repos.UsersRepo
+import utils.db.repos.UsersRepo
 import play.api.db.slick.Config.driver.simple._
 
 abstract class TableBase[T](tag: Tag, name: String) extends GenericTable[T](tag, name) {

@@ -3,7 +3,7 @@ package utils.auth
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.services.IdentityService
 import models.entities.User
-import models.repos.UsersRepo
+import utils.db.repos.UsersRepo
 import utils.db.DbAccessor
 import scala.concurrent.ExecutionContext.Implicits.global
 

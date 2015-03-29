@@ -1,13 +1,21 @@
 import java.io.File
 import java.net.InetAddress
 
+import _root_.util.responses.Response
+import com.mohiva.play.silhouette.api.SecuredSettings
 import com.typesafe.config.ConfigFactory
 import configuration.di._
+import models.entities.{Role, User}
+import play.api.i18n.Lang
+import play.api.libs.json.Json
 import play.api.{GlobalSettings, _}
 import play.api.mvc._
 import play.filters.gzip.GzipFilter
-import scaldi.Injector
+import scaldi.{Injectable, Injector}
 import scaldi.play.ScaldiSupport
+import play.api.mvc.Results._
+import utils.auth.UserService
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
@@ -18,7 +26,7 @@ object RoutesLoggingFilter extends Filter {
   }
 }
 
-object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with GlobalSettings with ScaldiSupport {
+object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with GlobalSettings with ScaldiSupport with SecuredSettings with Injectable {
   override def onLoadConfig(config: Configuration, path: File, classLoader: ClassLoader, mode: Mode.Mode): Configuration = {
     val host = InetAddress.getLocalHost
     val hostName = host.getHostName
@@ -26,5 +34,31 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
     super.onLoadConfig(machineSpecificConfig, path, classLoader, mode)
   }
 
-  override def applicationModule: Injector = new SilhouetteModule ++ new PlayModule
+  override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
+    Some(Future { Unauthorized(Json.toJson(Response.bad("Пользователь с такой комбинацией логина и пароля не найден."))) })
+  }
+
+  override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
+    Some(Future { Unauthorized(Json.toJson(Response.bad("Действие запрещено."))) })
+  }
+
+  override def applicationModule: Injector = new SilhouetteModule ++ new ServicesModule ++ new PlayModule
+
+  override def onStart(app: Application): Unit = {
+    super.onStart(app)
+
+    // создание пользователя, если не найдено
+    implicit val injector = applicationModule
+    val userService = inject [UserService]
+    userService.hasUsers flatMap { hasUsers =>
+      if (!hasUsers) {
+        val admin = User(id = 0, login = "admin", password = "admin", role = Role.Administrator)
+        userService.createUser(admin)
+      } else Future.successful(None)
+    } recoverWith {
+      case error => Future {
+        Logger.error("Ошибка создания учетной записи администратора при старте приложения.", error)
+      }
+    }
+  }
 }

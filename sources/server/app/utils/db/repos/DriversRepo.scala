@@ -1,4 +1,4 @@
-package models.repos
+package utils.db.repos
 
 import models.entities.Driver
 import models.tables.Drivers

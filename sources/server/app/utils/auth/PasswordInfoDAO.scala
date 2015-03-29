@@ -3,7 +3,7 @@ package utils.auth
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import models.repos.UsersRepo
+import utils.db.repos.UsersRepo
 import play.api.libs.json._
 import utils.db.DbAccessor
 import play.api.Logger

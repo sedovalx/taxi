@@ -11,7 +11,7 @@ import models.mappings.RoleColumn._
  */
 class Users(tag: Tag) extends TableBase[User](tag, "user") {
   def login         = column[String]("login")
-  def passwordHash  = column[String]("password_hash")
+  def passwordHash  = column[String]("password_hash", O.Length(1000, true))
   def lastName      = column[Option[String]]("last_name")
   def firstName     = column[Option[String]]("first_name")
   def middleName    = column[Option[String]]("middle_name")

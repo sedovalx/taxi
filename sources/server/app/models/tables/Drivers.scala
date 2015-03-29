@@ -18,7 +18,6 @@ class Drivers(tag: Tag) extends TableBase[Driver](tag, "driver") {
   def comment           = column[Option[String]]("comment")
   def address           = column[String]("address")
 
-
   def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
 
   def uniqueLicense = index("idx_license_uq", license, unique = true)

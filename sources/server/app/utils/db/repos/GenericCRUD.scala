@@ -1,4 +1,4 @@
-package models.repos
+package utils.db.repos
 
 /**
  * Created by ipopkov on 15/03/15.
