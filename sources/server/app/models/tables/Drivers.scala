@@ -13,9 +13,9 @@ class Drivers(tag: Tag) extends TableBase[Driver](tag, "driver") {
   def lastName          = column[Option[String]]("last_name")
   def firstName         = column[Option[String]]("first_name")
   def middleName        = column[Option[String]]("middle_name")
-  def phone             = column[Long]("phone")
-  def secPhone          = column[Long]("secPhone")
-  def comment           = column[String]("comment")
+  def phone             = column[String]("phone")
+  def secPhone          = column[String]("secPhone")
+  def comment           = column[Option[String]]("comment")
   def address           = column[String]("address")
 
 

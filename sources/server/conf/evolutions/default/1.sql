@@ -3,7 +3,7 @@
 
 # --- !Ups
 
-create table "driver" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"pass" VARCHAR(254) NOT NULL,"driverCard" VARCHAR(254) NOT NULL,"last_name" VARCHAR(254),"first_name" VARCHAR(254),"middle_name" VARCHAR(254),"phone" BIGINT NOT NULL,"additionalPhone" BIGINT NOT NULL,"comment" VARCHAR(254) NOT NULL,"creation_date" DATE NOT NULL,"edit_date" DATE,"creator_id" BIGINT,"editor_id" BIGINT);
+create table "driver" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"pass" VARCHAR(254) NOT NULL,"driverCard" VARCHAR(254) NOT NULL,"last_name" VARCHAR(254),"first_name" VARCHAR(254),"middle_name" VARCHAR(254),"phone" BIGINT NOT NULL,"secPhone" BIGINT NOT NULL,"comment" VARCHAR(254) NOT NULL,"address" VARCHAR(254) NOT NULL,"creation_date" DATE NOT NULL,"edit_date" DATE,"creator_id" BIGINT,"editor_id" BIGINT);
 create unique index "idx_license_uq" on "driver" ("driverCard");
 create unique index "idx_pass_uq" on "driver" ("pass");
 create table "user" ("id" BIGSERIAL NOT NULL PRIMARY KEY,"login" VARCHAR(254) NOT NULL,"password_hash" VARCHAR(254) NOT NULL,"last_name" VARCHAR(254),"first_name" VARCHAR(254),"middle_name" VARCHAR(254),"role" VARCHAR(254) NOT NULL,"creation_date" DATE NOT NULL,"edit_date" DATE,"creator_id" BIGINT,"editor_id" BIGINT);
