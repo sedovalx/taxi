@@ -25,9 +25,9 @@ object DriverSerializer {
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and
-      (JsPath \ "phone").read[Long] and
-      (JsPath \ "secPhone").read[Long] and
-      (JsPath \ "comment").read[String] and
+      (JsPath \ "phone").read[String] and
+      (JsPath \ "secPhone").read[String] and
+      (JsPath \ "comment").readNullable[String] and
       (JsPath \ "address").read[String] and
       (JsPath \ "creationDate").read[Date].orElse(Reads.pure(new Date(new java.util.Date().getTime))) and
       (JsPath \ "editDate").readNullable[Date] and
