@@ -28,17 +28,17 @@ export default Ember.ArrayController.extend({
 
   // Ember Table
   columns: function(){
-    let passportColumn = Ember.Table.ColumnDefinition.create({
+    let passColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Паспорт",
-      contentPath: "passport"
+      contentPath: "pass"
     });
-    let drivingLicenseColumn = Ember.Table.ColumnDefinition.create({
+    let licenseColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Водительские права",
-      contentPath: "drivingLicense"
+      contentPath: "license"
     });
     let addressColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -46,23 +46,23 @@ export default Ember.ArrayController.extend({
       headerCellName: "Адрес",
       contentPath: "address"
     });
-    let mainPhoneColumn = Ember.Table.ColumnDefinition.create({
+    let phoneColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Основной телефон",
-      contentPath: "mainPhone"
+      contentPath: "phone"
     });
-    let addPhoneColumn = Ember.Table.ColumnDefinition.create({
+    let secPhoneColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Дополнительный телефон",
-      contentPath: "addPhone"
+      contentPath: "secPhone"
     });
-    let notesColumn = Ember.Table.ColumnDefinition.create({
+    let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Примечания",
-      contentPath: "notes"
+      contentPath: "comment"
     });
     //let lastNameColumn = Ember.Table.ColumnDefinition.create({
     //  savedWidth: 200,
@@ -88,7 +88,7 @@ export default Ember.ArrayController.extend({
       headerCellName: "ФИО",
       contentPath: "fio"
     });
-    return [fioColumn, passportColumn, drivingLicenseColumn, mainPhoneColumn, addPhoneColumn, addressColumn, notesColumn];
+    return [fioColumn, passColumn, licenseColumn, phoneColumn, secPhoneColumn, addressColumn, commentColumn];
   }.property(),
   drivers: function(){
     return this;
