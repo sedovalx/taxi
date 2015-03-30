@@ -1,6 +1,7 @@
 package utils.auth
 
 import com.mohiva.play.silhouette.api.LoginInfo
+import com.mohiva.play.silhouette.api.exceptions.NotAuthenticatedException
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import utils.db.repos.UsersRepo
@@ -47,7 +48,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
   private def findUser(login: String) = {
     withDb { session => UsersRepo.findByLogin(login)(session) } match {
       case Some(u) => u
-      case _ => throw new Exception(s"Пользователь с логином $login не найден. Пароль сохранен быть не может.")
+      case _ => throw new NotAuthenticatedException(s"Пользователь с логином $login не найден.")
     }
   }
 }

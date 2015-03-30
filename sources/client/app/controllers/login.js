@@ -1,14 +1,20 @@
 import Ember from "ember";
+import LoginControllerMixin from 'simple-auth/mixins/login-controller-mixin';
 
-export default Ember.Controller.extend({
+export default Ember.Controller.extend(LoginControllerMixin, {
+  authenticator: 'simple-auth-authenticator:jwt',
+  errorMessage: null,
+  inProcess: false,
   actions: {
-    login: function(){
-      let credentials = {
-        login: this.get("login"),
-        password: this.get("password")
-      };
-      Ember.$.post("/auth/json", credentials).then(function(response){
-
+    authenticate: function(){
+      let that = this;
+      that.set("errorMessage", null);
+      that.set("inProcess", true);
+      return this._super().then(function(){
+        that.set("inProcess", false);
+      }, function(error){
+        that.set("errorMessage", error.message || "Ошибка аутентификации.");
+        that.set("inProcess", false);
       });
     }
   }

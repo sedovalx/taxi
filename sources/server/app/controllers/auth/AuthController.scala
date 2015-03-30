@@ -26,7 +26,7 @@ import play.api.libs.json._
  * @param token Id of token
  * @param expiresOn The expiration time
  */
-case class Token(token: String, expiresOn: DateTime)
+case class Token(token: String, expiresOn: DateTime, userId: Long)
 
 /**
  * Companion object, contain format for Json
@@ -64,9 +64,9 @@ class AuthController(val env: Environment, userService: IdentityService[User])
             env.eventBus.publish(LoginEvent(user, request, request2lang))
             // инициализируем аутенитфикатор
             env.authenticatorService.init(authenticator) flatMap { token =>
-              // прикрепляем токен к заголовку ответа на запрос, ну еще и в тело добавляем
+              // прикрепляем токен к заголовку ответа на запрос, и в тело добавляем
               env.authenticatorService.embed(token, Future.successful {
-                Ok(Json.toJson(Token(token = token, expiresOn = authenticator.expirationDate)))
+                Ok(Json.toJson(Token(token = token, expiresOn = authenticator.expirationDate, userId = user.id)))
               })
             }
           }
@@ -81,6 +81,10 @@ class AuthController(val env: Environment, userService: IdentityService[User])
   def logOut = SecuredAction.async { request =>
     env.eventBus.publish(LogoutEvent(request.identity, request, request2lang(request)))
     request.authenticator.discard(Future.successful(Ok))
+  }
+
+  def renew = SecuredAction.async { request =>
+    request.authenticator.renew(Future.successful(Ok))
   }
 
 }

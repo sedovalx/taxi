@@ -16,6 +16,22 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
+    },
+    'simple-auth': {
+      authorizer: 'simple-auth-authorizer:token',
+      store: 'simple-auth-session-store:local-storage'
+    },
+    'simple-auth-token': {
+      serverTokenEndpoint: "/api/auth/login",
+      identificationField: "identifier",
+      passwordField: 'password',
+      authorizationHeaderName: 'X-Auth-Token',
+      authorizationPrefix: null,
+      refreshAccessTokens: true,
+      // The server returns time in seconds. It will be multiplied by the timeFactor to get milliseconds for the Date type construction
+      timeFactor: 1000,
+      refreshLeeway: 180,
+      serverTokenRefreshEndpoint: '/api/auth/renew'
     }
   };
 

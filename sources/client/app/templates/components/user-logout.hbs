@@ -1,1 +1,4 @@
-<p class="navbar-text navbar-right">Текущий пользователь: <a href="/auth/logout" class="navbar-link">{{displayName}}</a></p>
+{{#if session.isAuthenticated}}
+    <p class="navbar-text navbar-right">Текущий пользователь: {{displayName}}<a {{ action 'invalidateSession' }} class="navbar-link">Выйти</a></p>
+{{/if}}
+

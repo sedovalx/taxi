@@ -10,7 +10,9 @@ export default Ember.ObjectController.extend({
   ],
   selectedRole: function(key, value){
     let model = this.get("model");
-	if (!model) return;
+	if (!model) {
+		return;
+	}
 	
     if (arguments.length > 1){
       model.set("role", value != null ? value.id : null);
