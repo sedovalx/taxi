@@ -11,8 +11,8 @@ GET           /assets/*file           controllers.Assets.at(path="/public/assets
 GET           /fonts/*file            controllers.Assets.at(path="/public/fonts", file)
 
 ############################# Authentication #######################################
-POST          /auth/login             @controllers.auth.AuthController.authenticate
-POST          /auth/logout            @controllers.auth.AuthController.logOut
+POST          /api/auth/login         @controllers.auth.AuthController.authenticate
+POST          /api/auth/logout        @controllers.auth.AuthController.logOut
 
 ############################# Entity routes #######################################
 # User routes
