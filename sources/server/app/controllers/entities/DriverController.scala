@@ -2,38 +2,44 @@ package controllers.entities
 
 import java.sql.Date
 
+import _root_.util.responses.Response
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
-import models.entities.Driver
+import models.entities.{User, Driver}
+import utils.auth.{UserService, Environment}
 import utils.db.repos.DriversRepo
 import play.api.libs.json._
 import play.api.mvc.{Action, BodyParsers}
 import utils.serialization.DriverSerializer._
 
 /**
- * Контроллер операций над пользователями
+ * Контроллер операций над водителями
  */
-class DriverController extends BaseController {
+class DriverController(val env: Environment,
+                       userService: UserService)
+  extends BaseController with Silhouette[User, JWTAuthenticator]{
 
   /**
-   * Возвращает список пользователей в json-формате
+   * Возвращает список водителей в json-формате
    * @return
    */
-  def read = Action { implicit request =>
+  def read = SecuredAction { implicit request =>
     val drivers = withDb { session => DriversRepo.read(session) }
     val driversJson = makeJson("drivers", drivers)
     Ok(driversJson)
   }
 
-  def getById(id: Long) = Action { implicit request =>
+  def getById(id: Long) = SecuredAction { implicit request =>
     val driver = withDb { session => DriversRepo.findById(id)(session) }
     val driverJson = makeJson("driver", driver)
     Ok(driverJson)
   }
 
-  def create = Action(BodyParsers.parse.json) { request =>
+  def create = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
     json.validate[Driver].fold(
-      errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
+      errors => BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors))),
       driver => {
         //todo: перенести установку создателя в единую точку
         val toSave: Driver = driver.copy(/*creatorId = Some(loggedIn(request).id)*/)
@@ -45,10 +51,10 @@ class DriverController extends BaseController {
     )
   }
 
-  def update(id: Long) = Action(BodyParsers.parse.json) { request =>
+  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
     json.validate[Driver].fold(
-      errors => BadRequest(Json.obj("status" -> "Ошибки валидации", "errors" -> JsError.toFlatJson(errors))),
+      errors => BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors))),
       driver => {
         // todo: перенести установку времени редактирования в единую точку
         val toSave = driver.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime))/*, editorId = Some(loggedIn(request).id)*/)
@@ -59,12 +65,12 @@ class DriverController extends BaseController {
     )
   }
 
-  def delete(id: Long) = Action { request =>
+  def delete(id: Long) = SecuredAction { request =>
     val wasDeleted = withDb { session => DriversRepo.delete(id)(session) }
     if (wasDeleted)
       Ok(Json.parse("{}"))
     else
-      NotFound(Json.obj("status" -> s"Водитель с id=$id не найден"))
+      NotFound(Response.bad(s"Водитель с id=$id не найден"))
   }
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))

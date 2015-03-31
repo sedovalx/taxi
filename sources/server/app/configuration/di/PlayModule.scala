@@ -14,6 +14,6 @@ import utils.auth.{Environment, UserService}
 class PlayModule extends Module {
   binding to new IndexController
   binding to new UserController(inject [Environment], inject [UserService])
-  binding to new DriverController
+  binding to new DriverController(inject [Environment], inject [UserService])
   binding to new AuthController(inject [Environment], inject [IdentityService[User]])
 }

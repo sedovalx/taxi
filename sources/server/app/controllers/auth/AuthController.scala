@@ -84,7 +84,7 @@ class AuthController(val env: Environment, userService: IdentityService[User])
   }
 
   def renew = SecuredAction.async { request =>
-    request.authenticator.renew(Future.successful(Ok))
+    request.authenticator.renew(Future.successful(Ok(Json.parse("{}"))))
   }
 
 }
