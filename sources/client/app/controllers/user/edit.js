@@ -1,3 +1,3 @@
-import UserController from "./../user-controller.js";
+import UserController from "client/controllers/base/user-controller";
 
 export default UserController.extend({});

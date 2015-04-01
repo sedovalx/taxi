@@ -4,13 +4,22 @@
 import Ember from "ember";
 
 export default Ember.Component.extend({
-  displayName: function(){
+  displayName: null,
+  didInsertElement: function(){
+    this.setDisplayName();
+  },
+  setDisplayName: function(){
     let currentUser = this.get("session").get("currentUser");
     if (currentUser) {
       var login = currentUser.get("login");
       var lastName = currentUser.get("lastName");
       var firstName = currentUser.get("firstName");
-      return (lastName != null && firstName != null) ? firstName + ' ' + lastName : login;
+      this.set("displayName", (lastName != null && firstName != null) ? firstName + ' ' + lastName : login);
     }
-  }.property("session.currentUser")
+  }.observes("session.currentUser.lastName", "session.currentUser.firstName"),
+  actions: {
+    invalidateSession: function(){
+      this.get("session").invalidate();
+    }
+  }
 });

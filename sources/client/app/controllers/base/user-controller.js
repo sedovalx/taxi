@@ -1,7 +1,7 @@
 import Ember from "ember";
-import $ from "jquery";
+import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
 
-export default Ember.ObjectController.extend({
+export default Ember.ObjectController.extend(DirtyControllerMixin, {
   roles: [
     { id: "Administrator", label: "Администритор" },
     { id: "Accountant", label: "Бухгалтер" },
@@ -10,10 +10,10 @@ export default Ember.ObjectController.extend({
   ],
   selectedRole: function(key, value){
     let model = this.get("model");
-	if (!model) {
-		return;
-	}
-	
+    if (!model) {
+      return;
+    }
+
     if (arguments.length > 1){
       model.set("role", value != null ? value.id : null);
     }
@@ -33,17 +33,6 @@ export default Ember.ObjectController.extend({
     cancel: function(){
       this.transitionToRoute("users");
     }
-  },
-  isDirty: function(){
-    let model = this.get("model");
-    return (model && this._isDirty(model));
-  },
-  discardModel: function(){
-    let model = this.get("model");
-    model.rollback();
-  },
-  _isDirty: function(model){
-    return !$.isEmptyObject(model.changedAttributes());
   },
   hasErrors: function(){
     let model = this.get("model");

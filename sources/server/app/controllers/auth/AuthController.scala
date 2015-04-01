@@ -87,4 +87,6 @@ class AuthController(val env: Environment, userService: IdentityService[User])
     request.authenticator.renew(Future.successful(Ok(Json.parse("{}"))))
   }
 
+
+
 }

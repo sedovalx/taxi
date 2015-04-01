@@ -6,11 +6,12 @@
     <file url="file://$PROJECT_DIR$/app/controllers/login.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/initializers/auth-session.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/routes/application.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/routes/base/protected.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/routes/drivers/index.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/app/routes/protected.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/routes/users/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/templates/login.hbs" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/config/environment.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/package.json" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

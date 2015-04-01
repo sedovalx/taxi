@@ -74,6 +74,11 @@ class UserController(val env: Environment,
     else NotFound(Response.bad(s"Пользователь с id=$id не найден"))
   }
 
+  def currentUser = SecuredAction { request =>
+    val user = request.identity
+    Ok(makeJson("user", user))
+  }
+
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
 }
 

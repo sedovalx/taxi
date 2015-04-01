@@ -7,15 +7,18 @@ export default {
   initialize: function(container) {
     Session.reopen({
       setCurrentUser: function() {
-        var id = this.get("userId");
         var self = this;
-
-        if (!Ember.isEmpty(id)) {
-          return container.lookup("store:main").find("user", id).then(function(user) {
-            self.set("currentUser", user);
+        // если есть токен
+        if (self.get("authenticator")){
+          // спрашиваем у сервера, кто я такой
+          Ember.$.getJSON("api/users/me", function(data){
+            // и помещаем в хранилище
+            let store = container.lookup('store:main');
+            let user = store.push('user', data.user);
+            self.set('currentUser', user);
           });
         }
-      }.observes("user_id")
+      }.observes("authenticator")
     });
   }
 };

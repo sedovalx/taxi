@@ -1,4 +1,4 @@
-import ProtectedRoute from "../protected";
+import ProtectedRoute from "client/routes/base/protected";
 
 export default ProtectedRoute.extend({
   model: function() {

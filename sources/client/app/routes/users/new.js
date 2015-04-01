@@ -1,17 +1,8 @@
-import ProtectedRoute from "../protected";
+import ProtectedRoute from "client/routes/base/protected";
+import DirtyRouteMixin from "client/routes/base/dirty-route-mixin";
 
-export default ProtectedRoute.extend({
+export default ProtectedRoute.extend(DirtyRouteMixin, {
   model: function(){
     return this.store.createRecord("user");
-  },
-  actions: {
-    willTransition: function(transition){
-      if (this.controller.isDirty() && !confirm("Имеются несохраненные изменения. Вы действительно хотите выйти из редактора?")) {
-        transition.abort();
-      } else {
-        this.controller.discardModel();
-        return true;
-      }
-    }
   }
 });

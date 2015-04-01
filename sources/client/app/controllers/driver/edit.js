@@ -1,3 +1,3 @@
-import DriverController from "./../driver-controller.js";
+import DriverController from "client/controllers/base/driver-controller";
 
 export default DriverController.extend({});
