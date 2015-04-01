@@ -15,6 +15,9 @@ Router.map(function() {
   this.resource("drivers", function() {
     this.route("new");
   });
+  this.resource("driver", { path: "/drivers/:driver_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 
