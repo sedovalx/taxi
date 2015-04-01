@@ -36,6 +36,6 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
   },
   hasErrors: function(){
     let model = this.get("model");
-    return !(model.get("login") && this.get("selectedRole"));
+    return model && !(model.get("login") && this.get("selectedRole"));
   }.property("model.login", "selectedRole")
 });

@@ -19,9 +19,8 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
   },
   hasErrors: function(){
     let model = this.get("model");
-    let valid = model.get("lastName") && model.get("firstName") && model.get("middleName") &&
+    return model && !(model.get("lastName") && model.get("firstName") && model.get("middleName") &&
             model.get("pass") && model.get("address") && model.get("license") &&
-            model.get("phone") && model.get("secPhone");
-    return !valid;
+            model.get("phone") && model.get("secPhone"));
   }.property("model.firstName","model.lastName","model.middleName","model.pass","model.address","model.license","model.phone","model.secPhone")
 });
