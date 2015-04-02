@@ -1,20 +1,20 @@
 <div class="login-form">
-    <form {{action 'authenticate' on='submit'}}>
-      <div class="text-center">
-          <h3>Пожалуйста авторизуйтесь</h3>
+  {{#if errorMessage}}
+      <div class="alert alert-danger alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        {{errorMessage}}
       </div>
-      <div class="form-group">
-        {{input id='identification' placeholder='Логин' value=identification class="form-control"}}
-      </div>
-      <div class="form-group">
-        {{input id='password' placeholder='Пароль' type='password' value=password class="form-control"}}
-      </div>
-      <button type="submit" class="btn btn-primary pull-right" {{bind-attr disabled=inProcess}}>Войти</button>
-      {{#if errorMessage}}
-          <div class="alert alert-danger alert-dismissible" role="alert">
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            {{errorMessage}}
-          </div>
-      {{/if}}
-    </form>
+  {{/if}}
+  <form {{action 'authenticate' on='submit'}}>
+    <div class="text-center">
+        <h3>Пожалуйста авторизуйтесь</h3>
+    </div>
+    <div class="form-group">
+      {{input id='identification' placeholder='Логин' value=identification class="form-control"}}
+    </div>
+    <div class="form-group">
+      {{input id='password' placeholder='Пароль' type='password' value=password class="form-control"}}
+    </div>
+    <button type="submit" class="btn btn-primary pull-right" {{bind-attr disabled=inProcess}}>Войти</button>
+  </form>
 </div>

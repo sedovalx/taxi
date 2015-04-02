@@ -1,28 +1,29 @@
 <div class="application">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Таксопарк</a>
-                <ul class="nav navbar-nav">
-                  {{#link-to 'users' tagName="li"}}
-                      <a {{bind-attr href="view.href"}}>
-                          Пользователи
-                      </a>
-                  {{/link-to}}
-                  {{#link-to 'drivers' tagName="li"}}
-                      <a {{bind-attr href="view.href"}}>
-                          Водители
-                      </a>
-                  {{/link-to}}
-                </ul>
+    <div class="app-header">
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">Таксопарк</a>
+                    <ul class="nav navbar-nav">
+                      {{#link-to 'users' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Пользователи
+                          </a>
+                      {{/link-to}}
+                      {{#link-to 'drivers' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Водители
+                          </a>
+                      {{/link-to}}
+                    </ul>
+                </div>
+                <div class="collapse navbar-collapse">
+                  {{user-logout}}
+                </div>
             </div>
-            <div class="collapse navbar-collapse">
-                {{user-logout}}
-            </div>
-        </div>
-    </nav>
-
-    <div class="main-content">
+        </nav>
+    </div>
+    <div class="app-content">
       {{outlet}}
     </div>
 </div>

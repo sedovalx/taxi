@@ -1,11 +1,13 @@
 <div class="list">
-  {{table-component
-  columns=columns
-  content=users
-  hasFooter=false
-  selection=selectedRow}}
+    <div class="table">
+      {{table-component
+      columns=columns
+      content=users
+      hasFooter=false
+      selection=selectedRow}}
+    </div>
 
-   <div class="commands-panel btn-group pull-right" role="group">
+   <div class="commands-panel btn-group pull-right" role="group" data-spy="affix">
        <button type="button" class="btn btn-primary" {{action "create"}}>
            <i class="fa fa-user-plus"></i> Создать
        </button>

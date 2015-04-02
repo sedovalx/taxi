@@ -4,15 +4,19 @@
 
 @main-content-side-margin: 50px;
 
-html, body {
+html, body, .application {
+  height: 100%;
+  width: 100%;
+}
+
+body > .ember-view {
   height: 100%;
 }
 
-body > .ember-view, .application {
-  height: 100%;
-}
+.application {
 
-.main-content {
-  margin-left: @main-content-side-margin;
-  margin-right: @main-content-side-margin;
+  .app-content {
+    margin-left: @main-content-side-margin;
+    margin-right: @main-content-side-margin;
+  }
 }
