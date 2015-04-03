@@ -19,6 +19,7 @@ export default Ember.Component.extend({
   }.observes("session.currentUser.lastName", "session.currentUser.firstName"),
   actions: {
     invalidateSession: function(){
+      Ember.$.ajax("/api/auth/logout");
       this.get("session").invalidate();
     }
   }
