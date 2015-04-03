@@ -24,6 +24,17 @@ CREATE TABLE car_class
   editor_id BIGINT,
   comment VARCHAR
 );
+CREATE TABLE checkpoint
+(
+  id SERIAL PRIMARY KEY NOT NULL,
+  point_date DATE NOT NULL,
+  days INT NOT NULL,
+  creation_date DATE,
+  creator_id BIGINT,
+  edit_date DATE,
+  editor_id BIGINT,
+  comment VARCHAR
+);
 CREATE TABLE driver
 (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -66,6 +77,16 @@ CREATE TABLE payment
   editor_id BIGINT,
   edit_date DATE,
   rent_id BIGINT NOT NULL
+);
+CREATE TABLE play_evolutions
+(
+  id INT PRIMARY KEY NOT NULL,
+  hash VARCHAR(255) NOT NULL,
+  applied_at TIMESTAMP NOT NULL,
+  apply_script VARCHAR,
+  revert_script VARCHAR,
+  state VARCHAR(255),
+  last_problem VARCHAR
 );
 CREATE TABLE rent
 (
@@ -117,6 +138,7 @@ CREATE TABLE "user"
   creator_id BIGINT,
   editor_id BIGINT
 );
+
 ALTER TABLE car ADD FOREIGN KEY (class_id) REFERENCES car_class (id);
 ALTER TABLE car ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE car ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
@@ -124,6 +146,9 @@ CREATE UNIQUE INDEX unique_reg_number ON car (reg_number);
 ALTER TABLE car_class ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE car_class ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
 CREATE UNIQUE INDEX unique_name ON car_class (name);
+ALTER TABLE checkpoint ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
+ALTER TABLE checkpoint ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
+CREATE INDEX point_date_index ON checkpoint (point_date);
 ALTER TABLE driver ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE driver ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
 CREATE UNIQUE INDEX idx_license_uq ON driver ("driverCard");
@@ -140,6 +165,8 @@ ALTER TABLE rent ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE rent ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
+CREATE INDEX change_date_index ON rent_status (change_date);
+CREATE INDEX status_index ON rent_status (status);
 ALTER TABLE repair ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
 ALTER TABLE repair ADD FOREIGN KEY (creator_id) REFERENCES "user" (id);
 ALTER TABLE repair ADD FOREIGN KEY (editor_id) REFERENCES "user" (id);
