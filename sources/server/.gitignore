@@ -21,8 +21,12 @@ project/target
 .project
 
 # Idea specific
-.idea/
 **/*.sc
+.idea/copyright/
+.idea/libraries/
+.idea/play2_project_settings.xml
+.idea/uiDesigner.xml
+.idea/workspace.xml
 
 # Play! specific
 public
