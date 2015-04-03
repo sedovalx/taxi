@@ -1574,9 +1574,9 @@
       <column name="reg_number" sqlType="varchar" precision="12" scale="0" nullable="false" jdbcType="12"/>
       <column name="make" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="model" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="mileage" sqlType="numeric" precision="8" scale="2" nullable="false" jdbcType="2"/>
-      <column name="service" sqlType="numeric" precision="8" scale="2" nullable="true" jdbcType="2"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="mileage" sqlType="numeric" precision="8" scale="0" nullable="false" jdbcType="2"/>
+      <column name="service" sqlType="numeric" precision="8" scale="0" nullable="true" jdbcType="2"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="edit_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
@@ -1592,12 +1592,12 @@
     <table name="car_class" schema="public" catalog="taxi" type="TABLE">
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnY2FyX2NsYXNzX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
       <column name="name" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="rate" sqlType="numeric" precision="8" scale="2" nullable="false" jdbcType="2"/>
+      <column name="rate" sqlType="numeric" precision="8" scale="0" nullable="false" jdbcType="2"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="edit_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="car_class_pkey" columns="id"/>
       <foreign-key name="car_class_creator_id_fkey" columns="creator_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="car_class_editor_id_fkey" columns="editor_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
@@ -1629,7 +1629,7 @@
       <column name="is_called" sqlType="bool" precision="1" scale="0" nullable="false" jdbcType="-7"/>
     </table>
     <table name="driver" schema="public" catalog="taxi" type="TABLE">
-      <column name="id" sqlType="bigserial" precision="19" scale="0" nullable="false" jdbcType="-5" def="bmV4dHZhbCgnZHJpdmVyX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
+      <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnZHJpdmVyX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
       <column name="pass" sqlType="varchar" precision="254" scale="0" nullable="false" jdbcType="12"/>
       <column name="driverCard" sqlType="varchar" precision="254" scale="0" nullable="false" jdbcType="12"/>
       <column name="last_name" sqlType="varchar" precision="254" scale="0" nullable="true" jdbcType="12"/>
@@ -1644,8 +1644,8 @@
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="driver_pkey" columns="id"/>
-      <foreign-key name="fk_user_creator" columns="creator_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_user_editor" columns="editor_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="driver_creator_id_fkey" columns="creator_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="driver_editor_id_fkey" columns="editor_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="rent_driver_id_fkey" table="rent" schema="public" catalog="taxi" columns="driver_id"/>
       <index name="idx_license_uq" unique="true" columns="driverCard"/>
       <index name="idx_pass_uq" unique="true" columns="pass"/>
@@ -1665,10 +1665,10 @@
     <table name="fine" schema="public" catalog="taxi" type="TABLE">
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgnZmluZV9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
       <column name="fine_date" sqlType="date" precision="13" scale="0" nullable="false" jdbcType="91"/>
-      <column name="cost" sqlType="numeric" precision="10" scale="2" nullable="false" jdbcType="2"/>
-      <column name="description" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="cost" sqlType="numeric" precision="10" scale="0" nullable="false" jdbcType="2"/>
+      <column name="description" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="rent_id" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
@@ -1693,9 +1693,9 @@
     <table name="payment" schema="public" catalog="taxi" type="TABLE">
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgncGF5bWVudF9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
       <column name="pay_date" sqlType="date" precision="13" scale="0" nullable="false" jdbcType="91"/>
-      <column name="amount" sqlType="numeric" precision="8" scale="2" nullable="false" jdbcType="2"/>
+      <column name="amount" sqlType="numeric" precision="8" scale="0" nullable="false" jdbcType="2"/>
       <column name="target" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
@@ -1722,18 +1722,18 @@
       <column name="id" sqlType="int4" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="hash" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
       <column name="applied_at" sqlType="timestamp" precision="29" scale="6" nullable="false" jdbcType="93"/>
-      <column name="apply_script" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
-      <column name="revert_script" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="apply_script" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="revert_script" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="state" sqlType="varchar" precision="255" scale="0" nullable="true" jdbcType="12"/>
-      <column name="last_problem" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="last_problem" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <primary-key name="play_evolutions_pkey" columns="id"/>
     </table>
     <table name="rent" schema="public" catalog="taxi" type="TABLE">
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgncmVudF9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
       <column name="driver_id" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
       <column name="car_id" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
-      <column name="deposit" sqlType="numeric" precision="8" scale="2" nullable="false" jdbcType="2"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="deposit" sqlType="numeric" precision="8" scale="0" nullable="false" jdbcType="2"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
@@ -1763,7 +1763,7 @@
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgncmVudF9zdGF0dXNfaWRfc2VxJzo6cmVnY2xhc3Mp" autoIncrement="true"/>
       <column name="change_date" sqlType="date" precision="13" scale="0" nullable="false" jdbcType="91"/>
       <column name="status" sqlType="varchar" precision="255" scale="0" nullable="false" jdbcType="12"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
@@ -1787,10 +1787,10 @@
     <table name="repair" schema="public" catalog="taxi" type="TABLE">
       <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgncmVwYWlyX2lkX3NlcSc6OnJlZ2NsYXNzKQ==" autoIncrement="true"/>
       <column name="repair_date" sqlType="date" precision="13" scale="0" nullable="false" jdbcType="91"/>
-      <column name="cost" sqlType="numeric" precision="10" scale="2" nullable="false" jdbcType="2"/>
-      <column name="description" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="cost" sqlType="numeric" precision="10" scale="0" nullable="false" jdbcType="2"/>
+      <column name="description" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="rent_id" sqlType="int8" precision="19" scale="0" nullable="false" jdbcType="-5"/>
-      <column name="comment" sqlType="text" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
+      <column name="comment" sqlType="varchar" precision="2147483647" scale="0" nullable="true" jdbcType="12"/>
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="creation_date" sqlType="date" precision="13" scale="0" nullable="true" jdbcType="91"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
@@ -1813,7 +1813,7 @@
       <column name="is_called" sqlType="bool" precision="1" scale="0" nullable="false" jdbcType="-7"/>
     </table>
     <table name="user" schema="public" catalog="taxi" type="TABLE">
-      <column name="id" sqlType="bigserial" precision="19" scale="0" nullable="false" jdbcType="-5" def="bmV4dHZhbCgndXNlcl9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
+      <column name="id" sqlType="serial" precision="10" scale="0" nullable="false" jdbcType="4" def="bmV4dHZhbCgndXNlcl9pZF9zZXEnOjpyZWdjbGFzcyk=" autoIncrement="true"/>
       <column name="login" sqlType="varchar" precision="254" scale="0" nullable="false" jdbcType="12"/>
       <column name="password_hash" sqlType="varchar" precision="1000" scale="0" nullable="false" jdbcType="12"/>
       <column name="last_name" sqlType="varchar" precision="254" scale="0" nullable="true" jdbcType="12"/>
@@ -1825,14 +1825,14 @@
       <column name="creator_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <column name="editor_id" sqlType="int8" precision="19" scale="0" nullable="true" jdbcType="-5"/>
       <primary-key name="user_pkey" columns="id"/>
-      <foreign-key name="fk_user_creator" columns="creator_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <foreign-key name="fk_user_editor" columns="editor_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_creator_id_fkey" columns="creator_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="user_editor_id_fkey" columns="editor_id" ref-table="user" ref-schema="public" ref-catalog="" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="car_creator_id_fkey" table="car" schema="public" catalog="taxi" columns="creator_id"/>
       <exported-key name="car_editor_id_fkey" table="car" schema="public" catalog="taxi" columns="editor_id"/>
       <exported-key name="car_class_creator_id_fkey" table="car_class" schema="public" catalog="taxi" columns="creator_id"/>
       <exported-key name="car_class_editor_id_fkey" table="car_class" schema="public" catalog="taxi" columns="editor_id"/>
-      <exported-key name="fk_user_creator" table="driver" schema="public" catalog="taxi" columns="creator_id"/>
-      <exported-key name="fk_user_editor" table="driver" schema="public" catalog="taxi" columns="editor_id"/>
+      <exported-key name="driver_creator_id_fkey" table="driver" schema="public" catalog="taxi" columns="creator_id"/>
+      <exported-key name="driver_editor_id_fkey" table="driver" schema="public" catalog="taxi" columns="editor_id"/>
       <exported-key name="fine_creator_id_fkey" table="fine" schema="public" catalog="taxi" columns="creator_id"/>
       <exported-key name="fine_editor_id_fkey" table="fine" schema="public" catalog="taxi" columns="editor_id"/>
       <exported-key name="payment_creator_id_fkey" table="payment" schema="public" catalog="taxi" columns="creator_id"/>
@@ -1843,8 +1843,8 @@
       <exported-key name="rent_status_editor_id_fkey" table="rent_status" schema="public" catalog="taxi" columns="editor_id"/>
       <exported-key name="repair_creator_id_fkey" table="repair" schema="public" catalog="taxi" columns="creator_id"/>
       <exported-key name="repair_editor_id_fkey" table="repair" schema="public" catalog="taxi" columns="editor_id"/>
-      <exported-key name="fk_user_creator" table="user" schema="public" catalog="taxi" columns="creator_id"/>
-      <exported-key name="fk_user_editor" table="user" schema="public" catalog="taxi" columns="editor_id"/>
+      <exported-key name="user_creator_id_fkey" table="user" schema="public" catalog="taxi" columns="creator_id"/>
+      <exported-key name="user_editor_id_fkey" table="user" schema="public" catalog="taxi" columns="editor_id"/>
       <index name="idx_login_uq" unique="true" columns="login"/>
     </table>
     <table name="user_id_seq" schema="public" catalog="taxi" type="SEQUENCE">
