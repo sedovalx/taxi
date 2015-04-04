@@ -1,6 +1,7 @@
 package repositories
 
 import base.SpecificationWithFixtures
+import controllers.filter.UserFilter
 import models.entities.Role.Role
 import models.entities.{Role, User}
 import utils.db.repos.UsersRepo
@@ -46,6 +47,19 @@ class UsersRepositoryTest extends SpecificationWithFixtures {
         val updatedUser = someUpdatedUser.get
         updatedUser.lastName must beEqualTo(someNewLastName) ;
       }
+    }
+
+    "filter test" in new WithFakeDB {
+      DB.withSession { implicit session: Session =>
+        val user1 = createUser("user1", "pass", Role.Accountant)
+        val user2 = createUser("user2", "pass", Role.Cashier)
+        val user3 = createUser("user3", "pass", Role.Repairman)
+        var uf = new UserFilter(None, Some(user1.login), None, None, None, None, None)
+        var filteredUsers = UsersRepo.find(uf)
+        filteredUsers.length must beEqualTo (1)
+
+      }
+
     }
   }
 }

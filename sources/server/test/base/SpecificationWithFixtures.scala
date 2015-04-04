@@ -17,8 +17,14 @@ abstract class SpecificationWithFixtures extends Specification{
 
   }
 
+  val repositoryTestFakeApp = FakeApplication(
+    additionalConfiguration = inMemoryDatabase(),
+    withoutPlugins = Seq("play.api.db.BoneCPPlugin"),
+    additionalPlugins = Seq("play.api.db.RestartableBoneCPPlugin")
+  )
 
-  abstract class WithFakeDB extends WithApplication(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
+
+  abstract class WithFakeDB extends WithApplication(repositoryTestFakeApp) {
     override def around[T: AsResult](t: => T): Result = super.around {
       beforeAll()
       t

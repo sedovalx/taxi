@@ -6,6 +6,7 @@ import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
+import controllers.filter.UserFilter
 import models.entities.User
 import play.api.libs.json._
 import play.api.mvc._
@@ -29,7 +30,15 @@ class UserController(val env: Environment,
    * @return
    */
   def read = SecuredAction { implicit request =>
-    val users = withDb { session => UsersRepo.read(session) }
+    val userFilterOpt = parseUserFilterFromQueryString(request)
+    var users = List[User]()
+    withDb { session =>
+      userFilterOpt match {
+        case Some(userFilter: UserFilter) => users = UsersRepo.find(userFilter)(session)
+        case _ => users = UsersRepo.read(session)
+    }
+    }
+    //val users = withDb { session => UsersRepo.read(session) }
     Ok(makeJson("users", users))
   }
 
@@ -78,6 +87,35 @@ class UserController(val env: Environment,
     val user = request.identity
     Ok(makeJson("user", user))
   }
+
+  def toLong(s: Option[String]):Option[Long] = {
+    //TODO: убрать в helper
+    try {
+      Some(s.get.toLong)
+    } catch {
+      case e:Exception => None
+    }
+  }
+
+  def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[UserFilter] = {
+    val query = request.queryString.map { case (k, v) => k -> v.mkString }
+    val id = query get  ("id")
+    val login = query get ("login")
+    val lastName = query get ("lastName")
+    //FIXME: дописать остальные параметры
+
+    var filter = new UserFilter( toLong(id), login, lastName, None, None, None,None )
+
+    //TODO: вынести в utils
+    var fieldList = filter.productIterator.toList.collect ({ case Some(x) => x } );
+    val hasAny = fieldList.length > 0
+
+    hasAny match {
+      case true => Some(filter)
+      case _ => None
+    }
+  }
+
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
 }
