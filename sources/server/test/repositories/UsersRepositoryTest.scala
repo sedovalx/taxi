@@ -7,6 +7,8 @@ import utils.db.repos.UsersRepo
 import play.api.db.slick.{DB, Session}
 import utils.extensions.SqlDate
 
+import scala.util.Random
+
 
 class UsersRepositoryTest extends SpecificationWithFixtures {
 
@@ -14,7 +16,7 @@ class UsersRepositoryTest extends SpecificationWithFixtures {
 
   private object User {
     def create(login: String, password: String, role: Role) =
-      new User(id = 0, login = login, password = password, role = role, creationDate = Some(SqlDate.now))
+      new User(id = Random.nextLong(), login = login, password = password, role = role, creationDate = Some(SqlDate.now))
   }
 
   private def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
@@ -23,8 +25,8 @@ class UsersRepositoryTest extends SpecificationWithFixtures {
     user.copy(id = id)
   }
 
-  "UserRepository" should {
 
+  "UserRepository" should {
     "save and query" in new WithFakeDB {
       DB.withSession { implicit session: Session =>
         val user = createUser("admin", "", Role.Administrator)

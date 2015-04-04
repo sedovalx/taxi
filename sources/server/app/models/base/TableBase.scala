@@ -10,6 +10,4 @@ abstract class TableBase[T](tag: Tag, name: String) extends GenericTable[T](tag,
   def creatorId     = column[Option[Long]]("creator_id")
   def editorId      = column[Option[Long]]("editor_id")
 
-  def creatorRef = foreignKey("fk_user_creator", creatorId, UsersRepo.tableQuery)(_.id)
-  def editorRef = foreignKey("fk_user_editor", editorId, UsersRepo.tableQuery)(_.id)
 }

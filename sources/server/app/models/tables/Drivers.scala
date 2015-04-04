@@ -3,6 +3,7 @@ package models.tables
 import models.entities.Driver
 import models.base.TableBase
 import play.api.db.slick.Config.driver.simple._
+import utils.db.repos.UsersRepo
 
 /**
  * Маппинг доменной сущности на таблицу в БД
@@ -22,4 +23,8 @@ class Drivers(tag: Tag) extends TableBase[Driver](tag, "driver") {
 
   def uniqueLicense = index("idx_license_uq", license, unique = true)
   def uniquePass = index("idx_pass_uq", pass, unique = true)
+
+
+  def creatorRef = foreignKey("fk_driver_creator", creatorId, UsersRepo.tableQuery)(_.id)
+  def editorRef = foreignKey("fk_driver_editor", editorId, UsersRepo.tableQuery)(_.id)
 }
