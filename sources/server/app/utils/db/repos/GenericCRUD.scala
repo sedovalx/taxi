@@ -7,11 +7,14 @@ package utils.db.repos
 import models.entities.Entity
 import models.base.GenericTable
 import play.api.db.slick.Config.driver.simple._
+import utils.db.MaybeFilter
 
 
 trait GenericCRUD[T <: GenericTable[A], A <: Entity] extends Repository[A]{
 
   val tableQuery: TableQuery[T]
+
+  implicit def maybeFilterConversor[X,Y](q:Query[X,Y,Seq]) = new MaybeFilter(q)
 
   /*
     * Find a specific entity by id.

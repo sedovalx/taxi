@@ -12,7 +12,6 @@ import play.api.test.{FakeApplication, WithApplication}
  */
 abstract class SpecificationWithFixtures extends Specification{
 
-
   protected def beforeAll() {
 
   }

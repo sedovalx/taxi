@@ -4,7 +4,7 @@ import java.sql.Date
 
 import com.mohiva.play.silhouette.api.Identity
 import models.entities.Role._
-import utils.extensions.SqlDate
+import utils.extensions.DateUtils
 
 /**
  * Доменный класс пользователя системы

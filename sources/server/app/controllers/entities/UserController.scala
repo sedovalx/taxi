@@ -7,13 +7,14 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import controllers.filter.UserFilter
-import models.entities.User
+import models.entities.{Role, User}
 import play.api.libs.json._
 import play.api.mvc._
 import utils.auth.{Environment, UserService}
 import utils.db.repos.UsersRepo
-import utils.extensions.SqlDate
+import utils.extensions.DateUtils
 import utils.serialization.UserSerializer._
+import DateUtils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -53,7 +54,7 @@ class UserController(val env: Environment,
       errors => Future.successful(BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors)))),
       user => {
         //todo: перенести установку создателя в единую точку
-        val toSave: User = user.copy(creatorId = Some(request.identity.id), creationDate = Some(SqlDate.now))
+        val toSave: User = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
         userService.createUser(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
@@ -88,25 +89,20 @@ class UserController(val env: Environment,
     Ok(makeJson("user", user))
   }
 
-  def toLong(s: Option[String]):Option[Long] = {
-    //TODO: убрать в helper
-    try {
-      Some(s.get.toLong)
-    } catch {
-      case e:Exception => None
-    }
-  }
 
   def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[UserFilter] = {
     val query = request.queryString.map { case (k, v) => k -> v.mkString }
-    val id = query get  ("id")
     val login = query get ("login")
     val lastName = query get ("lastName")
-    //FIXME: дописать остальные параметры
+    val firstName = query get ("firstName")
+    val middleName = query get ("middleName")
+    var role = Role.toRole(query get ("role") )
+    //TODO: уточнить формат даты
+    val createDate = stringToDate ( query get ("createDate") )
 
-    var filter = new UserFilter( toLong(id), login, lastName, None, None, None,None )
+    var filter = new UserFilter( login, lastName, firstName, middleName, role, createDate )
 
-    //TODO: вынести в utils
+    //TODO: вынести в utils?
     var fieldList = filter.productIterator.toList.collect ({ case Some(x) => x } );
     val hasAny = fieldList.length > 0
 

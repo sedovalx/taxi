@@ -1,10 +1,9 @@
 package models.tables
 
 import models.entities.Role._
-import models.entities.{Role, User}
+import models.entities.{User}
 import models.base.TableBase
 import play.api.db.slick.Config.driver.simple._
-import models.mappings.RoleColumn._
 import utils.db.repos.UsersRepo
 
 /**
