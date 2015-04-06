@@ -7,7 +7,9 @@ import models.entities.Role._
 import models.entities.{Role, User}
 import play.api.libs.json._
 import play.api.libs.json.Reads._
+
 import play.api.libs.functional.syntax._
+
 
 /**
  * Реализация сериализации/десереализации пользователей в json
@@ -20,9 +22,10 @@ object UserSerializer {
 
   // десериализация
   implicit val userReads = (
+
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toLong case None => 0 } and
       (JsPath \ "login").read[String] and
-      (JsPath \ "password").read[String] and
+      (JsPath \ "password").read(minLength[String](4)) and
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and

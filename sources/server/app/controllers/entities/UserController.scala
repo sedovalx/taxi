@@ -14,6 +14,7 @@ import utils.auth.{Environment, UserService}
 import utils.db.repos.UsersRepo
 import utils.extensions.DateUtils
 import utils.serialization.UserSerializer._
+import utils.serialization.FormatJsError._
 import DateUtils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -50,10 +51,8 @@ class UserController(val env: Environment,
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
-    json.validate[User].fold(
-      errors => Future.successful(BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors)))),
-      user => {
-        //todo: перенести установку создателя в единую точку
+    json.validate[User] match {
+      case JsSuccess(user, _) => {
         val toSave: User = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
         userService.createUser(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
@@ -61,21 +60,23 @@ class UserController(val env: Environment,
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
         }
       }
-    )
+      case err@JsError(_) => Future(BadRequest(Json.toJson(err)))
+    }
   }
 
   def update(id: Long) = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
-    json.validate[User].fold(
-      errors => BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors))),
-      user => {
+
+    json.validate[User] match {
+      case JsSuccess(user, _) => {
         // todo: перенести установку времени редактирования в единую точку
         val toSave = user.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
         withDbAction { session => UsersRepo.update(toSave)(session) }
         val userJson = makeJson("user", toSave)
         Ok(userJson)
       }
-    )
+      case err@JsError(_) => BadRequest(Json.toJson(err))
+    }
   }
 
   def delete(id: Long) = SecuredAction { request =>
