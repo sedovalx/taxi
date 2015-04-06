@@ -60,7 +60,7 @@ class UserController(val env: Environment,
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
         }
       }
-      case err@JsError(_) => Future(BadRequest(Json.toJson(err)))
+      case err@JsError(_) => Future(UnprocessableEntity(Json.toJson(err)))
     }
   }
 
@@ -75,7 +75,7 @@ class UserController(val env: Environment,
         val userJson = makeJson("user", toSave)
         Ok(userJson)
       }
-      case err@JsError(_) => BadRequest(Json.toJson(err))
+      case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
     }
   }
 
@@ -92,19 +92,19 @@ class UserController(val env: Environment,
 
 
   def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[UserFilter] = {
-    val query = request.queryString.map { case (k, v) => k -> v.mkString }
-    val login = query get ("login")
-    val lastName = query get ("lastName")
-    val firstName = query get ("firstName")
-    val middleName = query get ("middleName")
-    var role = Role.toRole(query get ("role") )
+    val query: Map[String, String] = request.queryString.map { case (k, v) => k -> v.mkString }
+    val login = query.get("login")
+    val lastName = query.get("lastName")
+    val firstName = query.get("firstName")
+    val middleName = query.get("middleName")
+    val role = Role.toRole(query.get("role"))
     //TODO: уточнить формат даты
-    val createDate = stringToDate ( query get ("createDate") )
+    val createDate = stringToDate ( query.get("createDate") )
 
-    var filter = new UserFilter( login, lastName, firstName, middleName, role, createDate )
+    val filter = new UserFilter(login, lastName, firstName, middleName, role, createDate)
 
     //TODO: вынести в utils?
-    var fieldList = filter.productIterator.toList.collect ({ case Some(x) => x } );
+    val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })
     val hasAny = fieldList.length > 0
 
     hasAny match {

@@ -20,8 +20,5 @@ class Users(tag: Tag) extends TableBase[User](tag, "user") {
   def * = (id, login, passwordHash, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> ((User.apply _).tupled, User.unapply)
 
   def uniqueLogin = index("idx_login_uq", login, unique = true)
-
-  def creatorRef = foreignKey("fk_user_creator", creatorId, UsersRepo.tableQuery)(_.id)
-  def editorRef = foreignKey("fk_user_editor", editorId, UsersRepo.tableQuery)(_.id)
 }
 

@@ -1,5 +1,6 @@
 package utils.serialization
 
+import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 /**
@@ -9,15 +10,12 @@ import play.api.libs.json._
 object FormatJsError {
 
   implicit val JsErrorJsonWriter = new Writes[JsError] {
-    def writes(o: JsError): JsValue = JsArray(
-        o.errors.map {
-          case (path, validationErrors) => Json.obj(
-            "path" -> Json.toJson( path.toString().substring(1) ),
-            //TODO: подумать о локализации ошибок
-            "validationErrors" ->validationErrors.map( validationError => validationError.message )
-          )
-        }
-    )
+    def writes(o: JsError): JsValue =
+      o.errors.foldLeft(Json.obj()) { (res: JsObject, err: (JsPath, scala.Seq[ValidationError])) =>
+        val property = err._1.toString().substring(1)
+        val value = err._2.map(e => e.message + ":" + e.args.mkString(",")).map(msg => JsString(msg))
+        res + (property, JsArray(value))
+      }
   }
 
 }

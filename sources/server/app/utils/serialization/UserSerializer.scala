@@ -24,8 +24,8 @@ object UserSerializer {
   implicit val userReads = (
 
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toLong case None => 0 } and
-      (JsPath \ "login").read[String] and
-      (JsPath \ "password").read(minLength[String](4)) and
+      (JsPath \ "login").read(minLength[String](3)) and
+      (JsPath \ "password").read(minLength[String](8)) and
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and
