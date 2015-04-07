@@ -33,7 +33,8 @@ object UserSerializer {
       (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) }
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) } and
+      (JsPath \ "comment").readNullable[String]
     )(User.apply _)
 
   // сериализация
@@ -49,7 +50,8 @@ object UserSerializer {
       "creationDate" -> user.creationDate.map { d => dateIso8601Format.format(d)} ,
       "editDate" -> user.editDate.map { d => dateIso8601Format.format(d)},
       "creator" -> user.creatorId,
-      "editor" -> user.editorId
+      "editor" -> user.editorId,
+      "comment" -> user.comment
     )
   }
 }

@@ -26,4 +26,8 @@ trait Entity {
    * Последний отредактировавший запись
    */
   val editorId: Option[Long]
+  /**
+   * Произвольный комментарий
+   */
+  val comment: Option[String]
 }

@@ -27,6 +27,7 @@ case class User(
  creationDate: Option[Date] = None,
  editDate: Option[Date] = None,
  creatorId: Option[Long] = None,
- editorId: Option[Long] = None
+ editorId: Option[Long] = None,
+ comment: Option[String] = None
 ) extends Entity with Identity
 

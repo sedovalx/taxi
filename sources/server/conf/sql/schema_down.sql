@@ -6,6 +6,6 @@ DROP TABLE rent;
 DROP TABLE car;
 DROP TABLE car_class;
 DROP TABLE driver;
-DROP TABLE "user";
 DROP TABLE checkpoint;
+DROP TABLE "user";
 DROP TABLE play_evolutions;

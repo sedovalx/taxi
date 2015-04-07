@@ -1,9 +1,7 @@
 package base
 
-import com.typesafe.config.ConfigFactory
-import org.specs2.execute.{Result, AsResult}
+import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
-import org.specs2.specification.Fragments
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, WithApplication}
 

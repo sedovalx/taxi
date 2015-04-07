@@ -27,12 +27,12 @@ object DriverSerializer {
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "phone").read[String] and
       (JsPath \ "secPhone").read[String] and
-      (JsPath \ "comment").readNullable[String] and
       (JsPath \ "address").read[String] and
       (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) }
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) } and
+      (JsPath \ "comment").readNullable[String]
     )(Driver.apply _)
 
   // сериализация
@@ -46,12 +46,12 @@ object DriverSerializer {
       "middleName" -> driver.middleName,
       "phone" -> driver.phone,
       "secPhone" -> driver.secPhone,
-      "comment" -> driver.comment,
       "address" -> driver.address,
       "creationDate" -> driver.creationDate.map { d => dateIso8601Format.format(d)} ,
       "editDate" -> driver.editDate.map { d => dateIso8601Format.format(d)},
       "creator" -> driver.creatorId,
-      "editor" -> driver.editorId
+      "editor" -> driver.editorId,
+      "comment" -> driver.comment
     )
   }
 }

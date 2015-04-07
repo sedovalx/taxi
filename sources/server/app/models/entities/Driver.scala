@@ -24,10 +24,10 @@ case class Driver(
  middleName: Option[String],
  phone: String,
  secPhone: String,
- comment: Option[String],
  address: String,
  creationDate: Option[Date],
  editDate: Option[Date],
  creatorId: Option[Long],
- editorId: Option[Long]
+ editorId: Option[Long],
+ comment: Option[String]
 ) extends Entity

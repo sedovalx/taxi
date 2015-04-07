@@ -25,6 +25,6 @@ libraryDependencies ++= Seq(
   "com.typesafe.play"                 % "play-slick_2.11"                 % "0.8.0",
   "org.slf4j"                         % "slf4j-log4j12"                   % "1.7.10",
   "com.mohiva"                        %% "play-silhouette"                % "2.0-RC2",
-  "com.mohiva" %% "play-silhouette-testkit" % "2.0-RC2" % "test",
+  "com.mohiva"                        %% "play-silhouette-testkit"        % "2.0-RC2"                   % "test",
   "org.scaldi"                        %% "scaldi-play"                    % "0.5.3"
 )

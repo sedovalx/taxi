@@ -17,7 +17,7 @@ class Users(tag: Tag) extends TableBase[User](tag, "user") {
   def middleName    = column[Option[String]]("middle_name")
   def role          = column[Role]("role")
 
-  def * = (id, login, passwordHash, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId) <> ((User.apply _).tupled, User.unapply)
+  def * = (id, login, passwordHash, lastName, firstName, middleName, role, creationDate, editDate, creatorId, editorId, comment) <> ((User.apply _).tupled, User.unapply)
 
   def uniqueLogin = index("idx_login_uq", login, unique = true)
 }
