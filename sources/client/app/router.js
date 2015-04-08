@@ -18,6 +18,12 @@ Router.map(function() {
   this.resource("driver", { path: "/drivers/:driver_id" }, function() {
     this.route("edit");
   });
+  this.resource("cars", function() {
+    this.route("new");
+  });
+  this.resource("car", { path: "/cars/:car_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 
