@@ -7,5 +7,5 @@ DROP TABLE car;
 DROP TABLE car_class;
 DROP TABLE driver;
 DROP TABLE checkpoint;
-DROP TABLE "user";
+DROP TABLE account;
 DROP TABLE play_evolutions;
