@@ -11,6 +11,7 @@ import scala.slick.model.Model
  *          import utils.db.MappingCodeGenerator
  *          import scala.slick.driver.PostgresDriver
  *
+ *          Class.forName("org.postgresql.Driver")
  *          val db = PostgresDriver.simple.Database.forURL("jdbc:postgresql://localhost:5433/taxi", "user", "password")
  *          val model = db.withSession { implicit session =>
  *            PostgresDriver.createModel()
@@ -22,7 +23,14 @@ object MappingCodeGenerator {
   def apply(model: Model, packageName: String): String = {
     val codeGen = new scala.slick.codegen.SourceCodeGenerator(model){
 
-      override def code = "import models.entities.Role._" + "\n" + super.code
+      override def code = "import models.entities._" +
+        "\n" + "import models.entities.Role._" +
+        "\n" + "import com.mohiva.play.silhouette.api.Identity" +
+        "\n" + super.code
+
+      override def entityName = (dbName: String) => dbName.toCamelCase
+
+      override def tableName = (dbName: String) => dbName.toCamelCase + "Table"
 
       override def Table = new Table(_) {
         table =>
@@ -30,6 +38,11 @@ object MappingCodeGenerator {
           key =>
           override def rawName =
             key.referencingColumns.map{ _.name.toString.stripSuffix("Id") }.mkString + "Fk"
+        }
+
+        override def EntityType = new EntityType {
+          entity =>
+          override def parents: Seq[String] = Seq("Entity") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
         }
 
         override def Column = new Column(_) {

@@ -123,6 +123,7 @@ CREATE TABLE account
   first_name VARCHAR(254),
   middle_name VARCHAR(254),
   role VARCHAR(254) NOT NULL,
+  comment VARCHAR,
   creation_date DATE,
   edit_date DATE,
   creator_id INTEGER,
