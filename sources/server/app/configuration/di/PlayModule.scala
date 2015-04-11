@@ -15,7 +15,7 @@ import scala.slick.driver.JdbcProfile
  */
 class PlayModule extends Module {
   binding to new IndexController
-  binding to new UserController(inject [Environment], inject [UserService], inject [JdbcProfile])
-  binding to new DriverController(inject [Environment], inject [UserService], inject [JdbcProfile])
+  binding to new UserController(inject [Environment], inject [UserService])
+  binding to new DriverController(inject [Environment], inject [UserService])
   binding to new AuthController(inject [Environment], inject [IdentityService[Account]])
 }

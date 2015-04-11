@@ -46,7 +46,7 @@ class SilhouetteModule extends Module {
   )
 
   // хранение паролей
-  val passwordInfoDAO = new PasswordInfoDAO(inject [JdbcProfile])
+  val passwordInfoDAO = new PasswordInfoDAO
 
   // сервис доступа к хранению паролей
   val authInfoService = new DelegableAuthInfoService(passwordInfoDAO)
@@ -55,7 +55,7 @@ class SilhouetteModule extends Module {
   val credentialsProvider = new CredentialsProvider(authInfoService, passwordHasher, Seq(passwordHasher))
 
   // хранение логинов
-  val loginInfoDAO = new LoginInfoDAO(inject [JdbcProfile])
+  val loginInfoDAO = new LoginInfoDAO
 
   // экспорт
   binding to Environment(

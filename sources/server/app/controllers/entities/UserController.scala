@@ -12,23 +12,21 @@ import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
 import utils.auth.{Environment, UserService}
-import utils.db.Repositories
+import utils.db.repo.UsersRepo
 import utils.extensions.DateUtils
-import utils.serialization.UserSerializer._
+import utils.extensions.DateUtils._
 import utils.serialization.FormatJsError._
-import DateUtils._
+import utils.serialization.UserSerializer._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
-import scala.slick.driver.JdbcProfile
 
 /**
  * Контроллер операций над пользователями
  */
 class UserController(val env: Environment,
-                      userService: UserService,
-                      val profile: JdbcProfile)
-  extends BaseController with Silhouette[Account, JWTAuthenticator] with Repositories {
+                      userService: UserService)
+  extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**
    * Возвращает список пользователей в json-формате

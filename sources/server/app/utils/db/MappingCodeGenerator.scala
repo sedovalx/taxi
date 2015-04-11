@@ -23,9 +23,22 @@ object MappingCodeGenerator {
   def apply(model: Model, packageName: String): String = {
     val codeGen = new scala.slick.codegen.SourceCodeGenerator(model){
 
+      override def packageCode(profile: String, pkg: String, container:String="Tables") : String = {
+        s"""
+package ${pkg}
+// AUTO-GENERATED Slick data model
+/** Stand-alone Slick data model for immediate use */
+object ${container} extends ${container}
+
+trait ${container} {
+  import ${profile}.simple._
+  ${indent(code)}
+}
+      """.trim()
+      }
+
       override def code = "import models.entities._" +
         "\n" + "import models.entities.Role._" +
-        "\n" + "import models.base.BaseTable" +
         "\n" + "import com.mohiva.play.silhouette.api.Identity" +
         "\n" + super.code
 
@@ -49,10 +62,6 @@ object MappingCodeGenerator {
         override def EntityType = new EntityType {
           entity =>
           override def parents: Seq[String] = Seq("Entity") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
-        }
-
-        override def TableClass = new TableClass {
-          override def parents: Seq[String] = Seq("BaseTable")
         }
 
         override def Column = new Column(_) {

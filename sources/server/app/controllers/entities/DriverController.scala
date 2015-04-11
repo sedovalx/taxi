@@ -10,18 +10,15 @@ import models.generated.Tables._
 import play.api.libs.json._
 import play.api.mvc.BodyParsers
 import utils.auth.{Environment, UserService}
-import utils.db.Repositories
+import utils.db.repo.DriversRepo
 import utils.serialization.DriverSerializer._
-
-import scala.slick.driver.JdbcProfile
 
 /**
  * Контроллер операций над водителями
  */
 class DriverController(val env: Environment,
-                       userService: UserService,
-                        val profile: JdbcProfile)
-  extends BaseController with Silhouette[Account, JWTAuthenticator] with Repositories {
+                       userService: UserService)
+  extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**
    * Возвращает список водителей в json-формате

@@ -11,10 +11,7 @@ import scala.slick.driver.JdbcProfile
 
 class ServicesModule extends Module {
 
-  bind [JdbcProfile] to play.api.db.slick.Config.driver
-
   bind [UserService] to new UserServiceImpl(
-    inject [JdbcProfile],
     inject [PasswordHasher],
     inject [DelegableAuthInfoService],
     inject [IdentityService[Account]])

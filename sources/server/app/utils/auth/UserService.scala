@@ -5,21 +5,20 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.PasswordHasher
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
-import utils.AccountAlreadyExistsException
-import utils.db.{Repositories, DbAccessor}
 import models.generated.Tables.Account
+import utils.AccountAlreadyExistsException
+import utils.db.DbAccessor
+import utils.db.repo.UsersRepo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import scala.slick.driver.JdbcProfile
 
-trait UserService extends DbAccessor with Repositories {
+trait UserService extends DbAccessor {
   def hasUsers: Future[Boolean]
   def createUser(user: Account): Future[Account]
 }
 
-class UserServiceImpl(val profile: JdbcProfile,
-                      passwordHasher: PasswordHasher,
+class UserServiceImpl(passwordHasher: PasswordHasher,
                       authInfoService: DelegableAuthInfoService,
                        identityService: IdentityService[Account]) extends UserService {
   def hasUsers: Future[Boolean] = Future {
