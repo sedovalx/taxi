@@ -3,7 +3,7 @@ package repositories
 import base.SpecificationWithFixtures
 import controllers.filter.UserFilter
 import models.entities.Role.Role
-import models.entities.{Role, User}
+import models.entities.Role
 import utils.db.repos.UsersRepo
 import play.api.db.slick.{DB, Session}
 import utils.extensions.DateUtils

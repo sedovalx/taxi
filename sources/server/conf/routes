@@ -19,16 +19,16 @@ POST          /api/auth/renew         @controllers.auth.AuthController.renew
 # User routes
 GET           /api/users/me           @controllers.entities.UserController.currentUser
 GET           /api/users              @controllers.entities.UserController.read
-GET           /api/users/:id          @controllers.entities.UserController.getById(id: Long)
+GET           /api/users/:id          @controllers.entities.UserController.getById(id: Int)
 POST          /api/users              @controllers.entities.UserController.create
-PUT           /api/users/:id          @controllers.entities.UserController.update(id: Long)
-DELETE        /api/users/:id          @controllers.entities.UserController.delete(id: Long)
+PUT           /api/users/:id          @controllers.entities.UserController.update(id: Int)
+DELETE        /api/users/:id          @controllers.entities.UserController.delete(id: Int)
 # Drivers routes
 GET           /api/drivers            @controllers.entities.DriverController.read
-GET           /api/drivers/:id        @controllers.entities.DriverController.getById(id: Long)
+GET           /api/drivers/:id        @controllers.entities.DriverController.getById(id: Int)
 POST          /api/drivers            @controllers.entities.DriverController.create
-PUT           /api/drivers/:id        @controllers.entities.DriverController.update(id: Long)
-DELETE        /api/drivers/:id        @controllers.entities.DriverController.delete(id: Long)
+PUT           /api/drivers/:id        @controllers.entities.DriverController.update(id: Int)
+DELETE        /api/drivers/:id        @controllers.entities.DriverController.delete(id: Int)
 
 
 # Every other page (should be the last route)

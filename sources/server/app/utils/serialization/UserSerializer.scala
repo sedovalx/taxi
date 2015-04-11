@@ -4,9 +4,10 @@ import java.sql.Date
 import java.text.SimpleDateFormat
 
 import models.entities.Role._
-import models.entities.{Role, User}
+import models.entities.Role
 import play.api.libs.json._
 import play.api.libs.json.Reads._
+import models.generated.Tables.Account
 
 import play.api.libs.functional.syntax._
 
@@ -23,26 +24,26 @@ object UserSerializer {
   // десериализация
   implicit val userReads = (
 
-      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toLong case None => 0 } and
+      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "login").read(minLength[String](3)) and
       (JsPath \ "password").read(minLength[String](8)) and
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "role").read[Role] and
+      (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
-      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "comment").readNullable[String]
-    )(User.apply _)
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(Account.apply _)
 
   // сериализация
-  implicit val userWrites =  new Writes[User] {
-    def writes(user: User) = Json.obj(
+  implicit val userWrites =  new Writes[Account] {
+    def writes(user: Account) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
-      "password" -> user.password,
+      "password" -> user.passwordHash,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,

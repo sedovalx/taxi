@@ -2,11 +2,10 @@ package utils.serialization
 
 import java.sql.Date
 import java.text.SimpleDateFormat
-
-import models.entities.Driver
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
+import models.generated.Tables.Driver
 
 /**
  * Реализация сериализации/десереализации пользователей в json
@@ -19,7 +18,7 @@ object DriverSerializer {
   */
   // десериализация
   implicit val driverReads = (
-      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toLong case None => 0 } and
+      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "pass").read[String] and
       (JsPath \ "license").read[String] and
       (JsPath \ "lastName").readNullable[String] and
@@ -27,12 +26,12 @@ object DriverSerializer {
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "phone").read[String] and
       (JsPath \ "secPhone").read[String] and
+      (JsPath \ "comment").readNullable[String] and
       (JsPath \ "address").read[String] and
       (JsPath \ "creationDate").readNullable[Date] and
       (JsPath \ "editDate").readNullable[Date] and
-      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toLong) } and
-      (JsPath \ "comment").readNullable[String]
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Driver.apply _)
 
   // сериализация

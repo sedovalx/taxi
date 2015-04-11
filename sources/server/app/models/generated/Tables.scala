@@ -32,12 +32,9 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(date), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: String, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, editDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity with Identity
+  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, editDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity with Identity
   /** GetResult implicit for fetching Account objects using plain SQL queries */
-  implicit def GetResultAccount(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Option[java.sql.Date]], e4: GR[Option[Int]]): GR[Account] = GR{
-    prs => import prs._
-    Account.tupled((<<[Int], <<[String], <<[String], <<?[String], <<?[String], <<?[String], <<[String], <<?[String], <<?[java.sql.Date], <<?[java.sql.Date], <<?[Int], <<?[Int]))
-  }
+  
   /** Table description of table account. Objects of this class serve as prototypes for rows in queries. */
   class AccountTable(_tableTag: Tag) extends Table[Account](_tableTag, "account") {
     def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (Account.tupled, Account.unapply)
@@ -57,7 +54,7 @@ trait Tables {
     /** Database column middle_name DBType(varchar), Length(254,true), Default(None) */
     val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
     /** Database column role DBType(varchar), Length(254,true) */
-    val role = column[String]("role", O.Length(254,varying=true))
+    val role = column[Role]("role", O.Length(254,varying=true))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
@@ -91,10 +88,7 @@ trait Tables {
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
   case class CarClass(id: Int, name: String, rate: scala.math.BigDecimal, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
   /** GetResult implicit for fetching CarClass objects using plain SQL queries */
-  implicit def GetResultCarClass(implicit e0: GR[Int], e1: GR[String], e2: GR[scala.math.BigDecimal], e3: GR[Option[java.sql.Date]], e4: GR[Option[Int]], e5: GR[Option[String]]): GR[CarClass] = GR{
-    prs => import prs._
-    CarClass.tupled((<<[Int], <<[String], <<[scala.math.BigDecimal], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[String]))
-  }
+  
   /** Table description of table car_class. Objects of this class serve as prototypes for rows in queries. */
   class CarClassTable(_tableTag: Tag) extends Table[CarClass](_tableTag, "car_class") {
     def * = (id, name, rate, creationDate, creatorId, editDate, editorId, comment) <> (CarClass.tupled, CarClass.unapply)
@@ -144,10 +138,7 @@ trait Tables {
    *  @param classId Database column class_id DBType(int4) */
   case class Car(id: Int, regNumber: String, make: String, model: String, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, classId: Int) extends Entity
   /** GetResult implicit for fetching Car objects using plain SQL queries */
-  implicit def GetResultCar(implicit e0: GR[Int], e1: GR[String], e2: GR[scala.math.BigDecimal], e3: GR[Option[scala.math.BigDecimal]], e4: GR[Option[String]], e5: GR[Option[java.sql.Date]], e6: GR[Option[Int]]): GR[Car] = GR{
-    prs => import prs._
-    Car.tupled((<<[Int], <<[String], <<[String], <<[String], <<[scala.math.BigDecimal], <<?[scala.math.BigDecimal], <<?[String], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date], <<?[Int], <<[Int]))
-  }
+  
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
     def * = (id, regNumber, make, model, mileage, service, comment, creationDate, creatorId, editDate, editorId, classId) <> (Car.tupled, Car.unapply)
@@ -203,10 +194,7 @@ trait Tables {
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
   case class Checkpoint(id: Int, pointDate: java.sql.Date, days: Int, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
   /** GetResult implicit for fetching Checkpoint objects using plain SQL queries */
-  implicit def GetResultCheckpoint(implicit e0: GR[Int], e1: GR[java.sql.Date], e2: GR[Option[java.sql.Date]], e3: GR[Option[Int]], e4: GR[Option[String]]): GR[Checkpoint] = GR{
-    prs => import prs._
-    Checkpoint.tupled((<<[Int], <<[java.sql.Date], <<[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[String]))
-  }
+  
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
     def * = (id, pointDate, days, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
@@ -258,10 +246,7 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
   case class Driver(id: Int, pass: String, license: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Date] = None, editDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
   /** GetResult implicit for fetching Driver objects using plain SQL queries */
-  implicit def GetResultDriver(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Option[java.sql.Date]], e4: GR[Option[Int]]): GR[Driver] = GR{
-    prs => import prs._
-    Driver.tupled((<<[Int], <<[String], <<[String], <<?[String], <<?[String], <<?[String], <<[String], <<[String], <<?[String], <<[String], <<?[java.sql.Date], <<?[java.sql.Date], <<?[Int], <<?[Int]))
-  }
+  
   /** Table description of table driver. Objects of this class serve as prototypes for rows in queries. */
   class DriverTable(_tableTag: Tag) extends Table[Driver](_tableTag, "driver") {
     def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
@@ -323,10 +308,7 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(date), Default(None) */
   case class Fine(id: Int, fineDate: java.sql.Date, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
   /** GetResult implicit for fetching Fine objects using plain SQL queries */
-  implicit def GetResultFine(implicit e0: GR[Int], e1: GR[java.sql.Date], e2: GR[scala.math.BigDecimal], e3: GR[Option[String]], e4: GR[Option[Int]], e5: GR[Option[java.sql.Date]]): GR[Fine] = GR{
-    prs => import prs._
-    Fine.tupled((<<[Int], <<[java.sql.Date], <<[scala.math.BigDecimal], <<?[String], <<[Int], <<?[String], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date]))
-  }
+  
   /** Table description of table fine. Objects of this class serve as prototypes for rows in queries. */
   class FineTable(_tableTag: Tag) extends Table[Fine](_tableTag, "fine") {
     def * = (id, fineDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
@@ -377,10 +359,7 @@ trait Tables {
    *  @param rentId Database column rent_id DBType(int4) */
   case class Payment(id: Int, payDate: java.sql.Date, amount: scala.math.BigDecimal, target: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, rentId: Int) extends Entity
   /** GetResult implicit for fetching Payment objects using plain SQL queries */
-  implicit def GetResultPayment(implicit e0: GR[Int], e1: GR[java.sql.Date], e2: GR[scala.math.BigDecimal], e3: GR[String], e4: GR[Option[String]], e5: GR[Option[Int]], e6: GR[Option[java.sql.Date]]): GR[Payment] = GR{
-    prs => import prs._
-    Payment.tupled((<<[Int], <<[java.sql.Date], <<[scala.math.BigDecimal], <<[String], <<?[String], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date], <<[Int]))
-  }
+  
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
     def * = (id, payDate, amount, target, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
@@ -429,10 +408,7 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(date), Default(None) */
   case class RentStatus(id: Int, changeDate: java.sql.Date, status: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
   /** GetResult implicit for fetching RentStatus objects using plain SQL queries */
-  implicit def GetResultRentStatus(implicit e0: GR[Int], e1: GR[java.sql.Date], e2: GR[String], e3: GR[Option[String]], e4: GR[Option[Int]], e5: GR[Option[java.sql.Date]]): GR[RentStatus] = GR{
-    prs => import prs._
-    RentStatus.tupled((<<[Int], <<[java.sql.Date], <<[String], <<?[String], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date]))
-  }
+  
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
     def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate) <> (RentStatus.tupled, RentStatus.unapply)
@@ -481,10 +457,7 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(date), Default(None) */
   case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
   /** GetResult implicit for fetching Rent objects using plain SQL queries */
-  implicit def GetResultRent(implicit e0: GR[Int], e1: GR[scala.math.BigDecimal], e2: GR[Option[String]], e3: GR[Option[Int]], e4: GR[Option[java.sql.Date]]): GR[Rent] = GR{
-    prs => import prs._
-    Rent.tupled((<<[Int], <<[Int], <<[Int], <<[scala.math.BigDecimal], <<?[String], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date]))
-  }
+  
   /** Table description of table rent. Objects of this class serve as prototypes for rows in queries. */
   class RentTable(_tableTag: Tag) extends Table[Rent](_tableTag, "rent") {
     def * = (id, driverId, carId, deposit, comment, creatorId, creationDate, editorId, editDate) <> (Rent.tupled, Rent.unapply)
@@ -535,10 +508,7 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(date), Default(None) */
   case class Repair(id: Int, repairDate: java.sql.Date, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
   /** GetResult implicit for fetching Repair objects using plain SQL queries */
-  implicit def GetResultRepair(implicit e0: GR[Int], e1: GR[java.sql.Date], e2: GR[scala.math.BigDecimal], e3: GR[Option[String]], e4: GR[Option[Int]], e5: GR[Option[java.sql.Date]]): GR[Repair] = GR{
-    prs => import prs._
-    Repair.tupled((<<[Int], <<[java.sql.Date], <<[scala.math.BigDecimal], <<?[String], <<[Int], <<?[String], <<?[Int], <<?[java.sql.Date], <<?[Int], <<?[java.sql.Date]))
-  }
+  
   /** Table description of table repair. Objects of this class serve as prototypes for rows in queries. */
   class RepairTable(_tableTag: Tag) extends Table[Repair](_tableTag, "repair") {
     def * = (id, repairDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)

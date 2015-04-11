@@ -7,12 +7,13 @@ import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticatorService, 
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import com.mohiva.play.silhouette.impl.util.{BCryptPasswordHasher, SecureRandomIDGenerator}
-import models.entities.User
+import models.generated.Tables.Account
 import play.api.Play
 import play.api.Play.current
 import scaldi.Module
 import utils.auth.{Environment, LoginInfoDAO, PasswordInfoDAO}
 
+import scala.slick.driver.JdbcProfile
 
 
 /**
@@ -45,7 +46,7 @@ class SilhouetteModule extends Module {
   )
 
   // хранение паролей
-  val passwordInfoDAO = new PasswordInfoDAO
+  val passwordInfoDAO = new PasswordInfoDAO(inject [JdbcProfile])
 
   // сервис доступа к хранению паролей
   val authInfoService = new DelegableAuthInfoService(passwordInfoDAO)
@@ -54,7 +55,7 @@ class SilhouetteModule extends Module {
   val credentialsProvider = new CredentialsProvider(authInfoService, passwordHasher, Seq(passwordHasher))
 
   // хранение логинов
-  val loginInfoDAO = new LoginInfoDAO
+  val loginInfoDAO = new LoginInfoDAO(inject [JdbcProfile])
 
   // экспорт
   binding to Environment(
@@ -65,5 +66,5 @@ class SilhouetteModule extends Module {
   )
   bind [PasswordHasher] to passwordHasher
   bind [DelegableAuthInfoService] to authInfoService
-  bind [IdentityService[User]] to loginInfoDAO
+  bind [IdentityService[Account]] to loginInfoDAO
 }

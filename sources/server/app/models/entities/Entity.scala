@@ -9,7 +9,7 @@ trait Entity {
   /**
    * Идентификатор
    */
-  val id: Long
+  val id: Int
   /**
    * Дата создания
    */
@@ -21,11 +21,11 @@ trait Entity {
   /**
    * Создатель записи
    */
-  val creatorId: Option[Long]
+  val creatorId: Option[Int]
   /**
    * Последний отредактировавший запись
    */
-  val editorId: Option[Long]
+  val editorId: Option[Int]
   /**
    * Произвольный комментарий
    */

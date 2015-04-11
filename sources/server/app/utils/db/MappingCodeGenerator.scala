@@ -25,6 +25,7 @@ object MappingCodeGenerator {
 
       override def code = "import models.entities._" +
         "\n" + "import models.entities.Role._" +
+        "\n" + "import models.base.BaseTable" +
         "\n" + "import com.mohiva.play.silhouette.api.Identity" +
         "\n" + super.code
 
@@ -34,6 +35,11 @@ object MappingCodeGenerator {
 
       override def Table = new Table(_) {
         table =>
+
+        override def PlainSqlMapper = new PlainSqlMapper {
+          override def enabled = false
+        }
+
         override def ForeignKey = new ForeignKey(_) {
           key =>
           override def rawName =
@@ -45,11 +51,15 @@ object MappingCodeGenerator {
           override def parents: Seq[String] = Seq("Entity") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
         }
 
+        override def TableClass = new TableClass {
+          override def parents: Seq[String] = Seq("BaseTable")
+        }
+
         override def Column = new Column(_) {
           column =>
           override def code = s"""val $name = column[$actualType]("${model.name}"${options.map(", "+_).mkString("")})"""
           override def rawType: String = {
-            if (table.TableClass.name.toString == "Account" && column.name.toString == "role") parseType("Role")
+            if (table.TableClass.name.toString == "AccountTable" && column.name.toString == "role") parseType("Role")
             else super.rawType.toString
           }
         }

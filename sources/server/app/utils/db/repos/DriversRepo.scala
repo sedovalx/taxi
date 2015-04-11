@@ -1,13 +1,10 @@
 package utils.db.repos
 
-import models.entities.Driver
-import models.tables.Drivers
-
-import scala.slick.lifted.TableQuery
+import models.generated.Tables._
 
 /**
  * Репозиторий водителей
  */
-object DriversRepo extends GenericCRUD[Drivers, Driver]{
-  val tableQuery = TableQuery[Drivers]
-}
+//object DriversRepo extends GenericCRUD[DriverTable, Driver]{
+//  val tableQuery = DriverTable
+//}

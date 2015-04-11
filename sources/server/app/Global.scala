@@ -5,7 +5,8 @@ import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.SecuredSettings
 import com.typesafe.config.ConfigFactory
 import configuration.di._
-import models.entities.{Role, User}
+import models.entities.Role
+import models.generated.Tables.Account
 import play.api.i18n.Lang
 import play.api.libs.json.Json
 import play.api.{GlobalSettings, _}
@@ -52,7 +53,7 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
     val userService = inject [UserService]
     userService.hasUsers flatMap { hasUsers =>
       if (!hasUsers) {
-        val admin = User(id = 0, login = "admin", password = "admin", role = Role.Administrator)
+        val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
         userService.createUser(admin)
       } else Future.successful(None)
     } recoverWith {

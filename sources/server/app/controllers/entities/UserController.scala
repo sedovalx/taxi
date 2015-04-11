@@ -7,11 +7,12 @@ import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import controllers.filter.UserFilter
-import models.entities.{Role, User}
+import models.entities.Role
+import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
 import utils.auth.{Environment, UserService}
-import utils.db.repos.UsersRepo
+import utils.db.Repositories
 import utils.extensions.DateUtils
 import utils.serialization.UserSerializer._
 import utils.serialization.FormatJsError._
@@ -19,13 +20,15 @@ import DateUtils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
+import scala.slick.driver.JdbcProfile
 
 /**
  * Контроллер операций над пользователями
  */
 class UserController(val env: Environment,
-                      userService: UserService)
-  extends BaseController with Silhouette[User, JWTAuthenticator] {
+                      userService: UserService,
+                      val profile: JdbcProfile)
+  extends BaseController with Silhouette[Account, JWTAuthenticator] with Repositories {
 
   /**
    * Возвращает список пользователей в json-формате
@@ -33,7 +36,7 @@ class UserController(val env: Environment,
    */
   def read = SecuredAction { implicit request =>
     val userFilterOpt = parseUserFilterFromQueryString(request)
-    var users = List[User]()
+    var users = List[Account]()
     withDb { session =>
       userFilterOpt match {
         case Some(userFilter: UserFilter) => users = UsersRepo.find(userFilter)(session)
@@ -44,16 +47,16 @@ class UserController(val env: Environment,
     Ok(makeJson("users", users))
   }
 
-  def getById(id: Long) = SecuredAction { implicit request =>
+  def getById(id: Int) = SecuredAction { implicit request =>
     val user = withDb { session => UsersRepo.findById(id)(session) }
     Ok(makeJson("user", user))
   }
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
-    json.validate[User] match {
+    json.validate[Account] match {
       case JsSuccess(user, _) => {
-        val toSave: User = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
+        val toSave: Account = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
         userService.createUser(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
@@ -64,10 +67,10 @@ class UserController(val env: Environment,
     }
   }
 
-  def update(id: Long) = SecuredAction(BodyParsers.parse.json) { request =>
+  def update(id: Int) = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
 
-    json.validate[User] match {
+    json.validate[Account] match {
       case JsSuccess(user, _) => {
         // todo: перенести установку времени редактирования в единую точку
         val toSave = user.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
@@ -79,7 +82,7 @@ class UserController(val env: Environment,
     }
   }
 
-  def delete(id: Long) = SecuredAction { request =>
+  def delete(id: Int) = SecuredAction { request =>
     val wasDeleted = withDb { session => UsersRepo.delete(id)(session) }
     if (wasDeleted) Ok(Json.parse("{}"))
     else NotFound(Response.bad(s"Пользователь с id=$id не найден"))
@@ -112,7 +115,6 @@ class UserController(val env: Environment,
       case _ => None
     }
   }
-
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
 }

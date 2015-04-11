@@ -4,18 +4,18 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.exceptions.NotAuthenticatedException
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import utils.db.repos.UsersRepo
 import play.api.libs.json._
-import utils.db.DbAccessor
+import utils.db.{Repositories, DbAccessor}
 import play.api.Logger
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
+import scala.slick.driver.JdbcProfile
 
 /**
  * Сервис хранения паролей
  */
-class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor{
+class PasswordInfoDAO(val profile: JdbcProfile) extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor with Repositories {
 
   implicit val passwordFormat = Json.format[PasswordInfo]
 
@@ -26,7 +26,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
     // сериализуем authInfo в строку
     val passwordInfoJson = Json.toJson(authInfo)
     // и сохраняем в БД
-    withDb { session => UsersRepo.update(user.copy(password = passwordInfoJson.toString()))(session) }
+    withDb { session => UsersRepo.update(user.copy(passwordHash = passwordInfoJson.toString()))(session) }
 
     authInfo
   }
@@ -34,7 +34,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
   override def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = Future {
     // находим пользователя по логину
     val user = findUser(loginInfo.providerKey)
-    val password = user.password
+    val password = user.passwordHash
 
     // пробуем десериализовать пароль
     Json.parse(password).validate[PasswordInfo] match {

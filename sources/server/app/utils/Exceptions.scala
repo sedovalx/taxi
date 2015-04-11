@@ -1,5 +1,5 @@
 package utils
 
-class UserManagementException(message: String = null, cause: Throwable = null) extends RuntimeException(message, cause)
+class AccountManagementException(message: String = null, cause: Throwable = null) extends RuntimeException(message, cause)
 
-class UserAlreadyExistsException(login: String) extends UserManagementException(message = s"Пользователь с логином $login уже существует.")
+class AccountAlreadyExistsException(login: String) extends AccountManagementException(message = s"Пользователь с логином $login уже существует.")

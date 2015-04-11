@@ -9,7 +9,7 @@ import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import controllers.BaseController
-import models.entities.User
+import models.generated.Tables.Account
 import play.api.libs.json.Json
 import play.api.mvc.{BodyParsers, Action}
 import utils.auth.Environment
@@ -42,8 +42,8 @@ object Token {
 
 }
 
-class AuthController(val env: Environment, userService: IdentityService[User])
-  extends BaseController with Silhouette[User, JWTAuthenticator] {
+class AuthController(val env: Environment, userService: IdentityService[Account])
+  extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   private implicit val credentialsFormat = Json.format[Credentials]
 
