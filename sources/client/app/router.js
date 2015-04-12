@@ -24,6 +24,12 @@ Router.map(function() {
   this.resource("car", { path: "/cars/:car_id" }, function() {
     this.route("edit");
   });
+  this.resource("carclasses", function() {
+    this.route("new");
+  });
+  this.resource("carclass", { path: "/carclasses/:carclass_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 

@@ -20,6 +20,11 @@
                               Автомобили
                           </a>
                       {{/link-to}}
+                      {{#link-to 'carclasses' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Классы автомобилей
+                          </a>
+                      {{/link-to}}
                     </ul>
                 </div>
                 <div class="collapse navbar-collapse">
