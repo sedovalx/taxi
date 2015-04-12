@@ -24,10 +24,10 @@ Router.map(function() {
   this.resource("car", { path: "/cars/:car_id" }, function() {
     this.route("edit");
   });
-  this.resource("carclasses", function() {
+  this.resource("car-classes", function() {
     this.route("new");
   });
-  this.resource("carclass", { path: "/carclasses/:carclass_id" }, function() {
+  this.resource("car-class", { path: "/car-classes/:car-class_id" }, function() {
     this.route("edit");
   });
   this.route('login');
