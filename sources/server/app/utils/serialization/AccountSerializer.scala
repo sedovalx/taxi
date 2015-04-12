@@ -15,14 +15,14 @@ import play.api.libs.functional.syntax._
 /**
  * Реализация сериализации/десереализации пользователей в json
  */
-object UserSerializer {
+object AccountSerializer {
   val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
   implicit val enumReads = EnumSerializer.enumReads(Role)
   implicit val enumWrites = EnumSerializer.enumWrites
 
   // десериализация
-  implicit val userReads = (
+  implicit val accountReads = (
 
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "login").read(minLength[String](3)) and
@@ -39,7 +39,7 @@ object UserSerializer {
     )(Account.apply _)
 
   // сериализация
-  implicit val userWrites =  new Writes[Account] {
+  implicit val accountWrites =  new Writes[Account] {
     def writes(user: Account) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,

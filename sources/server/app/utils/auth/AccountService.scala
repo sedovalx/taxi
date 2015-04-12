@@ -8,24 +8,24 @@ import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import models.generated.Tables.Account
 import utils.AccountAlreadyExistsException
 import utils.db.DbAccessor
-import utils.db.repo.UsersRepo
+import utils.db.repo.AccountRepo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait UserService extends DbAccessor {
+trait AccountService extends DbAccessor {
   def hasUsers: Future[Boolean]
-  def createUser(user: Account): Future[Account]
+  def createAccount(user: Account): Future[Account]
 }
 
-class UserServiceImpl(passwordHasher: PasswordHasher,
+class AccountServiceImpl(passwordHasher: PasswordHasher,
                       authInfoService: DelegableAuthInfoService,
-                       identityService: IdentityService[Account]) extends UserService {
+                       identityService: IdentityService[Account]) extends AccountService {
   def hasUsers: Future[Boolean] = Future {
-    withDb { session => UsersRepo.isEmpty(session) }
+    withDb { session => AccountRepo.isEmpty(session) }
   }
 
-  def createUser(user: Account): Future[Account] = {
+  def createAccount(user: Account): Future[Account] = {
     // тут мы должны сделать хеш пароля и сохранить его
     val loginInfo = LoginInfo(CredentialsProvider.ID, user.login)
     identityService.retrieve(loginInfo) flatMap {
@@ -35,7 +35,7 @@ class UserServiceImpl(passwordHasher: PasswordHasher,
         val authInfo = passwordHasher.hash(user.passwordHash)
         Future {
           // сохраняем пользователя
-          val id = withDb { session => UsersRepo.create(user.copy(passwordHash = ""))(session) }
+          val id = withDb { session => AccountRepo.create(user.copy(passwordHash = ""))(session) }
           user.copy(id = id)
         } map { u =>
           // сохраняем хешированный пароль

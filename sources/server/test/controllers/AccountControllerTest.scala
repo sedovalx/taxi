@@ -10,7 +10,7 @@ import play.api.test.Helpers.defaultAwaitTimeout
 /**
  * Created by ipopkov on 04/04/15.
  */
-class UserControllerTest extends BaseControllerSpecification {
+class AccountControllerTest extends BaseControllerSpecification {
 
   "filter test" in new WithFakeDB  {
     DB.withSession { implicit session: Session =>
@@ -38,7 +38,6 @@ class UserControllerTest extends BaseControllerSpecification {
       status(result) must equalTo(UNPROCESSABLE_ENTITY)
       println (contentAsString(result))
 
-      //todo: ох и блять...
       val jsonResult = contentAsJson(result)
       (jsonResult \ "login") must haveClass[JsArray]
       (jsonResult \ "password") must haveClass[JsArray]

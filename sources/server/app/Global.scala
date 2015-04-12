@@ -15,7 +15,7 @@ import play.filters.gzip.GzipFilter
 import scaldi.{Injectable, Injector}
 import scaldi.play.ScaldiSupport
 import play.api.mvc.Results._
-import utils.auth.UserService
+import utils.auth.AccountService
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -50,11 +50,11 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
 
     // создание пользователя, если не найдено
     implicit val injector = applicationModule
-    val userService = inject [UserService]
+    val userService = inject [AccountService]
     userService.hasUsers flatMap { hasUsers =>
       if (!hasUsers) {
         val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
-        userService.createUser(admin)
+        userService.createAccount(admin)
       } else Future.successful(None)
     } recoverWith {
       case error => Future {

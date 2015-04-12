@@ -1,24 +1,25 @@
 package repositories
 
 import base.SpecificationWithFixtures
-import controllers.filter.UserFilter
+import controllers.filter.AccountFilter
 import models.entities.Role.Role
 import models.entities.Role
-import utils.db.repos.UsersRepo
+import utils.db.repo.AccountRepo
 import play.api.db.slick.{DB, Session}
 import utils.extensions.DateUtils
+import models.generated.Tables.Account
 
 import scala.util.Random
 
 
-class UsersRepositoryTest extends SpecificationWithFixtures {
+class AccountRepositoryTest extends SpecificationWithFixtures {
 
-  val users = UsersRepo
+  val users = AccountRepo
 
   private object User {
     def create(firstName: Option[String], lastName: Option[String], login: String, password: String, role: Role) =
-      new User(id = Random.nextLong(), firstName = firstName, lastName = lastName,
-        login = login, password = password, role = role, creationDate = Some(DateUtils.now))
+      new Account(id = Random.nextInt(), firstName = firstName, lastName = lastName,
+        login = login, passwordHash = password, role = role, creationDate = Some(DateUtils.now))
   }
 
   private def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
@@ -58,16 +59,16 @@ class UsersRepositoryTest extends SpecificationWithFixtures {
 
     "filter test" in new WithFakeDB {
       DB.withSession { implicit session: Session =>
-        val user1 = createUser("User", "User", "user1", "pass", Role.Accountant)
-        val user2 = createUser("User1", "User", "user2", "pass", Role.Cashier)
-        val user3 = createUser("User", "User2", "user3", "pass", Role.Repairman)
-        val user4 = createUser("User", "User", "user4", "pass", Role.Repairman)
-        var uf = new UserFilter(None, Some("User"), Some("User"), None, None, None)
-        var filteredUsers = UsersRepo.find(uf)
+        createUser("User", "User", "user1", "pass", Role.Accountant)
+        createUser("User1", "User", "user2", "pass", Role.Cashier)
+        createUser("User", "User2", "user3", "pass", Role.Repairman)
+        createUser("User", "User", "user4", "pass", Role.Repairman)
+        var uf = new AccountFilter(None, Some("User"), Some("User"), None, None, None)
+        var filteredUsers = AccountRepo.find(uf)
         filteredUsers.length must beEqualTo (2)
 
-        uf = new UserFilter(None, None, None, None, Some(Role.Administrator), None)
-        filteredUsers = UsersRepo.find(uf)
+        uf = new AccountFilter(None, None, None, None, Some(Role.Administrator), None)
+        filteredUsers = AccountRepo.find(uf)
         filteredUsers.length must beEqualTo (1)
 
       }

@@ -6,17 +6,17 @@ import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
-import controllers.filter.UserFilter
+import controllers.filter.AccountFilter
 import models.entities.Role
 import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
-import utils.auth.{Environment, UserService}
-import utils.db.repo.UsersRepo
+import utils.auth.{Environment, AccountService}
+import utils.db.repo.AccountRepo
 import utils.extensions.DateUtils
 import utils.extensions.DateUtils._
 import utils.serialization.FormatJsError._
-import utils.serialization.UserSerializer._
+import utils.serialization.AccountSerializer._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -24,8 +24,8 @@ import scala.concurrent._
 /**
  * Контроллер операций над пользователями
  */
-class UserController(val env: Environment,
-                      userService: UserService)
+class AccountController(val env: Environment,
+                      userService: AccountService)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**
@@ -37,8 +37,8 @@ class UserController(val env: Environment,
     var users = List[Account]()
     withDb { session =>
       userFilterOpt match {
-        case Some(userFilter: UserFilter) => users = UsersRepo.find(userFilter)(session)
-        case _ => users = UsersRepo.read(session)
+        case Some(userFilter: AccountFilter) => users = AccountRepo.find(userFilter)(session)
+        case _ => users = AccountRepo.read(session)
     }
     }
     //val users = withDb { session => UsersRepo.read(session) }
@@ -46,7 +46,7 @@ class UserController(val env: Environment,
   }
 
   def getById(id: Int) = SecuredAction { implicit request =>
-    val user = withDb { session => UsersRepo.findById(id)(session) }
+    val user = withDb { session => AccountRepo.findById(id)(session) }
     Ok(makeJson("user", user))
   }
 
@@ -55,7 +55,7 @@ class UserController(val env: Environment,
     json.validate[Account] match {
       case JsSuccess(user, _) => {
         val toSave: Account = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
-        userService.createUser(toSave) map { createdUser =>
+        userService.createAccount(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
@@ -72,7 +72,7 @@ class UserController(val env: Environment,
       case JsSuccess(user, _) => {
         // todo: перенести установку времени редактирования в единую точку
         val toSave = user.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
-        withDbAction { session => UsersRepo.update(toSave)(session) }
+        withDbAction { session => AccountRepo.update(toSave)(session) }
         val userJson = makeJson("user", toSave)
         Ok(userJson)
       }
@@ -81,7 +81,7 @@ class UserController(val env: Environment,
   }
 
   def delete(id: Int) = SecuredAction { request =>
-    val wasDeleted = withDb { session => UsersRepo.delete(id)(session) }
+    val wasDeleted = withDb { session => AccountRepo.delete(id)(session) }
     if (wasDeleted) Ok(Json.parse("{}"))
     else NotFound(Response.bad(s"Пользователь с id=$id не найден"))
   }
@@ -92,7 +92,7 @@ class UserController(val env: Environment,
   }
 
 
-  def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[UserFilter] = {
+  def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[AccountFilter] = {
     val query: Map[String, String] = request.queryString.map { case (k, v) => k -> v.mkString }
     val login = query.get("login")
     val lastName = query.get("lastName")
@@ -102,7 +102,7 @@ class UserController(val env: Environment,
     //TODO: уточнить формат даты
     val createDate = stringToDate ( query.get("createDate") )
 
-    val filter = new UserFilter(login, lastName, firstName, middleName, role, createDate)
+    val filter = new AccountFilter(login, lastName, firstName, middleName, role, createDate)
 
     //TODO: вынести в utils?
     val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })

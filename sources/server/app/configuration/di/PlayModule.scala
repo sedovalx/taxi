@@ -6,7 +6,7 @@ import controllers.auth.AuthController
 import controllers.entities._
 import models.generated.Tables.Account
 import scaldi.Module
-import utils.auth.{Environment, UserService}
+import utils.auth.{Environment, AccountService}
 
 import scala.slick.driver.JdbcProfile
 
@@ -15,7 +15,7 @@ import scala.slick.driver.JdbcProfile
  */
 class PlayModule extends Module {
   binding to new IndexController
-  binding to new UserController(inject [Environment], inject [UserService])
-  binding to new DriverController(inject [Environment], inject [UserService])
+  binding to new AccountController(inject [Environment], inject [AccountService])
+  binding to new DriverController(inject [Environment], inject [AccountService])
   binding to new AuthController(inject [Environment], inject [IdentityService[Account]])
 }

@@ -1,13 +1,13 @@
 package utils.db.repo
 
-import controllers.filter.UserFilter
+import controllers.filter.AccountFilter
 import models.generated.Tables._
 import play.api.db.slick.Config.driver.simple._
 
 /**
  * Репозиторий учетных записей
  */
-object UsersRepo extends GenericCRUD[AccountTable, Account] {
+object AccountRepo extends GenericCRUD[AccountTable, Account] {
   val tableQuery = AccountTable
 
   def findByLogin(login: String)(implicit session: Session): Option[Account] = {
@@ -18,7 +18,7 @@ object UsersRepo extends GenericCRUD[AccountTable, Account] {
     tableQuery.length.run > 0
   }
 
-  def find(userFilter : UserFilter)(implicit session: Session) : List[Account] = {
+  def find(userFilter : AccountFilter)(implicit session: Session) : List[Account] = {
     tableQuery
       .filteredBy(userFilter.login){_.login === userFilter.login}
       .filteredBy(userFilter.lastName){_.lastName === userFilter.lastName}

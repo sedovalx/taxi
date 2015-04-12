@@ -9,7 +9,7 @@ import controllers.BaseController
 import models.generated.Tables._
 import play.api.libs.json._
 import play.api.mvc.BodyParsers
-import utils.auth.{Environment, UserService}
+import utils.auth.{Environment, AccountService}
 import utils.db.repo.DriversRepo
 import utils.serialization.DriverSerializer._
 
@@ -17,7 +17,7 @@ import utils.serialization.DriverSerializer._
  * Контроллер операций над водителями
  */
 class DriverController(val env: Environment,
-                       userService: UserService)
+                       userService: AccountService)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**

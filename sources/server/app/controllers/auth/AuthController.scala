@@ -42,7 +42,7 @@ object Token {
 
 }
 
-class AuthController(val env: Environment, userService: IdentityService[Account])
+class AuthController(val env: Environment, accountService: IdentityService[Account])
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   private implicit val credentialsFormat = Json.format[Credentials]
@@ -58,7 +58,7 @@ class AuthController(val env: Environment, userService: IdentityService[Account]
         case _ => Future.failed(new AuthenticationException("Cannot find credentials provider"))
       }) flatMap { loginInfo =>
         // по логину извлекаем пользователя из БД
-        userService.retrieve(loginInfo) flatMap {
+        accountService.retrieve(loginInfo) flatMap {
           // если найден, то генерируем аутентификационный токен
           case Some(user) => env.authenticatorService.create(loginInfo) flatMap { authenticator =>
             env.eventBus.publish(LoginEvent(user, request, request2lang))

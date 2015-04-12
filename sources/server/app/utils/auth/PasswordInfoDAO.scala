@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import play.api.Logger
 import play.api.libs.json._
 import utils.db.DbAccessor
-import utils.db.repo.UsersRepo
+import utils.db.repo.AccountRepo
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -26,7 +26,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
     // сериализуем authInfo в строку
     val passwordInfoJson = Json.toJson(authInfo)
     // и сохраняем в БД
-    withDb { session => UsersRepo.update(user.copy(passwordHash = passwordInfoJson.toString()))(session) }
+    withDb { session => AccountRepo.update(user.copy(passwordHash = passwordInfoJson.toString()))(session) }
 
     authInfo
   }
@@ -46,7 +46,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor
   }
 
   private def findUser(login: String) = {
-    withDb { session => UsersRepo.findByLogin(login)(session) } match {
+    withDb { session => AccountRepo.findByLogin(login)(session) } match {
       case Some(u) => u
       case _ => throw new NotAuthenticatedException(s"Пользователь с логином $login не найден.")
     }

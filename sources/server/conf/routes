@@ -17,12 +17,12 @@ POST          /api/auth/renew         @controllers.auth.AuthController.renew
 
 ############################# Entity routes #######################################
 # User routes
-GET           /api/users/me           @controllers.entities.UserController.currentUser
-GET           /api/users              @controllers.entities.UserController.read
-GET           /api/users/:id          @controllers.entities.UserController.getById(id: Int)
-POST          /api/users              @controllers.entities.UserController.create
-PUT           /api/users/:id          @controllers.entities.UserController.update(id: Int)
-DELETE        /api/users/:id          @controllers.entities.UserController.delete(id: Int)
+GET           /api/users/me           @controllers.entities.AccountController.currentUser
+GET           /api/users              @controllers.entities.AccountController.read
+GET           /api/users/:id          @controllers.entities.AccountController.getById(id: Int)
+POST          /api/users              @controllers.entities.AccountController.create
+PUT           /api/users/:id          @controllers.entities.AccountController.update(id: Int)
+DELETE        /api/users/:id          @controllers.entities.AccountController.delete(id: Int)
 # Drivers routes
 GET           /api/drivers            @controllers.entities.DriverController.read
 GET           /api/drivers/:id        @controllers.entities.DriverController.getById(id: Int)

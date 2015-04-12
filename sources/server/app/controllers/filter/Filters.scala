@@ -7,7 +7,7 @@ import models.entities.Role.Role
 /**
  * Created by ipopkov on 04/04/15.
  */
-case class UserFilter(
+case class AccountFilter(
                        login: Option[String],
                        lastName: Option[String],
                        firstName: Option[String],
