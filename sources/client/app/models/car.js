@@ -7,7 +7,7 @@ var CarsModel = DS.Model.extend({
   make: attr("string"),
   mileage: attr("number"),
   service: attr("number"),
-  classID: attr("number"),
+  classID: DS.belongsTo("car-class", {inverse: null, async: true}),
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
@@ -25,7 +25,7 @@ CarsModel.reopenClass({
       make: "Ford",
       mileage: 150000,
       service: 140000,
-      classID: 5,
+      classID: 1,
       comment: "test comment"
     },
     {
@@ -35,7 +35,7 @@ CarsModel.reopenClass({
       make: "BMW",
       mileage: 100000,
       service: 90000,
-      classID: 5,
+      classID: 2,
       comment: ""
     }
   ]
