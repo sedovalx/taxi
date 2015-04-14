@@ -1,14 +1,35 @@
-package utils.db.repo
+package repository
+
 
 import controllers.filter.AccountFilter
 import models.generated.Tables._
-import utils.db.MappedColumnTypes._
 import play.api.db.slick.Config.driver.simple._
 
+
 /**
- * Репозиторий учетных записей
+ * Created by ipopkov on 14/04/15.
  */
-object AccountRepo extends GenericCRUD[AccountTable, Account] {
+trait CarClassRepo extends GenericCRUD[CarClass, CarClassTable]
+
+class CarClassRepoImpl extends CarClassRepo {
+  val tableQuery = CarClassTable
+}
+
+
+trait DriversRepo extends GenericCRUD[DriverTable, Driver]
+
+class DriversRepoImpl extends DriversRepo{
+  val tableQuery = DriverTable
+}
+
+trait AccountRepo extends GenericCRUD[AccountTable, Account] {
+  def findByLogin(login: String)(implicit session: Session): Option[Account]
+  def isEmpty(implicit session: Session): Boolean
+  def find(userFilter : AccountFilter)(implicit session: Session) : List[Account]
+}
+
+
+class AccountRepoImpl extends AccountRepo {
   val tableQuery = AccountTable
 
   def findByLogin(login: String)(implicit session: Session): Option[Account] = {

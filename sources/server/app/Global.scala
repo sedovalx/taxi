@@ -15,7 +15,7 @@ import play.filters.gzip.GzipFilter
 import scaldi.{Injectable, Injector}
 import scaldi.play.ScaldiSupport
 import play.api.mvc.Results._
-import utils.auth.AccountService
+import service.AccountService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 

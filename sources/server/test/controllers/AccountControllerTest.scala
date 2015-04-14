@@ -9,7 +9,7 @@ import play.api.libs.json
 import play.api.libs.json._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
-import utils.db.repo.AccountRepo
+import repository.AccountRepo
 
 /**
  * Created by ipopkov on 04/04/15.

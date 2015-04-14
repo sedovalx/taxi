@@ -1,4 +1,4 @@
-package utils.db
+package repository.db
 
 import java.io.{BufferedWriter, FileWriter, File}
 
@@ -8,7 +8,7 @@ import scala.slick.model.Model
  * Генератор маппинга по схеме БД
  * @example
  *          <pre>
- *          import utils.db.MappingCodeGenerator
+ *          import repository.db.MappingCodeGenerator
  *          import scala.slick.driver.PostgresDriver
  *
  *          Class.forName("org.postgresql.Driver")
@@ -39,7 +39,7 @@ trait ${container} {
 
       override def code = "import models.entities._" +
         "\n" + "import models.entities.Role.Role" +
-        "\n" + "import utils.db.MappedColumnTypes._" +
+        "\n" + "import repository.db.MappedColumnTypes._" +
         "\n" + "import com.mohiva.play.silhouette.api.Identity" +
         "\n" + super.code
 

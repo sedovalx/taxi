@@ -9,15 +9,17 @@ import controllers.BaseController
 import models.generated.Tables._
 import play.api.libs.json._
 import play.api.mvc.BodyParsers
-import utils.auth.{Environment, AccountService}
-import utils.db.repo.DriversRepo
+import repository.DriversRepo
+import service.{DriverService, AccountService}
+import utils.auth.Environment
 import utils.serialization.DriverSerializer._
 
 /**
  * Контроллер операций над водителями
  */
 class DriverController(val env: Environment,
-                       userService: AccountService)
+                       userService: AccountService,
+                       driverService: DriverService )
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**
@@ -25,13 +27,13 @@ class DriverController(val env: Environment,
    * @return
    */
   def read = SecuredAction { implicit request =>
-    val drivers = withDb { session => DriversRepo.read(session) }
+    val drivers = driverService.read
     val driversJson = makeJson("drivers", drivers)
     Ok(driversJson)
   }
 
   def getById(id: Int) = SecuredAction { implicit request =>
-    val driver = withDb { session => DriversRepo.findById(id)(session) }
+    val driver = driverService.findById(id)
     val driverJson = makeJson("driver", driver)
     Ok(driverJson)
   }
@@ -43,8 +45,8 @@ class DriverController(val env: Environment,
       driver => {
         //todo: перенести установку создателя в единую точку
         val toSave: Driver = driver.copy(creatorId = Some(request.identity.id))
-        val id = withDb { session => DriversRepo.create(toSave)(session) }
-        val toSend = toSave.copy(id = id)
+        val driver = driverService.create(toSave, request.identity.id)
+        val toSend = toSave.copy(id = driver.id)
         val driverJson = makeJson("driver", toSend)
         Ok(driverJson)
       }
@@ -58,7 +60,7 @@ class DriverController(val env: Environment,
       driver => {
         // todo: перенести установку времени редактирования в единую точку
         val toSave = driver.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
-        withDbAction { session => DriversRepo.update(toSave)(session) }
+        driverService.update(toSave, request.identity.id)
         val driverJson = makeJson("driver", toSave)
         Ok(driverJson)
       }
@@ -66,7 +68,7 @@ class DriverController(val env: Environment,
   }
 
   def delete(id: Int) = SecuredAction { request =>
-    val wasDeleted = withDb { session => DriversRepo.delete(id)(session) }
+    val wasDeleted = driverService.delete(id)
     if (wasDeleted)
       Ok(Json.parse("{}"))
     else

@@ -1,4 +1,4 @@
-package utils.db
+package repository.db
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.DB
 import play.api.Play.current

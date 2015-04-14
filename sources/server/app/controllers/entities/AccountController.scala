@@ -11,8 +11,9 @@ import models.entities.Role
 import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
-import utils.auth.{AccountService, Environment}
-import utils.db.repo.AccountRepo
+import repository.AccountRepo
+import service.AccountService
+import utils.auth.Environment
 import utils.extensions.DateUtils
 import utils.extensions.DateUtils._
 import utils.serialization.AccountSerializer._
@@ -25,7 +26,7 @@ import scala.concurrent._
  * Контроллер операций над пользователями
  */
 class AccountController(val env: Environment,
-                      userService: AccountService)
+                      accountService: AccountService)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   /**
@@ -35,18 +36,16 @@ class AccountController(val env: Environment,
   def read = SecuredAction { implicit request =>
     val userFilterOpt = parseUserFilterFromQueryString(request)
     var users = List[Account]()
-    withDb { session =>
       userFilterOpt match {
-        case Some(userFilter: AccountFilter) => users = AccountRepo.find(userFilter)(session)
-        case _ => users = AccountRepo.read(session)
-    }
+        case Some(userFilter: AccountFilter) => users = accountService.find(userFilter)
+        case _ => users = accountService.read
     }
     //val users = withDb { session => UsersRepo.read(session) }
     Ok(makeJson("users", users))
   }
 
   def getById(id: Int) = SecuredAction { implicit request =>
-    val user = withDb { session => AccountRepo.findById(id)(session) }
+    val user = accountService.findById(id)
     Ok(makeJson("user", user))
   }
 
@@ -56,7 +55,7 @@ class AccountController(val env: Environment,
       case JsSuccess(user, _) =>
         require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
         val toSave: Account = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
-        userService.createAccount(toSave) map { createdUser =>
+        accountService.createAccount(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
@@ -79,7 +78,7 @@ class AccountController(val env: Environment,
           user
         }.copy(id = id, editDate = Some(DateUtils.now), editorId = Some(request.identity.id))
 
-        withDbAction { session => AccountRepo.update(toSave)(session) }
+        accountService.update(toSave, request.identity.id)
         val userJson = makeJson("user", toSave)
         Ok(userJson)
       case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
@@ -87,7 +86,7 @@ class AccountController(val env: Environment,
   }
 
   def delete(id: Int) = SecuredAction { request =>
-    val wasDeleted = withDb { session => AccountRepo.delete(id)(session) }
+    val wasDeleted = accountService.delete(id)
     if (wasDeleted) Ok(Json.parse("{}"))
     else NotFound(Response.bad(s"Пользователь с id=$id не найден"))
   }
@@ -123,7 +122,7 @@ class AccountController(val env: Environment,
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
 
   private def findOrThrow(id: Int) =
-    withDb { session => AccountRepo.findById(id) } match {
+    accountService.findById(id)  match {
       case Some(u) => u
       case None => throw new AccountNotFoundException(s"Account id=$id")
     }

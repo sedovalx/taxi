@@ -1,7 +1,7 @@
 package controllers
 
 import play.api.mvc.Controller
-import utils.db.DbAccessor
+import repository.db.DbAccessor
 
 /**
  * Базовый класс всех контроллеров приложения

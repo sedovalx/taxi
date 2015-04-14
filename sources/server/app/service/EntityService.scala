@@ -1,9 +1,10 @@
-package t
+package service
 
 import models.entities.Entity
 import play.api.db.slick.Config.driver.simple._
-import utils.db.DbAccessor
-import utils.db.repo.GenericCRUD
+import repository.GenericCRUD
+import t.EntityNotFoundException
+import repository.db.DbAccessor
 
 trait EntityService[E <: Entity, T <: Table[E], G <: GenericCRUD[T, E]] extends DbAccessor {
   val repo: G

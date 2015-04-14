@@ -11,7 +11,8 @@ import models.generated.Tables.Account
 import play.api.Play
 import play.api.Play.current
 import scaldi.Module
-import utils.auth.{Environment, LoginInfoDAO, PasswordInfoDAO}
+import service.{PasswordInfoServiceImpl, LoginInfoServiceImpl, LoginInfoService, PasswordInfoService}
+import utils.auth.{Environment}
 
 import scala.slick.driver.JdbcProfile
 
@@ -46,7 +47,7 @@ class SilhouetteModule extends Module {
   )
 
   // хранение паролей
-  val passwordInfoDAO = new PasswordInfoDAO
+  val passwordInfoDAO = new PasswordInfoServiceImpl
 
   // сервис доступа к хранению паролей
   val authInfoService = new DelegableAuthInfoService(passwordInfoDAO)
@@ -55,7 +56,7 @@ class SilhouetteModule extends Module {
   val credentialsProvider = new CredentialsProvider(authInfoService, passwordHasher, Seq(passwordHasher))
 
   // хранение логинов
-  val loginInfoDAO = new LoginInfoDAO
+  val loginInfoDAO = new LoginInfoServiceImpl
 
   // экспорт
   binding to Environment(

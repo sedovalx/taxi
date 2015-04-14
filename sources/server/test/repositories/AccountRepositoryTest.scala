@@ -4,8 +4,8 @@ import base.SpecificationWithFixtures
 import controllers.filter.AccountFilter
 import models.entities.Role.Role
 import models.entities.Role
-import utils.db.repo.AccountRepo
 import play.api.db.slick.{DB, Session}
+import repository.AccountRepo
 import utils.extensions.DateUtils
 import models.generated.Tables.Account
 

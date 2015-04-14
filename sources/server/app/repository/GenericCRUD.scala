@@ -1,4 +1,4 @@
-package utils.db.repo
+package repository
 
 import models.entities.Entity
 import play.api.db.slick.Config.driver.simple._

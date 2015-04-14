@@ -8,9 +8,8 @@ import play.api.db.slick._
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, WithApplication}
 
-
-import utils.db.repo.AccountRepo
 import models.generated.Tables.Account
+import repository.AccountRepo
 
 /**
  * Created by ipopkov on 16/03/15.

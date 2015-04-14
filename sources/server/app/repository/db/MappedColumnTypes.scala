@@ -1,4 +1,4 @@
-package utils.db
+package repository.db
 
 import models.entities.Role
 import models.entities.Role.Role
