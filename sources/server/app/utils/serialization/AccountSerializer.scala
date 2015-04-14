@@ -26,7 +26,7 @@ object AccountSerializer {
 
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "login").read(minLength[String](3)) and
-      (JsPath \ "password").read(minLength[String](8)) and
+      (JsPath \ "password").readNullable(minLength[String](8)).map(o => o.orNull) and
       (JsPath \ "lastName").readNullable[String] and
       (JsPath \ "firstName").readNullable[String] and
       (JsPath \ "middleName").readNullable[String] and
@@ -43,7 +43,7 @@ object AccountSerializer {
     def writes(user: Account) = Json.obj(
       "id" -> user.id,
       "login" -> user.login,
-      "password" -> user.passwordHash,
+      "password" -> JsNull,
       "lastName" -> user.lastName,
       "firstName" -> user.firstName,
       "middleName" -> user.middleName,

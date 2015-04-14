@@ -1,7 +1,8 @@
 package base
 
 import play.api.http.HeaderNames
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.AnyContent
 import play.api.test.Helpers._
 import play.api.test.{Helpers, FakeRequest, Writeables, RouteInvokers}
 
@@ -33,4 +34,15 @@ class BaseControllerSpecification extends SpecificationWithFixtures  {
     LoginUtil.login()
   }
 
+  protected def createEmptyAuthenticatedRequest(method: String, route: String) = {
+    FakeRequest(method, route)
+      .withHeaders(
+        LoginUtil.X_AUTH_TOKEN_HEADER -> LoginUtil.token,
+        CONTENT_TYPE -> "Application/json"
+      )
+  }
+
+  protected def createAuthenticatedRequest(method: String, route: String, json: JsValue) = {
+    createEmptyAuthenticatedRequest(method, route) .withJsonBody(json)
+  }
 }

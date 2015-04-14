@@ -6,7 +6,8 @@ object Tables extends Tables
 trait Tables {
   import play.api.db.slick.Config.driver.simple._
   import models.entities._
-  import models.entities.Role._
+  import models.entities.Role.Role
+  import utils.db.MappedColumnTypes._
   import com.mohiva.play.silhouette.api.Identity
   import scala.slick.model.ForeignKeyAction
   

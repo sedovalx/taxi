@@ -1,7 +1,7 @@
 package utils.extensions
 
 import java.sql.Date
-
+import scala.language.implicitConversions
 import org.joda.time.DateTime
 
 object DateUtils {

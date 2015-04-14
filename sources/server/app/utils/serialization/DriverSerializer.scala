@@ -2,6 +2,7 @@ package utils.serialization
 
 import java.sql.Date
 import java.text.SimpleDateFormat
+import models.generated.Tables
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._

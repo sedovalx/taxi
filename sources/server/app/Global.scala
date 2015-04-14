@@ -17,8 +17,9 @@ import scaldi.play.ScaldiSupport
 import play.api.mvc.Results._
 import utils.auth.AccountService
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 
 object RoutesLoggingFilter extends Filter {
   override def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
@@ -40,18 +41,21 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
   }
 
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
-    Some(Future { Unauthorized(Json.toJson(Response.bad("Действие запрещено."))) })
+    Some(Future { Forbidden(Json.toJson(Response.bad("Действие запрещено."))) })
   }
 
   override def applicationModule: Injector = new SilhouetteModule ++ new ServicesModule ++ new PlayModule
 
-  override def onStart(app: Application): Unit = {
+
+  override def beforeStart(app: Application): Unit = super.beforeStart(app)
+
+  override def onStart(app: Application) = {
     super.onStart(app)
 
     // создание пользователя, если не найдено
     implicit val injector = applicationModule
     val userService = inject [AccountService]
-    userService.hasUsers flatMap { hasUsers =>
+    val f = userService.hasUsers flatMap { hasUsers =>
       if (!hasUsers) {
         val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
         userService.createAccount(admin)
@@ -61,5 +65,8 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
         Logger.error("Ошибка создания учетной записи администратора при старте приложения.", error)
       }
     }
+    Await.ready(f, 10 seconds)
   }
+
+
 }

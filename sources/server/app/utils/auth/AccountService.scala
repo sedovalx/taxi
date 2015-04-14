@@ -37,10 +37,9 @@ class AccountServiceImpl(passwordHasher: PasswordHasher,
           // сохраняем пользователя
           val id = withDb { session => AccountRepo.create(user.copy(passwordHash = ""))(session) }
           user.copy(id = id)
-        } map { u =>
+        } flatMap { u =>
           // сохраняем хешированный пароль
-          authInfoService.save(loginInfo, authInfo)
-          u
+          authInfoService.save(loginInfo, authInfo) map { _ => u }
         }
       case Some(u) =>
         // пользователь уже существует

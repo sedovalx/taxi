@@ -2,6 +2,7 @@ package utils.db.repo
 
 import controllers.filter.AccountFilter
 import models.generated.Tables._
+import utils.db.MappedColumnTypes._
 import play.api.db.slick.Config.driver.simple._
 
 /**

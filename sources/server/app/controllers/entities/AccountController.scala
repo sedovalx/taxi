@@ -1,6 +1,6 @@
 package controllers.entities
 
-import java.sql.Date
+import javax.security.auth.login.AccountNotFoundException
 
 import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.Silhouette
@@ -11,12 +11,12 @@ import models.entities.Role
 import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
-import utils.auth.{Environment, AccountService}
+import utils.auth.{AccountService, Environment}
 import utils.db.repo.AccountRepo
 import utils.extensions.DateUtils
 import utils.extensions.DateUtils._
-import utils.serialization.FormatJsError._
 import utils.serialization.AccountSerializer._
+import utils.serialization.FormatJsError._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._
@@ -53,29 +53,35 @@ class AccountController(val env: Environment,
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
     json.validate[Account] match {
-      case JsSuccess(user, _) => {
+      case JsSuccess(user, _) =>
+        require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
         val toSave: Account = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
         userService.createAccount(toSave) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
         }
-      }
       case err@JsError(_) => Future(UnprocessableEntity(Json.toJson(err)))
     }
   }
 
   def update(id: Int) = SecuredAction(BodyParsers.parse.json) { request =>
+    val existingUser = findOrThrow(id)
     val json = request.body \ "user"
-
     json.validate[Account] match {
-      case JsSuccess(user, _) => {
+      case JsSuccess(user, _) =>
         // todo: перенести установку времени редактирования в единую точку
-        val toSave = user.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
+        val toSave = if (user.passwordHash == null) {
+          // пароль не был изменен пользователем
+          user.copy(passwordHash = existingUser.passwordHash)
+        } else {
+          // пароль поменялся - нужно обновить хеш
+          user
+        }.copy(id = id, editDate = Some(DateUtils.now), editorId = Some(request.identity.id))
+
         withDbAction { session => AccountRepo.update(toSave)(session) }
         val userJson = makeJson("user", toSave)
         Ok(userJson)
-      }
       case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
     }
   }
@@ -115,6 +121,12 @@ class AccountController(val env: Environment,
   }
 
   private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
+
+  private def findOrThrow(id: Int) =
+    withDb { session => AccountRepo.findById(id) } match {
+      case Some(u) => u
+      case None => throw new AccountNotFoundException(s"Account id=$id")
+    }
 }
 
 

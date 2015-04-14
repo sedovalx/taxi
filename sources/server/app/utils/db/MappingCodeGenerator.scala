@@ -38,7 +38,8 @@ trait ${container} {
       }
 
       override def code = "import models.entities._" +
-        "\n" + "import models.entities.Role._" +
+        "\n" + "import models.entities.Role.Role" +
+        "\n" + "import utils.db.MappedColumnTypes._" +
         "\n" + "import com.mohiva.play.silhouette.api.Identity" +
         "\n" + super.code
 
