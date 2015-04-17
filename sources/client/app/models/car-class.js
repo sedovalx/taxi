@@ -8,7 +8,11 @@ var CarClassModel = DS.Model.extend({
   creationDate: attr("date"),
   editDate: attr("date"),
   creator_id: DS.belongsTo("user", {inverse: null, async: true}),
-  editor_id: DS.belongsTo("user", {inverse: null, async: true})
+  editor_id: DS.belongsTo("user", {inverse: null, async: true}),
+  label: function(){
+    var label = this.get('name');
+    return label;
+  }.property('name')
 });
 
 
