@@ -2,6 +2,8 @@ package repository
 
 
 import controllers.filter.AccountFilter
+import models.entities.Role
+import models.entities.Role._
 import models.generated.Tables._
 import play.api.db.slick.Config.driver.simple._
 
@@ -31,6 +33,8 @@ trait AccountRepo extends GenericCRUD[AccountTable, Account] {
 
 class AccountRepoImpl extends AccountRepo {
   val tableQuery = AccountTable
+
+  implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 
   def findByLogin(login: String)(implicit session: Session): Option[Account] = {
     tableQuery.filter(_.login === login).run.headOption

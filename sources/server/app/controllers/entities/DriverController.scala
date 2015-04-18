@@ -45,8 +45,8 @@ class DriverController(val env: Environment,
       driver => {
         //todo: перенести установку создателя в единую точку
         val toSave: Driver = driver.copy(creatorId = Some(request.identity.id))
-        val driver = driverService.create(toSave, request.identity.id)
-        val toSend = toSave.copy(id = driver.id)
+        val savedDriver = driverService.create(toSave, request.identity.id)
+        val toSend = savedDriver.copy(id = driver.id)
         val driverJson = makeJson("driver", toSend)
         Ok(driverJson)
       }

@@ -26,7 +26,7 @@ trait EntityService[E <: Entity, T <: Table[E], G <: GenericCRUD[T, E]] extends 
     val toSave = setEditorAndDate(entity, editorId)
     withDb { session => repo.update(toSave)(session) } match {
       case true => toSave
-      case _ => throw new EntityNotFoundException[E]("Id = " + entity.id)
+      case _ => throw new EntityNotFoundException[E]("Id = " + entity.id, entity.getClass.getTypeName)
     }
   }
 

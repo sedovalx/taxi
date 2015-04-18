@@ -1,8 +1,8 @@
 package controllers.filter
 
 import java.sql.Date
-
 import models.entities.Role.Role
+
 
 /**
  * Created by ipopkov on 04/04/15.

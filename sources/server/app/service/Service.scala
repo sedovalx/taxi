@@ -12,7 +12,7 @@ import utils.extensions.DateUtils
 trait CarClassService extends EntityService[CarClass, CarClassTable, GenericCRUD[CarClassTable, CarClass]]
 
 class CarClassServiceImpl(carClassRepo: CarClassRepo) extends CarClassService {
-  override val repo = carClassRepo
+  val repo = carClassRepo
 
   override def setCreatorAndDate(entity: CarClass, creatorId: Int) =
     entity.copy(creatorId = Some(creatorId), creationDate = Some(DateUtils.now))
