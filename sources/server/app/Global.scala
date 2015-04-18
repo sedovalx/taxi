@@ -44,7 +44,7 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
     Some(Future { Forbidden(Json.toJson(Response.bad("Действие запрещено."))) })
   }
 
-  override def applicationModule: Injector = new SilhouetteModule ++ new ServicesModule ++ new PlayModule
+  override def applicationModule: Injector = new SilhouetteModule ++ new RepoModule ++ new ServicesModule ++ new PlayModule
 
 
   override def beforeStart(app: Application): Unit = super.beforeStart(app)

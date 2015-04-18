@@ -1,24 +1,29 @@
 package base
 
+import configuration.di.{PlayModule, ServicesModule, SilhouetteModule}
 import models.entities.Role
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
-import play.api.Application
+import play.api.{GlobalSettings, Application}
 import play.api.db.slick._
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, WithApplication}
 
 import models.generated.Tables.Account
 import repository.AccountRepo
+import scaldi.{Injectable, Module}
+import scaldi.play.ScaldiSupport
 
 /**
  * Created by ipopkov on 16/03/15.
  */
-abstract class SpecificationWithFixtures extends Specification {
+abstract class SpecificationWithFixtures extends Specification  with Injectable {
+
 
   protected def beforeAll() {
 
   }
+
 
   protected def repositoryTestFakeApp = {
     FakeApplication(

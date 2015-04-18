@@ -6,15 +6,16 @@ import models.entities.Role.Role
 import models.entities.Role
 import play.api.db.slick.{DB, Session}
 import repository.AccountRepo
+import scaldi.{Injectable, Injector}
 import utils.extensions.DateUtils
 import models.generated.Tables.Account
 
 import scala.util.Random
 
 
-class AccountRepositoryTest extends SpecificationWithFixtures {
+class AccountRepositoryTest(implicit inj: Injector) extends SpecificationWithFixtures{
 
-  val users = AccountRepo
+  val accountRepo = inject[AccountRepo]
 
   private object User {
     def create(firstName: Option[String], lastName: Option[String], login: String, password: String, role: Role) =
@@ -24,13 +25,13 @@ class AccountRepositoryTest extends SpecificationWithFixtures {
 
   private def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
     val user = User.create(None, None, login, pass, role)
-    val id = users.create(user)
+    val id = accountRepo.create(user)
     user.copy(id = id)
   }
 
   private def createUser(firstName: String, lastName: String, login: String, pass: String, role: Role)(implicit session: Session) = {
     val user = User.create(Some(firstName), Some(lastName), login, pass, role)
-    val id = users.create(user)
+    val id = accountRepo.create(user)
     user.copy(id = id)
   }
 
@@ -39,7 +40,7 @@ class AccountRepositoryTest extends SpecificationWithFixtures {
     "save and query" in new WithFakeDB {
       DB.withSession { implicit session: Session =>
         val user = createUser("admin", "", Role.Administrator)
-        users.findById(user.id) must beSome
+        accountRepo.findById(user.id) must beSome
       }
     }
 
@@ -48,9 +49,9 @@ class AccountRepositoryTest extends SpecificationWithFixtures {
         val user = createUser("user", "pass", Role.Accountant)
         val someNewLastName = Some("last name")
         val userWithUpdatedLastName = user.copy(lastName = someNewLastName)
-        users.update(userWithUpdatedLastName)
+        accountRepo.update(userWithUpdatedLastName)
 
-        val someUpdatedUser = users.findById(user.id)
+        val someUpdatedUser = accountRepo.findById(user.id)
         someUpdatedUser must beSome
         val updatedUser = someUpdatedUser.get
         updatedUser.lastName must beEqualTo(someNewLastName) ;
@@ -64,11 +65,11 @@ class AccountRepositoryTest extends SpecificationWithFixtures {
         createUser("User", "User2", "user3", "pass", Role.Repairman)
         createUser("User", "User", "user4", "pass", Role.Repairman)
         var uf = new AccountFilter(None, Some("User"), Some("User"), None, None, None)
-        var filteredUsers = AccountRepo.find(uf)
+        var filteredUsers = accountRepo.find(uf)
         filteredUsers.length must beEqualTo (2)
 
         uf = new AccountFilter(None, None, None, None, Some(Role.Administrator), None)
-        filteredUsers = AccountRepo.find(uf)
+        filteredUsers = accountRepo.find(uf)
         filteredUsers.length must beEqualTo (1)
 
       }

@@ -10,13 +10,14 @@ import play.api.libs.json._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
 import repository.AccountRepo
+import scaldi.Injector
 
 /**
  * Created by ipopkov on 04/04/15.
  */
-class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
+class AccountControllerTest(implicit inj: Injector) extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
 
-  val accounts = AccountRepo
+  val accounts =  inject[AccountRepo]
 
   "filter test" in new WithFakeDB {
     DB.withSession { implicit session: Session =>
