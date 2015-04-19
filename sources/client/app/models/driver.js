@@ -9,8 +9,7 @@ var DriversModel = DS.Model.extend({
   firstName: attr("string"),
   middleName: attr("string"),
   fio: function() {
-    var fio = this.get('lastName') + ' ' + this.get('firstName') + ' ' + this.get('middleName');
-    return fio;
+    return this.get('lastName') + ' ' + this.get('firstName') + ' ' + this.get('middleName');
   }.property('lastName','firstName', 'middleName'),
   pass: attr("string"),
   address: attr("string"),
@@ -20,8 +19,8 @@ var DriversModel = DS.Model.extend({
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
-  creator_id: DS.belongsTo("user", {inverse: null, async: true}),
-  editor_id: DS.belongsTo("user", {inverse: null, async: true})
+  creator: DS.belongsTo("user", {inverse: null, async: true}),
+  editor: DS.belongsTo("user", {inverse: null, async: true})
 });
 
 export default DriversModel;

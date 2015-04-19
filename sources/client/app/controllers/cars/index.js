@@ -18,11 +18,11 @@ export default Ember.ArrayController.extend({
       this.transitionToRoute("cars.new");
     },
     remove: function(){
-	  let row = this.get("selectedRow");
-	  if (row && confirm("Вы подтверждаете удаление автомобиля?")) {
-		row.deleteRecord();
-		row.save();
-	  }
+      let row = this.get("selectedRow");
+      if (row && confirm("Вы подтверждаете удаление автомобиля?")) {
+        row.deleteRecord();
+        row.save();
+	    }
     }
   },
 
@@ -62,7 +62,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Класс автомобиля",
-      contentPath: "classID.name"
+      contentPath: "carClass.name"
     });
     let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,

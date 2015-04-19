@@ -15,6 +15,7 @@
     "bootstrap": "~3.3.2",
     "ember-table": "ember-1.10",
     "font-awesome": "~4.3.0",
-    "ember-simple-auth": "~0.7.3"
+    "ember-simple-auth": "~0.7.3",
+    "selectize": "~0.12.1"
   }
 }

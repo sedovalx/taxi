@@ -1,4 +1,3 @@
-import Ember from "ember";
 import DS from "ember-data";
 
 let attr = DS.attr;
@@ -8,12 +7,12 @@ var CarsModel = DS.Model.extend({
   make: attr("string"),
   mileage: attr("number"),
   service: attr("number"),
-  classID: DS.belongsTo("car-class", {inverse: null, async: true}),
+  carClass: DS.belongsTo("car-class", {inverse: null, async: true}),
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
-  creator_id: DS.belongsTo("user", {inverse: null, async: true}),
-  editor_id: DS.belongsTo("user", {inverse: null, async: true})
+  creator: DS.belongsTo("user", {inverse: null, async: true}),
+  editor: DS.belongsTo("user", {inverse: null, async: true})
 });
 
 
@@ -26,7 +25,7 @@ CarsModel.reopenClass({
       make: "Ford",
       mileage: 150000,
       service: 140000,
-      classID: 1,
+      carClass: 1,
       comment: "test comment"
     },
     {
@@ -36,7 +35,7 @@ CarsModel.reopenClass({
       make: "BMW",
       mileage: 100000,
       service: 90000,
-      classID: 2,
+      carClass: 2,
       comment: ""
     }
   ]
