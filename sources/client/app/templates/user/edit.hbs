@@ -33,7 +33,13 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">Роль</label>
             <div class="col-sm-10">
-              {{bootstrap-dropdown selected=selectedRole items=roles}}
+              {{ember-selectize
+                content=roles
+                optionValuePath="content.id"
+                optionLabelPath="content.label"
+                selection=selectedRole
+                placeholder="Выберите роль"
+              }}
             </div>
         </div>
     </form>

@@ -7,8 +7,8 @@ var CarClassModel = DS.Model.extend({
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
-  creator_id: DS.belongsTo("user", {inverse: null, async: true}),
-  editor_id: DS.belongsTo("user", {inverse: null, async: true})
+  creator: DS.belongsTo("user", {inverse: null, async: true}),
+  editor: DS.belongsTo("user", {inverse: null, async: true})
 });
 
 

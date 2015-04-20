@@ -18,11 +18,11 @@ export default Ember.ArrayController.extend({
       this.transitionToRoute("cars.new");
     },
     remove: function(){
-	  let row = this.get("selectedRow");
-	  if (row && confirm("Вы подтверждаете удаление автомобиля?")) {
-		row.deleteRecord();
-		row.save();
-	  }
+      let row = this.get("selectedRow");
+      if (row && confirm("Вы подтверждаете удаление автомобиля?")) {
+        row.deleteRecord();
+        row.save();
+	    }
     }
   },
 
@@ -58,11 +58,11 @@ export default Ember.ArrayController.extend({
       headerCellName: "Следующий ТО, км",
       contentPath: "service"
     });
-    let classIDColumn = Ember.Table.ColumnDefinition.create({
+    let classNameColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Класс автомобиля",
-      contentPath: "classID"
+      contentPath: "carClass.name"
     });
     let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -70,7 +70,7 @@ export default Ember.ArrayController.extend({
       headerCellName: "Примечания",
       contentPath: "comment"
     });
-    return [regNumberColumn, makeColumn, modelColumn, classIDColumn, mileageColumn, serviceColumn, commentColumn];
+    return [regNumberColumn, makeColumn, modelColumn, classNameColumn, mileageColumn, serviceColumn, commentColumn];
   }.property(),
   cars: function(){
     return this;
