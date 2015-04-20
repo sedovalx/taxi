@@ -11,7 +11,7 @@ import play.api.db.slick.Config.driver.simple._
 /**
  * Created by ipopkov on 14/04/15.
  */
-trait CarClassRepo extends GenericCRUD[CarClass, CarClassTable]
+trait CarClassRepo extends GenericCRUD[CarClassTable, CarClass]
 
 class CarClassRepoImpl extends CarClassRepo {
   val tableQuery = CarClassTable

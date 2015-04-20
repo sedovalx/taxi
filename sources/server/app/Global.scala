@@ -20,6 +20,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
 import scala.concurrent.{Await, Future}
+import scala.language.postfixOps
 
 object RoutesLoggingFilter extends Filter {
   override def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {

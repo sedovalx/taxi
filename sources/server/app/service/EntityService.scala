@@ -6,7 +6,7 @@ import repository.GenericCRUD
 import t.EntityNotFoundException
 import repository.db.DbAccessor
 
-trait EntityService[E <: Entity, T <: Table[E], G <: GenericCRUD[T, E]] extends DbAccessor {
+trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[T, E]] extends DbAccessor {
   val repo: G
   def setCreatorAndDate(entity: E, creatorId: Int): E
   def setEditorAndDate(entity: E, editorId: Int): E
