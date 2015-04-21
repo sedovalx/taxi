@@ -1,1 +1,3 @@
-validation.error.minLength=Длина поля должна быть не менее [{0}] символов
+validation.error.minLength=Минимально допустимая длина поля: {0}
+validation.String_value_expected=Поле должно быть заполено
+validation.error.expected.jsstring=Поле должно быть заполено

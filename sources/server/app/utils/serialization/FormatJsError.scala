@@ -19,7 +19,7 @@ object FormatJsError {
   }
 
   private def formatError(err: ValidationError): String = {
-    play.api.i18n.Messages("validation." + err.message, err.args.toArray:_*)
+    play.api.i18n.Messages("validation." + err.message.replaceAll("\\s+", "_"), err.args.toArray:_*)
   }
 
   private def formatErrors(errors: Seq[ValidationError]): Seq[String] = {
