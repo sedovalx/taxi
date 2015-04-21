@@ -20,7 +20,10 @@ var DriversModel = DS.Model.extend({
   creationDate: attr("date"),
   editDate: attr("date"),
   creator: DS.belongsTo("user", {inverse: null, async: true}),
-  editor: DS.belongsTo("user", {inverse: null, async: true})
+  editor: DS.belongsTo("user", {inverse: null, async: true}),
+  displayName: function(){
+    return this.get('fio') + ' ' + this.get('pass');
+  }.property('fio','pass')
 });
 
 export default DriversModel;
