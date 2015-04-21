@@ -25,10 +25,7 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
       let model = this.get("model");
       model
         .save()
-        .then(() => that.transitionToRoute("users"))
-        .catch(error => {
-          alert(error);
-        });
+        .then(() => that.transitionToRoute("users"));
     },
     cancel: function(){
       this.transitionToRoute("users");

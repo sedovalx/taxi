@@ -8,10 +8,7 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
       let model = this.get("model");
       model
         .save()
-        .then(() => that.transitionToRoute("drivers"))
-        .catch(error => {
-          alert(error);
-        });
+        .then(() => that.transitionToRoute("drivers"));
     },
     cancel: function(){
       this.transitionToRoute("drivers");
