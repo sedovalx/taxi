@@ -1,13 +1,9 @@
 import Ember from "ember";
 import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
+import roles from "client/models/roles"
 
 export default Ember.ObjectController.extend(DirtyControllerMixin, {
-  roles: [
-    { id: "Administrator", label: "Администритор" },
-    { id: "Accountant", label: "Бухгалтер" },
-    { id: "Repairman", label: "Ремонтник" },
-    { id: "Cashier", label: "Кассир" }
-  ],
+  roles: roles,
   selectedRole: function(key, value){
     let model = this.get("model");
     if (!model) {
@@ -30,9 +26,5 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     cancel: function(){
       this.transitionToRoute("users");
     }
-  }//,
-  //hasErrors: function(){
-  //  let model = this.get("model");
-  //  return model && !(model.get("login") && this.get("selectedRole"));
-  //}.property("model.login", "selectedRole")
+  }
 });
