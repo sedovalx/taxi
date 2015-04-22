@@ -1,61 +1,27 @@
 <div class="editor user-editor">
     <form class="form-horizontal">
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Номерной знак</label>
-            <div class="col-sm-10">
-              {{input value=regNumber class="form-control" required="true" readonly="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Марка</label>
-            <div class="col-sm-10">
-              {{input value=make class="form-control" required="true" readonly="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Модель</label>
-            <div class="col-sm-10">
-              {{input value=cmodel class="form-control" required="true" readonly="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Пробег, км</label>
-            <div class="col-sm-10">
-              {{input value=mileage type="number" class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Следующий ТО, км</label>
-            <div class="col-sm-10">
-              {{input value=service type="number" class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Класс</label>
-            <div class="col-sm-10">
-              {{ember-selectize
-                content=carClassItems
-                optionValuePath="content.id"
-                optionLabelPath="content.name"
-                selection=carClass
-                placeholder="Выберите класс"
-                loading=carClass.isPending
-              }}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Примечания</label>
-            <div class="col-sm-10">
-              {{input value=comment class="form-control"}}
-            </div>
-        </div>
+      {{#property-row title="Номерной знак" errors=errors.regNumber}}
+        {{input value=regNumber readonly="true"}}
+      {{/property-row}}
+      {{#property-row title="Марка" errors=errors.make}}
+        {{input value=make readonly="true"}}
+      {{/property-row}}
+      {{#property-row title="Модель" errors=errors.cmodel}}
+        {{input value=cmodel readonly="true"}}
+      {{/property-row}}
+      {{property-row title="Пробег, км" value=mileage errors=errors.mileage}}
+      {{property-row title="Следующий ТО, км" value=service errors=errors.service}}
+      {{#property-row title="Класс" errors=errors.carClass}}
+        {{ember-selectize
+        content=carClassItems
+        optionValuePath="content.id"
+        optionLabelPath="content.name"
+        selection=carClass
+        placeholder="Выберите класс"
+        loading=carClass.isPending
+        }}
+      {{/property-row}}
+      {{property-row title="Примечания" value=comment errors=errors.comment}}
     </form>
-    <div class="commands-panel btn-group pull-right" role="group">
-        <button type="button" class="btn btn-primary" {{action "save"}} {{bind-attr disabled=hasErrors}}>
-            <i class="fa fa-floppy-o"></i> Сохранить
-        </button>
-        <button type="button" class="btn btn-default" {{action "cancel"}}>
-            <i class="fa fa-times"></i> Отмена
-        </button>
-    </div>
+  {{save-cancel}}
 </div>
