@@ -9,13 +9,13 @@
       {{property-row title="Отчество" value=middleName}}
       {{#property-row title="Роль" errors=errors.role}}
         {{ember-selectize
-          content=roles
-          optionValuePath="content.id"
-          optionLabelPath="content.label"
-          selection=selectedRole
-          placeholder="Выберите роль"
+        content=roles
+        optionValuePath="content.id"
+        optionLabelPath="content.label"
+        selection=selectedRole
+        placeholder="Выберите роль"
         }}
       {{/property-row}}
     </form>
-    {{save-cancel}}
+  {{save-cancel}}
 </div>

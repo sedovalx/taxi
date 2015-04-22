@@ -13,11 +13,11 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     cancel: function(){
       this.transitionToRoute("drivers");
     }
-  },
-  hasErrors: function(){
-    let model = this.get("model");
-    return model && !(model.get("lastName") && model.get("firstName") && model.get("middleName") &&
-            model.get("pass") && model.get("address") && model.get("license") &&
-            model.get("phone") && model.get("secPhone"));
-  }.property("model.firstName","model.lastName","model.middleName","model.pass","model.address","model.license","model.phone","model.secPhone")
+  }//,
+  //hasErrors: function(){
+  //  let model = this.get("model");
+  //  return model && !(model.get("lastName") && model.get("firstName") && model.get("middleName") &&
+  //          model.get("pass") && model.get("address") && model.get("license") &&
+  //          model.get("phone") && model.get("secPhone"));
+  //}.property("model.firstName","model.lastName","model.middleName","model.pass","model.address","model.license","model.phone","model.secPhone")
 });
