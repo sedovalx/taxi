@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/sedovalx/taxi.svg?branch=master)](https://travis-ci.org/sedovalx/taxi)
+
 # Общая информация
 
 ![картинка с такси](http://tutlink.ru/uploads/posts/2015-02/1422886299_i-worked-in-a-taxi.jpg)
