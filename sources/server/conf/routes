@@ -3,36 +3,39 @@
 # ~~~~
 
 # Home page
-GET           /                       @controllers.IndexController.index(path = "")
+GET           /                         @controllers.IndexController.index(path = "")
 
 # Map static resources from the /public folder to the /assets URL path
-GET           /favicon.ico            controllers.Assets.at(path="/public", file = "favicon.ico")
-GET           /assets/*file           controllers.Assets.at(path="/public/assets", file)
-GET           /fonts/*file            controllers.Assets.at(path="/public/fonts", file)
+GET           /favicon.ico              controllers.Assets.at(path="/public", file = "favicon.ico")
+GET           /assets/*file             controllers.Assets.at(path="/public/assets", file)
+GET           /fonts/*file              controllers.Assets.at(path="/public/fonts", file)
 
 ############################# Authentication #######################################
-POST          /api/auth/login         @controllers.auth.AuthController.authenticate
-POST          /api/auth/logout        @controllers.auth.AuthController.logOut
-POST          /api/auth/renew         @controllers.auth.AuthController.renew
+POST          /api/auth/login           @controllers.auth.AuthController.authenticate
+POST          /api/auth/logout          @controllers.auth.AuthController.logOut
+POST          /api/auth/renew           @controllers.auth.AuthController.renew
+
+############################# Reports #######################################
+GET           /api/reports/:name        @controllers.QueryController.run(name)
 
 ############################# Entity routes #######################################
 # User routes
-GET           /api/users/me           @controllers.entities.AccountController.currentUser
-GET           /api/users              @controllers.entities.AccountController.read
-GET           /api/users/:id          @controllers.entities.AccountController.getById(id: Int)
-POST          /api/users              @controllers.entities.AccountController.create
-PUT           /api/users/:id          @controllers.entities.AccountController.update(id: Int)
-DELETE        /api/users/:id          @controllers.entities.AccountController.delete(id: Int)
+GET           /api/users/me             @controllers.entities.AccountController.currentUser
+GET           /api/users                @controllers.entities.AccountController.read
+GET           /api/users/:id            @controllers.entities.AccountController.getById(id: Int)
+POST          /api/users                @controllers.entities.AccountController.create
+PUT           /api/users/:id            @controllers.entities.AccountController.update(id: Int)
+DELETE        /api/users/:id            @controllers.entities.AccountController.delete(id: Int)
 # Drivers routes
-GET           /api/drivers            @controllers.entities.DriverController.read
-GET           /api/drivers/:id        @controllers.entities.DriverController.getById(id: Int)
-POST          /api/drivers            @controllers.entities.DriverController.create
-PUT           /api/drivers/:id        @controllers.entities.DriverController.update(id: Int)
-DELETE        /api/drivers/:id        @controllers.entities.DriverController.delete(id: Int)
+GET           /api/drivers              @controllers.entities.DriverController.read
+GET           /api/drivers/:id          @controllers.entities.DriverController.getById(id: Int)
+POST          /api/drivers              @controllers.entities.DriverController.create
+PUT           /api/drivers/:id          @controllers.entities.DriverController.update(id: Int)
+DELETE        /api/drivers/:id          @controllers.entities.DriverController.delete(id: Int)
 
 
 # Every other page (should be the last route)
-GET           /*path                  @controllers.IndexController.index(path)
+GET           /*path                    @controllers.IndexController.index(path)
 
 
 

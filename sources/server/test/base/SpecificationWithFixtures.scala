@@ -20,7 +20,6 @@ abstract class SpecificationWithFixtures extends Specification{
     additionalPlugins = Seq("play.api.db.RestartableBoneCPPlugin")
   )
 
-
   abstract class WithFakeDB extends WithApplication(repositoryTestFakeApp) {
     override def around[T: AsResult](t: => T): Result = super.around {
       beforeAll()

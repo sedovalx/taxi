@@ -1,6 +1,6 @@
 import Ember from "ember";
 import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
-import roles from "client/models/roles"
+import roles from "client/models/roles";
 
 export default Ember.ObjectController.extend(DirtyControllerMixin, {
   roles: roles,
