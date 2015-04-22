@@ -17,5 +17,8 @@
     "font-awesome": "~4.3.0",
     "ember-simple-auth": "~0.7.3",
     "selectize": "~0.12.1"
+  },
+  "resolutions":{
+    "bootstrap": "3.3.4"
   }
 }
