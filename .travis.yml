@@ -1,0 +1,24 @@
+language: scala
+jdk: oraclejdk8
+
+branches:
+ only:
+  - master
+
+before_install:
+ - cd ./sources
+
+install:
+ - echo "Install client dependencies"
+ - cd ./client
+ - npm install -g bower
+ - npm install -g ember-cli
+ - npm install
+ - bower install
+ 
+script:
+ - echo "Run client tests"
+ - ember test
+ - echo "Run server tests"
+ - cd ./../server
+ - sbt test
