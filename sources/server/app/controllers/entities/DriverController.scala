@@ -9,8 +9,9 @@ import controllers.BaseController
 import models.generated.Tables._
 import play.api.libs.json._
 import play.api.mvc.BodyParsers
-import utils.auth.{Environment, AccountService}
+import utils.auth.{AccountService, Environment}
 import utils.db.repo.DriversRepo
+import utils.serialization.FormatJsError._
 import utils.serialization.DriverSerializer._
 
 /**
@@ -38,31 +39,32 @@ class DriverController(val env: Environment,
 
   def create = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
-    json.validate[Driver].fold(
-      errors => BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors))),
-      driver => {
+    json.validate[Driver] match {
+      case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
+      case JsSuccess(driver, _) =>
         //todo: перенести установку создателя в единую точку
         val toSave: Driver = driver.copy(creatorId = Some(request.identity.id))
         val id = withDb { session => DriversRepo.create(toSave)(session) }
         val toSend = toSave.copy(id = id)
         val driverJson = makeJson("driver", toSend)
         Ok(driverJson)
-      }
-    )
+    }
   }
 
   def update(id: Int) = SecuredAction(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
-    json.validate[Driver].fold(
-      errors => BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors))),
-      driver => {
+    json.validate[Driver] match {
+      case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
+      case JsSuccess(driver, _) => {
         // todo: перенести установку времени редактирования в единую точку
-        val toSave = driver.copy(id = id, editDate = Some(new Date(new java.util.Date().getTime)), editorId = Some(request.identity.id))
-        withDbAction { session => DriversRepo.update(toSave)(session) }
-        val driverJson = makeJson("driver", toSave)
-        Ok(driverJson)
+        val toSave = driver.copy (id = id, editDate = Some (new Date (new java.util.Date ().getTime) ), editorId = Some (request.identity.id) )
+        withDbAction {
+          session => DriversRepo.update (toSave) (session)
+        }
+        val driverJson = makeJson ("driver", toSave)
+        Ok (driverJson)
       }
-    )
+    }
   }
 
   def delete(id: Int) = SecuredAction { request =>
