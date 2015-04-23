@@ -6,9 +6,9 @@ sudo: false
 cache:
  directories:
   - $HOME/.ivy2/cache
-#  - $HOME/.sbt/boot/
-#  - ./sources/client/node_modules
-#  - ./sources/client/bower_components
+  - $HOME/.sbt/boot/
+  - ./sources/client/node_modules
+  - ./sources/client/bower_components
 
 branches:
  only:
