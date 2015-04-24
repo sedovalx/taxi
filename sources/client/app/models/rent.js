@@ -1,4 +1,5 @@
 import DS from "ember-data";
+import statuses from "client/models/rent-statuses";
 
 let attr = DS.attr;
 var RentModel = DS.Model.extend({
@@ -10,7 +11,11 @@ var RentModel = DS.Model.extend({
   creationDate: attr("date"),
   editDate: attr("date"),
   creator: DS.belongsTo("user", {inverse: null, async: true}),
-  editor: DS.belongsTo("user", {inverse: null, async: true})
+  editor: DS.belongsTo("user", {inverse: null, async: true}),
+  displayStatus: function(){
+    let status = statuses.filter(r => r.id === this.get("status"))[0];
+    return status ? status.label : "";
+  }.property("status")
 });
 
 

@@ -13,7 +13,6 @@ export default DS.Model.extend({
   editDate: attr("date"),
   creator: DS.belongsTo("user", {inverse: null, async: true}),
   editor: DS.belongsTo("user", {inverse: null, async: true}),
-
   displayRole: function(){
     let role = roles.filter(r => r.id === this.get("role"))[0];
     return role ? role.label : "";

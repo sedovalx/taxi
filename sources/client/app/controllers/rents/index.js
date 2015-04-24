@@ -50,7 +50,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Статус",
-      contentPath: "status"
+      contentPath: "displayStatus"
     });
     let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
