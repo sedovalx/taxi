@@ -15,9 +15,7 @@ import scaldi.Injector
 /**
  * Created by ipopkov on 04/04/15.
  */
-class AccountControllerTest(implicit inj: Injector) extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
-
-  val accounts =  inject[AccountRepo]
+class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
 
   "filter test" in new WithFakeDB {
     DB.withSession { implicit session: Session =>
@@ -69,6 +67,8 @@ class AccountControllerTest(implicit inj: Injector) extends BaseControllerSpecif
   }
 
   "should not update password if got null back" in new WithFakeDB {
+    implicit val injector = global.injector
+    val accounts = inject[AccountRepo]
     // setup:
     val login = "user1"
     val createRequest = createCreateRequest(Some(login), Some("password1"), Some(Role.Accountant))
@@ -88,6 +88,8 @@ class AccountControllerTest(implicit inj: Injector) extends BaseControllerSpecif
   }
 
   "should do update password if got something" in new WithFakeDB {
+    implicit val injector = global.injector
+    val accounts = inject[AccountRepo]
     // setup:
     val accountJson = createJsonAccount(Some("user1"), Some("password1"), Some(Role.Accountant))
     val createRequest = createAuthenticatedRequest(POST, "/api/users/", accountJson)
@@ -120,7 +122,7 @@ class AccountControllerTest(implicit inj: Injector) extends BaseControllerSpecif
   private def createCreateRequest(login: Option[String], password: Option[String], role: Option[Role]) =
     createAuthenticatedRequest(POST, "/api/users", createJsonAccount(login, password, role))
 
-  private def printLogins(implicit app: Application) = {
+  private def printLogins(implicit app: Application, accounts: AccountRepo) = {
     DB.withSession { session =>
       accounts.read(session).foreach { a => println(a.login) }
     }

@@ -26,9 +26,9 @@ import scala.concurrent.Future
   }
 
 
-  class LoginInfoServiceImpl(implicit inj: Injector) extends LoginInfoService with Injectable{
+  class LoginInfoServiceImpl(accountRepo: AccountRepo) extends LoginInfoService with Injectable{
 
-    val accountRepo = inject[AccountRepo]
+    //val accountRepo = inject[AccountRepo]
 
 
     override def retrieve(loginInfo: LoginInfo): Future[Option[Account]] = Future {
@@ -44,8 +44,8 @@ import scala.concurrent.Future
     def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]]
   }
 
-  class PasswordInfoServiceImpl(implicit inj: Injector)  extends PasswordInfoService  with Injectable {
-    val accountRepo = inject[AccountRepo]
+  class PasswordInfoServiceImpl(accountRepo: AccountRepo)  extends PasswordInfoService  with Injectable {
+    //val accountRepo = inject[AccountRepo]
 
     implicit val passwordFormat = Json.format[PasswordInfo]
 

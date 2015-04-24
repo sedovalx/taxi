@@ -3,7 +3,7 @@ package controllers.auth
 import javax.naming.AuthenticationException
 
 import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.{LogoutEvent, LoginEvent, Silhouette}
+import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, LoginEvent, Silhouette}
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -12,8 +12,8 @@ import controllers.BaseController
 import models.generated.Tables.Account
 import play.api.libs.json.Json
 import play.api.mvc.{BodyParsers, Action}
-import utils.auth.Environment
 import play.api.libs.concurrent.Execution.Implicits._
+import scaldi.Injector
 
 import scala.concurrent.Future
 
@@ -42,8 +42,10 @@ object Token {
 
 }
 
-class AuthController(val env: Environment, accountService: IdentityService[Account])
-  extends BaseController with Silhouette[Account, JWTAuthenticator] {
+class AuthController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+
+  val env = inject [Environment[Account, JWTAuthenticator]]
+  val accountService = inject[IdentityService[Account]]
 
   private implicit val credentialsFormat = Json.format[Credentials]
 

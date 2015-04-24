@@ -20,19 +20,11 @@ class ServicesModule extends Module {
     inject [IdentityService[Account]])
 
   bind [CarClassService] to new CarClassServiceImpl(
-  inject [CarClassRepo]
-
+    inject [CarClassRepo]
   )
 
   bind [DriverService] to new DriverServiceImpl(
     inject [DriversRepo]
 
   )
-
-//  bind [LoginInfoService] to new LoginInfoServiceImpl(
-//    inject [AccountRepo])
-//
-//  bind [PasswordInfoService] to new PasswordInfoServiceImpl(
-//    inject [AccountRepo])
-
 }

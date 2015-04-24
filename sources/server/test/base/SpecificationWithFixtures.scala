@@ -1,18 +1,21 @@
 package base
 
-import configuration.di.{PlayModule, ServicesModule, SilhouetteModule}
+import com.typesafe.config.ConfigFactory
+import configuration.di.{RepoModule, PlayModule, ServicesModule, SilhouetteModule}
 import models.entities.Role
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
-import play.api.{GlobalSettings, Application}
+import play.api.{Logger, Configuration, GlobalSettings, Application}
 import play.api.db.slick._
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, WithApplication}
 
 import models.generated.Tables.Account
 import repository.AccountRepo
-import scaldi.{Injectable, Module}
+import scaldi.{Injector, Injectable, Module}
 import scaldi.play.ScaldiSupport
+import service.AccountService
+
 
 /**
  * Created by ipopkov on 16/03/15.
@@ -24,16 +27,24 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
 
   }
 
+  val global = new ScaldiSupport {
+    override def applicationModule: Injector = new RepoModule ++ new ServicesModule ++ new SilhouetteModule ++ new PlayModule
+
+    override def configuration = Configuration(ConfigFactory.load())
+  }
+
 
   protected def repositoryTestFakeApp = {
     FakeApplication(
       additionalConfiguration = inMemoryDatabase(),
       withoutPlugins = Seq("play.api.db.BoneCPPlugin"),
-      additionalPlugins = Seq("play.api.db.RestartableBoneCPPlugin")
+      additionalPlugins = Seq("play.api.db.RestartableBoneCPPlugin"),
+      withGlobal = Some(global)
     )
   }
 
   abstract class WithFakeDB extends WithApplication(repositoryTestFakeApp) {
+
     override def around[T: AsResult](t: => T): Result = super.around {
       beforeAll()
       t
@@ -42,10 +53,12 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
 }
 
 class Test extends SpecificationWithFixtures {
-  val accounts = AccountRepo
-
 
   "test 1" in new WithFakeDB {
+
+    implicit val injector = global.injector
+    implicit val accounts = inject[AccountRepo]
+
     println("-----------------------")
     println("before")
     printLogins
@@ -58,6 +71,8 @@ class Test extends SpecificationWithFixtures {
   }
 
   "test 2" in new WithFakeDB {
+    implicit val injector = global.injector
+    implicit val accounts = inject[AccountRepo]
     println("-----------------------")
     println("before")
     printLogins
@@ -69,10 +84,10 @@ class Test extends SpecificationWithFixtures {
     println("-----------------------")
   }
 
-  private def printLogins(implicit app: Application) = {
+  private def printLogins(implicit app: Application, accounts: AccountRepo) = {
     DB.withSession { session =>
       println("logins:")
       accounts.read(session).foreach { a => println(a.login) }
     }
   }
-}
+ }

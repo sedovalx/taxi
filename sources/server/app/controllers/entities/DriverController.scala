@@ -3,24 +3,24 @@ package controllers.entities
 import java.sql.Date
 
 import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import models.generated.Tables._
 import play.api.libs.json._
 import play.api.mvc.BodyParsers
-import repository.DriversRepo
+import scaldi.Injector
 import service.{DriverService, AccountService}
-import utils.auth.Environment
 import utils.serialization.DriverSerializer._
 
 /**
  * Контроллер операций над водителями
  */
-class DriverController(val env: Environment,
-                       userService: AccountService,
-                       driverService: DriverService )
-  extends BaseController with Silhouette[Account, JWTAuthenticator] {
+class DriverController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+
+  implicit val env = inject [Environment[Account, JWTAuthenticator]]
+  implicit val accountService = inject[AccountService]
+  implicit val driverService = inject[DriverService]
 
   /**
    * Возвращает список водителей в json-формате

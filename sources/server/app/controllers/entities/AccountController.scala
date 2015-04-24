@@ -3,7 +3,7 @@ package controllers.entities
 import javax.security.auth.login.AccountNotFoundException
 
 import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import controllers.filter.AccountFilter
@@ -11,9 +11,8 @@ import models.entities.Role
 import models.generated.Tables.Account
 import play.api.libs.json._
 import play.api.mvc._
-import repository.AccountRepo
+import scaldi.Injector
 import service.AccountService
-import utils.auth.Environment
 import utils.extensions.DateUtils
 import utils.extensions.DateUtils._
 import utils.serialization.AccountSerializer._
@@ -25,9 +24,11 @@ import scala.concurrent._
 /**
  * Контроллер операций над пользователями
  */
-class AccountController(val env: Environment,
-                      accountService: AccountService)
-  extends BaseController with Silhouette[Account, JWTAuthenticator] {
+class AccountController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+
+  implicit val env = inject [Environment[Account, JWTAuthenticator]]
+  implicit val accountService = inject[AccountService]
+
 
   /**
    * Возвращает список пользователей в json-формате
