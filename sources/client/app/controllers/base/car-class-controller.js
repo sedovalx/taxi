@@ -13,9 +13,5 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     cancel: function(){
       this.transitionToRoute("car-classes");
     }
-  },
-  hasErrors: function(){
-    let model = this.get("model");
-    return model && !(model.get("name") && model.get("rate"));
-  }.property("model.name","model.rate")
+  }
 });

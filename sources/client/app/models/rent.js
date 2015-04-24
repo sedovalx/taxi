@@ -21,7 +21,7 @@ RentModel.reopenClass({
       driver: 1,
       car: 1,
       deposit: 5000,
-      status: "Активна",
+      status: "Active",
       comment: "comment 1"
     },
     {
@@ -29,7 +29,7 @@ RentModel.reopenClass({
       driver: 2,
       car: 2,
       deposit: 15000,
-      status: "Закрыта",
+      status: "Closed",
       comment: "comment 1"
     }
   ]
