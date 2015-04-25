@@ -43,28 +43,30 @@ class DriverController(implicit inj: Injector) extends BaseController with Silho
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
-    json.validate[Driver].fold(
-      errors => Future.successful(BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors)))),
-      driver => {
-        driverService.create(driver, Some(request.identity.id)) map { saved =>
-          val driverJson = makeJson("driver", saved)
-          Ok(driverJson)
-        }
-      }
-    )
+    json.validate[Driver] match {
+      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case JsSuccess(driver, _) => {
+    driverService.create (driver, Some (request.identity.id) ) map {
+    saved =>
+    val driverJson = makeJson ("driver", saved)
+    Ok (driverJson)
+    }
+    }
+    }
   }
 
   def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "driver"
-    json.validate[Driver].fold(
-      errors => Future.successful(BadRequest(Response.bad("Ошибки валидации", JsError.toFlatJson(errors)))),
-      driver => {
-        driverService.update(driver, Some(request.identity.id)) map { _ =>
-          val driverJson = makeJson("driver", driver)
-          Ok(driverJson)
-        }
-      }
-    )
+    json.validate[Driver] match {
+      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case JsSuccess(driver, _) => {
+    driverService.update (driver, Some (request.identity.id) ) map {
+    _ =>
+    val driverJson = makeJson ("driver", driver)
+    Ok (driverJson)
+    }
+    }
+    }
   }
 
   def delete(id: Int) = SecuredAction.async { request =>
@@ -75,4 +77,6 @@ class DriverController(implicit inj: Injector) extends BaseController with Silho
         NotFound(Response.bad(s"Водитель с id=$id не найден"))
     }
   }
+
+  private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))
 }

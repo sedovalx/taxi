@@ -25,6 +25,11 @@
                               Классы автомобилей
                           </a>
                       {{/link-to}}
+                      {{#link-to 'rents' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Аренды
+                          </a>
+                      {{/link-to}}
                     </ul>
                 </div>
                 <div class="collapse navbar-collapse">

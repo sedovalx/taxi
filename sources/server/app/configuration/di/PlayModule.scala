@@ -1,6 +1,6 @@
 package configuration.di
 
-import controllers.IndexController
+import controllers.{QueryController, IndexController}
 import controllers.auth.AuthController
 import controllers.entities._
 import scaldi.Module
@@ -13,4 +13,5 @@ class PlayModule extends Module {
   binding to new AccountController
   binding to new DriverController
   binding to new AuthController
+  binding to new QueryController
 }

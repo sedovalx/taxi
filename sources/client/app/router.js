@@ -30,6 +30,12 @@ Router.map(function() {
   this.resource("car-class", { path: "/car-classes/:car-class_id" }, function() {
     this.route("edit");
   });
+  this.resource("rents", function() {
+    this.route("new");
+  });
+  this.resource("rent", { path: "/rents/:rent_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 

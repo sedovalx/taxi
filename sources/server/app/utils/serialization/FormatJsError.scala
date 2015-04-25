@@ -13,9 +13,17 @@ object FormatJsError {
     def writes(o: JsError): JsValue =
       o.errors.foldLeft(Json.obj()) { (res: JsObject, err: (JsPath, scala.Seq[ValidationError])) =>
         val property = err._1.toString().substring(1)
-        val value = err._2.map(e => e.message + ":" + e.args.mkString(",")).map(msg => JsString(msg))
+        val value = formatErrors(err._2).map(msg => JsString(msg))
         res + (property, JsArray(value))
       }
+  }
+
+  private def formatError(err: ValidationError): String = {
+    play.api.i18n.Messages("validation." + err.message.replaceAll("\\s+", "_"), err.args.toArray:_*)
+  }
+
+  private def formatErrors(errors: Seq[ValidationError]): Seq[String] = {
+    errors.map(formatError)
   }
 
 }

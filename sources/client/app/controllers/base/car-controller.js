@@ -8,27 +8,12 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
       let model = this.get("model");
       model
         .save()
-        .then(() => that.transitionToRoute("cars"))
-        .catch(error => {
-          alert(error);
-        });
+        .then(() => that.transitionToRoute("cars"));
     },
     cancel: function(){
       this.transitionToRoute("cars");
     }
   },
-
-  hasErrors: function(){
-    let model = this.get("model");
-    return model && !(
-      this.get("regNumber") &&
-      this.get("make") &&
-      this.get("cmodel") &&
-      this.get("mileage") &&
-      this.get("service") &&
-      this.get("carClass").get("id") );
-  }.property("regNumber","make","cmodel","mileage","service","carClass.content"),
-
   carClassItems: function() {
     return this.store.find("car-class");
   }.property("model")

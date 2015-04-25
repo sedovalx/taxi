@@ -1,66 +1,14 @@
 <div class="editor user-editor">
-    <form class="form-horizontal">
-      <div class="form-group">
-          <label class="col-sm-2 control-label">Фамилия</label>
-          <div class="col-sm-10">
-            {{input value=lastName class="form-control" required="true"}}
-          </div>
-      </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Имя</label>
-            <div class="col-sm-10">
-              {{input value=firstName class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Отчество</label>
-            <div class="col-sm-10">
-              {{input value=middleName class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Паспорт</label>
-            <div class="col-sm-10">
-              {{input value=pass class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Водительские права</label>
-            <div class="col-sm-10">
-              {{input value=license class="form-control" required="true"}}
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-2 control-label">Телефон</label>
-            <div class="col-sm-10">
-              {{input value=phone type="tel" class="form-control" required="true"}}
-            </div>
-        </div>
-      <div class="form-group">
-          <label class="col-sm-2 control-label">Дополнительный телефон</label>
-          <div class="col-sm-10">
-            {{input value=secPhone type="tel" class="form-control" required="true"}}
-          </div>
-      </div>
-      <div class="form-group">
-          <label class="col-sm-2 control-label">Адрес</label>
-          <div class="col-sm-10">
-            {{input value=address class="form-control" required="true"}}
-          </div>
-      </div>
-      <div class="form-group">
-          <label class="col-sm-2 control-label">Примечания</label>
-          <div class="col-sm-10">
-            {{input value=comment class="form-control"}}
-          </div>
-      </div>
-    </form>
-    <div class="commands-panel btn-group pull-right" role="group">
-        <button type="button" class="btn btn-primary" {{action "save"}} {{bind-attr disabled=hasErrors}}>
-            <i class="fa fa-floppy-o"></i> Сохранить
-        </button>
-        <button type="button" class="btn btn-default" {{action "cancel"}}>
-            <i class="fa fa-times"></i> Отмена
-        </button>
-    </div>
+  <form class="form-horizontal">
+    {{property-row title="Фамилия" value=lastName errors=errors.lastName}}
+    {{property-row title="Имя" value=firstName errors=errors.firstName}}
+    {{property-row title="Отчество" value=middleName errors=errors.middleName}}
+    {{property-row title="Паспорт" value=pass errors=errors.pass}}
+    {{property-row title="Водительские права" value=license errors=errors.license}}
+    {{property-row title="Телефон" value=phone errors=errors.phone}}
+    {{property-row title="Дополнительный телефон" value=secPhone errors=errors.secPhone}}
+    {{property-row title="Адрес" value=address errors=errors.address}}
+    {{property-row title="Примечания" value=comment}}
+  </form>
+  {{save-cancel}}
 </div>

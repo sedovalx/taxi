@@ -5,6 +5,7 @@ import com.mohiva.play.silhouette.api.util.PasswordHasher
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import models.generated.Tables.Account
 import repository.{DriversRepo, CarClassRepo, AccountRepo}
+import queries.{Query, QueryManagerImpl, QueryManager}
 import scaldi.Module
 import service._
 
@@ -27,4 +28,6 @@ class ServicesModule extends Module {
     inject [DriversRepo]
 
   )
+
+  bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
 }

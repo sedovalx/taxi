@@ -56,7 +56,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Роль",
-      contentPath: "role"
+      contentPath: "displayRole"
     });
     return [lastNameColumn, firstNameColumn, middleNameColumn, roleColumn, loginColumn];
   }.property(),

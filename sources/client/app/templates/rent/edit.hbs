@@ -1,0 +1,22 @@
+<div class="editor user-editor">
+    <form class="form-horizontal">
+      {{#property-row title="Статус" errors=errors.selectedStatus}}
+        {{ember-selectize
+        content=statuses
+        optionValuePath="content.id"
+        optionLabelPath="content.label"
+        selection=selectedStatus
+        placeholder="Выберите статус"
+        }}
+      {{/property-row}}
+      {{#property-row title="Водитель" errors=errors.driver}}
+        {{input value=driver.displayName readonly="true"}}
+      {{/property-row}}
+      {{#property-row title="Автомобиль" errors=errors.car}}
+        {{input value=car.displayName readonly="true"}}
+      {{/property-row}}
+      {{property-row title="Залог" value=deposit errors=errors.deposit}}
+      {{property-row title="Примечания" value=comment}}
+    </form>
+  {{save-cancel}}
+</div>
