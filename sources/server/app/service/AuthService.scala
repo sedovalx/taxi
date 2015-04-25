@@ -1,20 +1,19 @@
 package service
 
 
-import com.mohiva.play.silhouette.api.services.IdentityService
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import repository.AccountRepo
-import repository.db.DbAccessor
-import models.generated.Tables.Account
-
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.exceptions.NotAuthenticatedException
+import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.PasswordInfo
+import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
+import models.generated.Tables.Account
 import play.api.Logger
 import play.api.libs.json._
-import scaldi.{Injectable, Injector}
-import scala.concurrent.ExecutionContext.Implicits.global
+import repository.AccountRepo
+import repository.db.DbAccessor
+import scaldi.Injectable
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 /**
@@ -27,17 +26,12 @@ import scala.concurrent.Future
 
 
   class LoginInfoServiceImpl(accountRepo: AccountRepo) extends LoginInfoService with Injectable{
-
-    //val accountRepo = inject[AccountRepo]
-
-
     override def retrieve(loginInfo: LoginInfo): Future[Option[Account]] = Future {
       withDb { session =>
         accountRepo.findByLogin(loginInfo.providerKey)(session)
       }
     }
   }
-
 
   trait PasswordInfoService extends DelegableAuthInfoDAO[PasswordInfo] with DbAccessor {
     def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo]

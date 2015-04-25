@@ -1,7 +1,5 @@
 package controllers.entities
 
-import javax.security.auth.login.AccountNotFoundException
-
 import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -13,7 +11,6 @@ import play.api.libs.json._
 import play.api.mvc._
 import scaldi.Injector
 import service.AccountService
-import utils.extensions.DateUtils
 import utils.extensions.DateUtils._
 import utils.serialization.AccountSerializer._
 import utils.serialization.FormatJsError._
@@ -34,20 +31,17 @@ class AccountController(implicit inj: Injector) extends BaseController with Silh
    * Возвращает список пользователей в json-формате
    * @return
    */
-  def read = SecuredAction { implicit request =>
-    val userFilterOpt = parseUserFilterFromQueryString(request)
-    var users = List[Account]()
-      userFilterOpt match {
-        case Some(userFilter: AccountFilter) => users = accountService.find(userFilter)
-        case _ => users = accountService.read
+  def read = SecuredAction.async { implicit request =>
+    val filter = parseUserFilterFromQueryString(request)
+    accountService.find(filter) map { users =>
+      Ok(makeJson("users", users))
     }
-    //val users = withDb { session => UsersRepo.read(session) }
-    Ok(makeJson("users", users))
   }
 
-  def getById(id: Int) = SecuredAction { implicit request =>
-    val user = accountService.findById(id)
-    Ok(makeJson("user", user))
+  def getById(id: Int) = SecuredAction.async { implicit request =>
+    accountService.findById(id) map { user =>
+      Ok(makeJson("user", user))
+    }
   }
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
@@ -55,48 +49,38 @@ class AccountController(implicit inj: Injector) extends BaseController with Silh
     json.validate[Account] match {
       case JsSuccess(user, _) =>
         require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
-        val toSave: Account = user.copy(creatorId = Some(request.identity.id), creationDate = Some(DateUtils.now))
-        accountService.createAccount(toSave) map { createdUser =>
+        accountService.create(user, Some(request.identity.id)) map { createdUser =>
           Ok(makeJson("user", createdUser))
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
         }
-      case err@JsError(_) => Future(UnprocessableEntity(Json.toJson(err)))
+      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
     }
   }
 
-  def update(id: Int) = SecuredAction(BodyParsers.parse.json) { request =>
-    val existingUser = findOrThrow(id)
+  def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ "user"
     json.validate[Account] match {
       case JsSuccess(user, _) =>
-        // todo: перенести установку времени редактирования в единую точку
-        val toSave = if (user.passwordHash == null) {
-          // пароль не был изменен пользователем
-          user.copy(passwordHash = existingUser.passwordHash)
-        } else {
-          // пароль поменялся - нужно обновить хеш
-          user
-        }.copy(id = id, editDate = Some(DateUtils.now), editorId = Some(request.identity.id))
-
-        accountService.update(toSave, request.identity.id)
-        val userJson = makeJson("user", toSave)
-        Ok(userJson)
-      case err@JsError(_) => UnprocessableEntity(Json.toJson(err))
+        accountService.update(user, Some(request.identity.id)) map { saved =>
+          val userJson = makeJson("user", saved)
+          Ok(userJson)
+        }
+      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
     }
   }
 
-  def delete(id: Int) = SecuredAction { request =>
-    val wasDeleted = accountService.delete(id)
-    if (wasDeleted) Ok(Json.parse("{}"))
-    else NotFound(Response.bad(s"Пользователь с id=$id не найден"))
+  def delete(id: Int) = SecuredAction.async { request =>
+    accountService.delete(id) map {
+      case true => Ok(Json.obj())
+      case false => NotFound(Response.bad(s"Пользователь с id=$id не найден"))
+    }
   }
 
   def currentUser = SecuredAction { request =>
     val user = request.identity
     Ok(makeJson("user", user))
   }
-
 
   def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[AccountFilter] = {
     val query: Map[String, String] = request.queryString.map { case (k, v) => k -> v.mkString }
@@ -119,14 +103,6 @@ class AccountController(implicit inj: Injector) extends BaseController with Silh
       case _ => None
     }
   }
-
-  private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]): JsValue = JsObject(Seq(prop -> Json.toJson(obj)))
-
-  private def findOrThrow(id: Int) =
-    accountService.findById(id)  match {
-      case Some(u) => u
-      case None => throw new AccountNotFoundException(s"Account id=$id")
-    }
 }
 
 

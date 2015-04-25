@@ -5,34 +5,47 @@ import play.api.db.slick.Config.driver.simple._
 import repository.GenericCRUD
 import t.EntityNotFoundException
 import repository.db.DbAccessor
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import scala.concurrent.Future
 
 trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[T, E]] extends DbAccessor {
   val repo: G
-  def setCreatorAndDate(entity: E, creatorId: Int): E
-  def setEditorAndDate(entity: E, editorId: Int): E
-  def setId(entity: E, id: Int): E
+  protected def setCreatorAndDate(entity: E, creatorId: Option[Int]): E
+  protected def setEditorAndDate(entity: E, editorId: Option[Int]): E
+  protected def setId(entity: E, id: Int): E
 
-  def create(entity: E, creatorId: Int): E = {
-    val toSave = setCreatorAndDate(entity, creatorId)
-    val id = withDb { session => repo.create(toSave)(session) }
-    setId(entity, id)
-  }
+  protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(setCreatorAndDate(entity, creatorId))
+  protected def afterCreate(entity: E) = Future.successful(entity)
+  protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(setEditorAndDate(entity, editorId))
+  protected def afterUpdate(entity: E) = Future.successful(entity)
 
-  def read: List[E] = {
-    withDb { session => repo.read(session) }
-  }
-
-  def update(entity: E, editorId: Int): E = {
-    val toSave = setEditorAndDate(entity, editorId)
-    withDb { session => repo.update(toSave)(session) } match {
-      case true => toSave
-      case _ => throw new EntityNotFoundException[E]("Id = " + entity.id, entity.getClass.getTypeName)
+  def create(entity: E, creatorId: Option[Int]): Future[E] = {
+    beforeCreate(entity, creatorId) flatMap { toSave =>
+      val id = withDb { session => repo.create(toSave)(session) }
+      afterCreate(setId(toSave, id))
     }
   }
 
-  def delete(id: Int): Boolean =
-    withDb { session => repo.delete(id)(session) }
+  def read: Future[List[E]] = Future {
+    withDb { session => repo.read(session) }
+  }
 
-  def findById(id: Int): Option[E] =
+  def update(entity: E, editorId: Option[Int]): Future[E] = {
+    beforeUpdate(entity, editorId) flatMap { toSave =>
+      val wasFound = withDb { session => repo.update(toSave)(session) }
+      if (!wasFound)
+        throw new EntityNotFoundException[E]("Id = " + entity.id, entity.getClass.getTypeName)
+
+      afterUpdate(toSave)
+    }
+  }
+
+  def delete(id: Int): Future[Boolean] = Future {
+    withDb { session => repo.delete(id)(session) }
+  }
+
+  def findById(id: Int): Future[Option[E]] = Future {
     withDb { session => repo.findById(id)(session) }
+  }
 }

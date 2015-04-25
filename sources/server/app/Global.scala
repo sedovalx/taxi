@@ -59,7 +59,7 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
     val f = userService.hasUsers flatMap { hasUsers =>
       if (!hasUsers) {
         val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
-        userService.createAccount(admin)
+        userService.create(admin, None)
       } else Future.successful(None)
     } recoverWith {
       case error => Future {

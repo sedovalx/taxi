@@ -14,11 +14,11 @@ trait CarClassService extends EntityService[CarClass, CarClassTable, GenericCRUD
 class CarClassServiceImpl(carClassRepo: CarClassRepo) extends CarClassService {
   val repo = carClassRepo
 
-  override def setCreatorAndDate(entity: CarClass, creatorId: Int) =
-    entity.copy(creatorId = Some(creatorId), creationDate = Some(DateUtils.now))
+  override def setCreatorAndDate(entity: CarClass, creatorId: Option[Int]) =
+    entity.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
 
-  override def setEditorAndDate(entity: CarClass, editorId: Int) =
-    entity.copy(editorId = Some(editorId), editDate = Some(DateUtils.now))
+  override def setEditorAndDate(entity: CarClass, editorId: Option[Int]) =
+    entity.copy(editorId = editorId, editDate = Some(DateUtils.now))
 
   override def setId(entity: Tables.CarClass, id: Int): Tables.CarClass =
     entity.copy(id = id)
@@ -30,11 +30,11 @@ trait DriverService extends EntityService[Driver, DriverTable, GenericCRUD[Drive
 class DriverServiceImpl(driverRepo: DriversRepo) extends DriverService {
   override val repo = driverRepo
 
-  override def setCreatorAndDate(entity: Driver, creatorId: Int) =
-    entity.copy(creatorId = Some(creatorId), creationDate = Some(DateUtils.now))
+  override def setCreatorAndDate(entity: Driver, creatorId: Option[Int]) =
+    entity.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
 
-  override def setEditorAndDate(entity: Driver, editorId: Int) =
-    entity.copy(editorId = Some(editorId), editDate = Some(DateUtils.now))
+  override def setEditorAndDate(entity: Driver, editorId: Option[Int]) =
+    entity.copy(editorId = editorId, editDate = Some(DateUtils.now))
 
   override def setId(entity: Tables.Driver, id: Int): Tables.Driver =
     entity.copy(id = id)
