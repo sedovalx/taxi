@@ -15,22 +15,22 @@ import scala.util.Random
 
 class AccountRepositoryTest extends SpecificationWithFixtures with Injectable {
 
-   class User(accountRepo: AccountRepo) {
-     def create(firstName: Option[String], lastName: Option[String], login: String, password: String, role: Role) =
-       new Account(id = Random.nextInt(), firstName = firstName, lastName = lastName,
-         login = login, passwordHash = password, role = role, creationDate = Some(DateUtils.now))
-     def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
-       val user = create(None, None, login, pass, role)
-       val id = accountRepo.create(user)
-       user.copy(id = id)
-     }
+  class User(accountRepo: AccountRepo) {
+    def create(firstName: Option[String], lastName: Option[String], login: String, password: String, role: Role) =
+      new Account(id = Random.nextInt(), firstName = firstName, lastName = lastName,
+       login = login, passwordHash = password, role = role, creationDate = Some(DateUtils.now))
 
-     def createUser(firstName: String, lastName: String, login: String, pass: String, role: Role)(implicit session: Session) = {
-       val user = create(Some(firstName), Some(lastName), login, pass, role)
-       val id = accountRepo.create(user)
-       user.copy(id = id)
-     }
+    def createUser(login: String, pass: String, role: Role)(implicit session: Session) = {
+      val user = create(None, None, login, pass, role)
+      val id = accountRepo.create(user)
+      user.copy(id = id)
+    }
 
+    def createUser(firstName: String, lastName: String, login: String, pass: String, role: Role)(implicit session: Session) = {
+      val user = create(Some(firstName), Some(lastName), login, pass, role)
+      val id = accountRepo.create(user)
+      user.copy(id = id)
+    }
   }
 
   "UserRepository" should {

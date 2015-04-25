@@ -25,6 +25,7 @@ class BaseControllerSpecification extends SpecificationWithFixtures  {
 
     def login() {
       val result = route(loginRequest).get
+      println(contentAsString(result))
       val body = Json.parse(contentAsString(result))
       _token = (body \ "token").as[String]
     }

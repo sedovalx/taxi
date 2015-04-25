@@ -10,7 +10,7 @@ import scaldi.Module
 import service._
 
 
-import scala.slick.driver.JdbcProfile
+//import scala.slick.driver.JdbcProfile
 
 class ServicesModule extends Module {
 

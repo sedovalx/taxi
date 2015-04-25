@@ -10,6 +10,7 @@ import play.api.mvc.BodyParsers
 import scaldi.Injector
 import service.{AccountService, DriverService}
 import utils.serialization.DriverSerializer._
+import utils.serialization.FormatJsError._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -45,13 +46,11 @@ class DriverController(implicit inj: Injector) extends BaseController with Silho
     val json = request.body \ "driver"
     json.validate[Driver] match {
       case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
-      case JsSuccess(driver, _) => {
-    driverService.create (driver, Some (request.identity.id) ) map {
-    saved =>
-    val driverJson = makeJson ("driver", saved)
-    Ok (driverJson)
-    }
-    }
+      case JsSuccess(driver, _) =>
+        driverService.create(driver, Some(request.identity.id)) map { saved =>
+          val driverJson = makeJson("driver", saved)
+          Ok(driverJson)
+        }
     }
   }
 
@@ -59,13 +58,11 @@ class DriverController(implicit inj: Injector) extends BaseController with Silho
     val json = request.body \ "driver"
     json.validate[Driver] match {
       case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
-      case JsSuccess(driver, _) => {
-    driverService.update (driver, Some (request.identity.id) ) map {
-    _ =>
-    val driverJson = makeJson ("driver", driver)
-    Ok (driverJson)
-    }
-    }
+      case JsSuccess(driver, _) =>
+        driverService.update (driver, Some (request.identity.id) ) map { _ =>
+          val driverJson = makeJson ("driver", driver)
+          Ok (driverJson)
+        }
     }
   }
 
@@ -77,6 +74,4 @@ class DriverController(implicit inj: Injector) extends BaseController with Silho
         NotFound(Response.bad(s"Водитель с id=$id не найден"))
     }
   }
-
-  private def makeJson[T](prop: String, obj: T)(implicit tjs: Writes[T]) = JsObject(Seq(prop -> Json.toJson(obj)))
 }

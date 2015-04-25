@@ -1,15 +1,16 @@
 package controllers
 
 import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.generated.Tables.Account
 import queries.QueryManager
-import utils.auth.Environment
+import scaldi.Injector
 
-class QueryController(val env: Environment,
-                        queryManager: QueryManager)
-  extends BaseController with Silhouette[Account, JWTAuthenticator]{
+class QueryController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator]{
+
+  implicit val env = inject [Environment[Account, JWTAuthenticator]]
+  val queryManager = inject [QueryManager]
 
   def run(reportName: String) = SecuredAction { implicit request =>
     val report = queryManager.getReport(reportName)
