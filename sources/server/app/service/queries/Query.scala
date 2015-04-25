@@ -1,4 +1,4 @@
-package queries
+package service.queries
 
 import play.api.libs.json.JsArray
 

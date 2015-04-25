@@ -4,7 +4,7 @@ import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.generated.Tables.Account
-import queries.QueryManager
+import service.queries.QueryManager
 import scaldi.Injector
 
 class QueryController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator]{

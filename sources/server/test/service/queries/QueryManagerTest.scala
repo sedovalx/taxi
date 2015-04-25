@@ -1,4 +1,4 @@
-package queries
+package service.queries
 
 import org.specs2.mutable.Specification
 import play.api.libs.json.JsArray

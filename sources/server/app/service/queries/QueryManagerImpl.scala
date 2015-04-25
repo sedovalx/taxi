@@ -1,4 +1,4 @@
-package queries
+package service.queries
 
 class QueryManagerImpl(reports: List[Query]) extends QueryManager {
   override def getReport(name: String): Option[Query] = {
