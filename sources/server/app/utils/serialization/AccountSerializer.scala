@@ -41,7 +41,7 @@ object AccountSerializer {
   // сериализация
   implicit val accountWrites =  new Writes[Account] {
     def writes(user: Account) = Json.obj(
-      "id" -> user.id,
+      "id" -> user.id.toString,
       "login" -> user.login,
       "password" -> JsNull,
       "lastName" -> user.lastName,
@@ -50,8 +50,8 @@ object AccountSerializer {
       "role" -> user.role.toString,
       "creationDate" -> user.creationDate.map { d => dateIso8601Format.format(d)} ,
       "editDate" -> user.editDate.map { d => dateIso8601Format.format(d)},
-      "creator" -> user.creatorId,
-      "editor" -> user.editorId,
+      "creator" -> user.creatorId.map { id => id.toString },
+      "editor" -> user.editorId.map { id => id.toString },
       "comment" -> user.comment
     )
   }

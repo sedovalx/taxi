@@ -27,7 +27,7 @@ libraryDependencies ++= Seq(
   "com.mohiva"                        %% "play-silhouette"                % "2.0-RC2",
   "com.mohiva"                        %% "play-silhouette-testkit"        % "2.0-RC2"                   % "test",
   "org.scaldi"                        %% "scaldi-play"                    % "0.5.3",
-  "com.typesafe.slick" %% "slick-codegen" % "2.1.0"
+  "com.typesafe.slick"                %% "slick-codegen"                  % "2.1.0"
 )
 
 scalacOptions ++= Seq("-feature", "-deprecation")

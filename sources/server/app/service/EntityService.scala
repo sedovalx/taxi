@@ -32,6 +32,8 @@ trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: Gen
   }
 
   def update(entity: E, editorId: Option[Int]): Future[E] = {
+    assert(entity != null, "Updated entity should not be null")
+    assert(entity.id > 0, "Updated entity's id should be more then zero")
     beforeUpdate(entity, editorId) flatMap { toSave =>
       val wasFound = withDb { session => repo.update(toSave)(session) }
       if (!wasFound)

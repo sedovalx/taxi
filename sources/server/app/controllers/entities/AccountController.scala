@@ -54,7 +54,7 @@ class AccountController(implicit inj: Injector) extends BaseController with Silh
         } recover {
           case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
         }
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case err: JsError => Future.successful(UnprocessableEntity(Json.toJson(err)))
     }
   }
 
@@ -62,11 +62,13 @@ class AccountController(implicit inj: Injector) extends BaseController with Silh
     val json = request.body \ "user"
     json.validate[Account] match {
       case JsSuccess(user, _) =>
-        accountService.update(user, Some(request.identity.id)) map { saved =>
+        // ember sends update data without id
+        val toSave = user.copy(id = id)
+        accountService.update(toSave, Some(request.identity.id)) map { saved =>
           val userJson = makeJson("user", saved)
           Ok(userJson)
         }
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case err: JsError => Future.successful(UnprocessableEntity(Json.toJson(err)))
     }
   }
 

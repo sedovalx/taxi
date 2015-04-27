@@ -60,7 +60,6 @@ import scala.concurrent.Future
       val password = user.passwordHash
 
       // пробуем десериализовать пароль
-      println(user.toString)
       Json.parse(password).validate[PasswordInfo] match {
         case s: JsSuccess[PasswordInfo] => Some(s.get)
         case e: JsError =>

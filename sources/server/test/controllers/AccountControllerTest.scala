@@ -7,6 +7,7 @@ import play.api.Application
 import play.api.db.slick._
 import play.api.libs.json
 import play.api.libs.json._
+import play.api.libs.json.Reads._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
 import repository.AccountRepo
@@ -30,7 +31,7 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
     DB.withSession { session =>
       val request = createCreateRequest(Some("12"), Some("1234567"), Some(Role.Administrator))
       val Some(result) = route(request)
-      println (contentAsString(result))
+      //println (contentAsString(result))
       status(result) must equalTo(UNPROCESSABLE_ENTITY)
 
       val jsonResult = contentAsJson(result)
@@ -42,7 +43,7 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   "validation happy path" in new WithFakeDB {
     val request = createCreateRequest(Some("1234"), Some("123456789"), Some(Role.Administrator))
     val Some(result) = route(request)
-    println(contentAsString(result))
+    //println(contentAsString(result))
     status(result) must equalTo(OK)
 
     (contentAsJson(result) \ "user") must haveClass[JsObject]
@@ -53,7 +54,7 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
     val login = "1234"
     val createRequest = createCreateRequest(Some(login), Some("123456789"), Some(Role.Administrator))
     val Some(createResult) = route(createRequest)
-    println(contentAsString(createResult))
+    //println(contentAsString(createResult))
     status(createResult) must equalTo(OK)
     val readRequest = createEmptyAuthenticatedRequest("GET", "/api/users")
     
@@ -76,14 +77,14 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
     status(createResult) must equalTo(OK)
     val Some(accountBefore) =  DB.withSession { session => accounts.findByLogin(login)(session) }
     val updateJson = createJsonAccount(Some(accountBefore.login), None, Some(accountBefore.role))
-    
+
     // test:
-    val updateRequest = createAuthenticatedRequest("POST", "/api/users/" + accountBefore.id, updateJson + ("id", JsNumber(accountBefore.id)))
+    val updateRequest = createAuthenticatedRequest(PUT, "/api/users/" + accountBefore.id, updateJson)
     val Some(updateResult) = route(updateRequest)
     status(updateResult) must equalTo(OK)
 
     // check:
-    val Some(accountAfter) =  DB.withSession { session => accounts.findByLogin(login)(session) }
+    val Some(accountAfter) = DB.withSession { session => accounts.findByLogin(login)(session) }
     accountAfter.passwordHash must equalTo(accountBefore.passwordHash)
   }
 
@@ -91,22 +92,28 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
     implicit val injector = global.injector
     val accounts = inject[AccountRepo]
     // setup:
-    val accountJson = createJsonAccount(Some("user1"), Some("password1"), Some(Role.Accountant))
-    val createRequest = createAuthenticatedRequest(POST, "/api/users/", accountJson)
+    val createRequest = createCreateRequest(Some("user1"), Some("password1"), Some(Role.Accountant))
     val Some(createResult) = route(createRequest)
     status(createResult) must equalTo(OK)
     val jsonCreateResult = contentAsJson(createResult).as[JsObject]
-    val id  = (jsonCreateResult \ "user" \ "id").as[Int]
-    val Some(accountBefore) =  DB.withSession { session => accounts.findById(id)(session) }
+    val id  = (jsonCreateResult \ "user" \ "id").as[String]
+    val Some(accountBefore) =  DB.withSession { session => accounts.findById(id.toInt)(session) }
 
     // test:
-    val updateJson = jsonCreateResult + ("password", JsString("new value")) + ("id", JsString(id.toString))
-    val updateRequest = createAuthenticatedRequest("POST", "/api/users/" + id, updateJson)
+    // see: https://www.playframework.com/documentation/2.3.0/ScalaJsonTransformers
+    val transformation = JsPath.json.pickBranch(
+      (JsPath \ 'user \ 'password).json.update(
+        of[JsValue].map { _ => JsString("new value") }
+      )
+    )
+    val JsSuccess(updateJson, _) = jsonCreateResult.transform(transformation)
+    val updateRequest = createAuthenticatedRequest(PUT, "/api/users/" + id, updateJson)
     val Some(updateResult) = route(updateRequest)
 
     // check:
+    println(contentAsString(updateResult))
     status(updateResult) must equalTo(OK)
-    val Some(accountAfter) =  DB.withSession { session => accounts.findById(id)(session) }
+    val Some(accountAfter) =  DB.withSession { session => accounts.findById(id.toInt)(session) }
     accountAfter.passwordHash must not equalTo accountBefore.passwordHash
   }
 
@@ -122,9 +129,9 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   private def createCreateRequest(login: Option[String], password: Option[String], role: Option[Role]) =
     createAuthenticatedRequest(POST, "/api/users", createJsonAccount(login, password, role))
 
-  private def printLogins(implicit app: Application, accounts: AccountRepo) = {
-    DB.withSession { session =>
-      accounts.read(session).foreach { a => println(a.login) }
-    }
-  }
+//  private def printLogins(implicit app: Application, accounts: AccountRepo) = {
+//    DB.withSession { session =>
+//      accounts.read(session).foreach { a => println(a.login) }
+//    }
+//  }
 }
