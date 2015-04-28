@@ -4,6 +4,7 @@ import java.sql.Date
 
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
+import models.entities.Role
 import models.entities.Role._
 import models.generated.Tables
 import models.generated.Tables.{Account, AccountTable}
@@ -13,6 +14,7 @@ import play.api.libs.json._
 import repository.AccountRepo
 import scaldi.Injector
 import service.AccountService
+import serialization.EnumSerializer
 
 class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo] {
   protected val entityService = inject [AccountService]
@@ -20,6 +22,9 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
 
   protected val entitiesName: String = "users"
   protected val entityName: String = "user"
+
+  private implicit val enumReads = EnumSerializer.enumReads(Role)
+  private implicit val enumWrites = EnumSerializer.enumWrites
 
   protected def copyEntityWithId(entity: Account, id: Int) = entity.copy(id = id)
 
