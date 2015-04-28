@@ -36,6 +36,12 @@ Router.map(function() {
   this.resource("rent", { path: "/rents/:rent_id" }, function() {
     this.route("edit");
   });
+  this.resource("payments", function() {
+    this.route("new");
+  });
+  this.resource("payment", { path: "/payments/:payment_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 

@@ -1,0 +1,18 @@
+<div class="editor user-editor">
+    <form class="form-horizontal">
+      {{property-row title="Дата платежа" value=payDate errors=errors.payDate}}
+      {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+      {{#property-row title="Аренда" errors=errors.rent}}
+        {{ember-selectize
+        content=rentItems
+        optionValuePath="content.id"
+        optionLabelPath="content.displayName"
+        selection=rent
+        placeholder="Выберите аренду"
+        loading=rent.isPending
+        }}
+      {{/property-row}}
+      {{property-row title="Примечания" value=comment}}
+    </form>
+  {{save-cancel}}
+</div>
