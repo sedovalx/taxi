@@ -15,7 +15,10 @@ var RentModel = DS.Model.extend({
   displayStatus: function(){
     let status = statuses.filter(r => r.id === this.get("status"))[0];
     return status ? status.label : "";
-  }.property("status")
+  }.property("status"),
+  displayName: function(){
+    return this.get("driver").get("displayName") + " - " + this.get("car").get("displayName");
+  }.property("driver","driver.displayName","car")
 });
 
 

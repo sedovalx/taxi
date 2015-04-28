@@ -30,6 +30,11 @@
                               Аренды
                           </a>
                       {{/link-to}}
+                      {{#link-to 'payments' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Платежи
+                          </a>
+                      {{/link-to}}
                     </ul>
                 </div>
                 <div class="collapse navbar-collapse">
