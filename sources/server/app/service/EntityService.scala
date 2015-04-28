@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[T, E]] extends DbAccessor {
+trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T]] extends DbAccessor {
   val repo: G
   protected def setCreatorAndDate(entity: E, creatorId: Option[Int]): E
   protected def setEditorAndDate(entity: E, editorId: Option[Int]): E

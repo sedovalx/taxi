@@ -50,19 +50,19 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
     )(Account.apply _)
 
   protected implicit val writes: Writes[Tables.Account] = new Writes[Account] {
-    def writes(user: Account) = Json.obj(
-      "id" -> user.id.toString,
-      "login" -> user.login,
+    def writes(o: Account) = Json.obj(
+      "id" -> o.id.toString,
+      "login" -> o.login,
       "password" -> JsNull,
-      "lastName" -> user.lastName,
-      "firstName" -> user.firstName,
-      "middleName" -> user.middleName,
-      "role" -> user.role.toString,
-      "creationDate" -> user.creationDate.map { d => dateIso8601Format.format(d)} ,
-      "editDate" -> user.editDate.map { d => dateIso8601Format.format(d)},
-      "creator" -> user.creatorId.map { id => id.toString },
-      "editor" -> user.editorId.map { id => id.toString },
-      "comment" -> user.comment
+      "lastName" -> o.lastName,
+      "firstName" -> o.firstName,
+      "middleName" -> o.middleName,
+      "role" -> o.role.toString,
+      "creationDate" -> o.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> o.editDate.map { d => dateIso8601Format.format(d)},
+      "creator" -> o.creatorId.map { id => id.toString },
+      "editor" -> o.editorId.map { id => id.toString },
+      "comment" -> o.comment
     )
   }
 

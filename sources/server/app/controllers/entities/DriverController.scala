@@ -8,14 +8,14 @@ import models.generated.Tables
 import models.generated.Tables._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-import repository.DriversRepo
+import repository.DriverRepo
 import scaldi.Injector
 import service.DriverService
 
 /**
  * Контроллер операций над водителями
  */
-class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriversRepo] {
+class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo] {
   override val entityService = inject [DriverService]
 
   override protected def copyEntityWithId(entity: Driver, id: Int): Driver = entity.copy(id = id)
@@ -38,21 +38,21 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Driver.apply _)
   override implicit val writes: Writes[Tables.Driver] = new Writes[Driver] {
-    def writes(driver: Driver) = Json.obj(
-      "id" -> driver.id,
-      "pass" -> driver.pass,
-      "license" -> driver.license,
-      "lastName" -> driver.lastName,
-      "firstName" -> driver.firstName,
-      "middleName" -> driver.middleName,
-      "phone" -> driver.phone,
-      "secPhone" -> driver.secPhone,
-      "address" -> driver.address,
-      "creationDate" -> driver.creationDate.map { d => dateIso8601Format.format(d)} ,
-      "editDate" -> driver.editDate.map { d => dateIso8601Format.format(d)},
-      "creator" -> driver.creatorId,
-      "editor" -> driver.editorId,
-      "comment" -> driver.comment
+    def writes(o: Driver) = Json.obj(
+      "id" -> o.id.toString,
+      "pass" -> o.pass,
+      "license" -> o.license,
+      "lastName" -> o.lastName,
+      "firstName" -> o.firstName,
+      "middleName" -> o.middleName,
+      "phone" -> o.phone,
+      "secPhone" -> o.secPhone,
+      "address" -> o.address,
+      "creationDate" -> o.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> o.editDate.map { d => dateIso8601Format.format(d)},
+      "creator" -> o.creatorId.map { id => id.toString },
+      "editor" -> o.editorId.map { id => id.toString },
+      "comment" -> o.comment
     )
   }
   override val entityName: String = "driver"

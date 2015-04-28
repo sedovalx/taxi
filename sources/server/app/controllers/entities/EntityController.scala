@@ -21,7 +21,7 @@ import utils.serialization.FormatJsError._
 /**
  * Created by ipopkov on 25/04/15.
  */
-abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[T, E]]
+abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T]]
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   protected val entityService : EntityService[E, T, G]

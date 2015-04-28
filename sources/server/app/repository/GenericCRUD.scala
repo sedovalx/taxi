@@ -6,7 +6,7 @@ import utils.db.MaybeFilter
 
 import scala.language.{implicitConversions, reflectiveCalls}
 
-trait GenericCRUD[T <: Table[A] { val id: Column[Int] }, A <: Entity] {
+trait GenericCRUD[E <: Entity, T <: Table[E] { val id: Column[Int] }] {
 
   val tableQuery: TableQuery[T]
 
@@ -15,7 +15,7 @@ trait GenericCRUD[T <: Table[A] { val id: Column[Int] }, A <: Entity] {
   /*
     * Find a specific entity by id.
     */
-  def findById(id: Int)(implicit session: Session): Option[A] = {
+  def findById(id: Int)(implicit session: Session): Option[E] = {
     tableQuery.filter(_.id === id).run.headOption
   }
 
@@ -35,7 +35,7 @@ trait GenericCRUD[T <: Table[A] { val id: Column[Int] }, A <: Entity] {
    * @param session сессия к БД
    * @return true, если объект был найден, и данные обновлены
    */
-  def update(entity: A) (implicit session: Session): Boolean = {
+  def update(entity: E) (implicit session: Session): Boolean = {
     tableQuery.filter(_.id === entity.id).update(entity) > 0
   }
 
@@ -45,7 +45,7 @@ trait GenericCRUD[T <: Table[A] { val id: Column[Int] }, A <: Entity] {
    * @param session сессия к БД
    * @return id созданного объекта
    */
-  def create(entity: A) (implicit session: Session) : Int = {
+  def create(entity: E) (implicit session: Session) : Int = {
     (tableQuery returning tableQuery.map(_.id)) += entity
   }
 
@@ -54,7 +54,7 @@ trait GenericCRUD[T <: Table[A] { val id: Column[Int] }, A <: Entity] {
    * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  def read(implicit session: Session): List[A] = {
+  def read(implicit session: Session): List[E] = {
     tableQuery.list
   }
 }

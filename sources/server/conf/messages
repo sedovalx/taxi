@@ -2,3 +2,5 @@ validation.error.minLength=Минимально допустимая длина 
 validation.String_value_expected=Поле должно быть заполено
 validation.error.expected.jsstring=Поле должно быть заполено
 validation.error.expected.jsnumberorjsstring=Поле должно быть заполено
+validation.error.expected.jsnumber=Поле должно быть заполено
+validation.error.min=Минимально допустимое значение: {0}

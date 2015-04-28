@@ -34,11 +34,11 @@ export default Ember.ArrayController.extend({
       headerCellName: "Номерной знак",
       contentPath: "regNumber"
     });
-    let modelColumn = Ember.Table.ColumnDefinition.create({
+    let carModelColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Модель",
-      contentPath: "cmodel"
+      contentPath: "carModel"
     });
     let makeColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -70,7 +70,7 @@ export default Ember.ArrayController.extend({
       headerCellName: "Примечания",
       contentPath: "comment"
     });
-    return [regNumberColumn, makeColumn, modelColumn, classNameColumn, mileageColumn, serviceColumn, commentColumn];
+    return [regNumberColumn, makeColumn, carModelColumn, classNameColumn, mileageColumn, serviceColumn, commentColumn];
   }.property(),
   cars: function(){
     return this;

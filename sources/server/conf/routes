@@ -38,6 +38,12 @@ GET           /api/carClasses/:id        @controllers.entities.CarClassControlle
 POST          /api/carClasses            @controllers.entities.CarClassController.create
 PUT           /api/carClasses/:id        @controllers.entities.CarClassController.update(id: Int)
 DELETE        /api/carClasses/:id        @controllers.entities.CarClassController.delete(id: Int)
+# Car routes
+GET           /api/cars                   @controllers.entities.CarController.read
+GET           /api/cars/:id               @controllers.entities.CarController.getById(id: Int)
+POST          /api/cars                   @controllers.entities.CarController.create
+PUT           /api/cars/:id               @controllers.entities.CarController.update(id: Int)
+DELETE        /api/cars/:id               @controllers.entities.CarController.delete(id: Int)
 
 
 # Every other page (should be the last route)
