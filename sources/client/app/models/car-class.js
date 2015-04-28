@@ -11,23 +11,4 @@ var CarClassModel = DS.Model.extend({
   editor: DS.belongsTo("user", {inverse: null, async: true})
 });
 
-
-CarClassModel.reopenClass({
-  FIXTURES: [
-    {
-      id: 1,
-      name: "Эконом1",
-      rate: 500,
-      comment: "test comment"
-    },
-    {
-      id: 2,
-      name: "Бизнес1",
-      rate: 1000,
-      comment: "пармпампам"
-    }
-  ]
-});
-
-
 export default CarClassModel;

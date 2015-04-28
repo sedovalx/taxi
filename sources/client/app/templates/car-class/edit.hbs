@@ -3,8 +3,8 @@
       {{#property-row title="Наименование" errors=errors.name}}
         {{input value=name readonly="true"}}
       {{/property-row}}
-      {{property-row title="Тариф" value=rate}}
-      {{property-row title="Примечание" value=comment}}
+      {{property-row title="Тариф" value=rate errors=errors.rate}}
+      {{property-row title="Примечание" value=comment errors=errors.comment}}
     </form>
   {{save-cancel}}
 </div>

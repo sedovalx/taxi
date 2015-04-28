@@ -16,13 +16,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 import play.api.db.slick.Config.driver.simple._
-import serialization.FormatJsError._
+import utils.serialization.FormatJsError._
 
 /**
  * Created by ipopkov on 25/04/15.
  */
 abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[T, E]]
-  extends BaseController  with Silhouette[Account, JWTAuthenticator] {
+  extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   protected val entityService : EntityService[E, T, G]
 

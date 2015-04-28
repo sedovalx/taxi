@@ -14,7 +14,7 @@ import play.api.libs.json._
 import repository.AccountRepo
 import scaldi.Injector
 import service.AccountService
-import serialization.EnumSerializer
+import utils.serialization.EnumSerializer
 
 class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo] {
   protected val entityService = inject [AccountService]

@@ -1,4 +1,4 @@
-package serialization
+package utils.serialization
 
 import play.api.data.validation.ValidationError
 import play.api.libs.json._
