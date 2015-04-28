@@ -1,6 +1,4 @@
-package t
-
-
+package controllers.entities
 
 class CarClassController {
 

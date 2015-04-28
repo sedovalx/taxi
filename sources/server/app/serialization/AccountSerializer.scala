@@ -1,4 +1,4 @@
-package utils.serialization
+package serialization
 
 import java.sql.Date
 import java.text.SimpleDateFormat

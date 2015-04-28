@@ -12,8 +12,8 @@ import play.api.mvc._
 import scaldi.Injector
 import service.AccountService
 import utils.extensions.DateUtils._
-import utils.serialization.AccountSerializer._
-import utils.serialization.FormatJsError._
+import serialization.AccountSerializer._
+import serialization.FormatJsError._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent._

@@ -14,12 +14,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 import play.api.db.slick.Config.driver.simple._
-import utils.serialization.FormatJsError._
+import serialization.FormatJsError._
 
 /**
  * Created by ipopkov on 25/04/15.
  */
-abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[T, E]] extends BaseController  with Silhouette[Account, JWTAuthenticator] {
+abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[T, E]]
+  extends BaseController  with Silhouette[Account, JWTAuthenticator] {
 
   val entityService : EntityService[E, T, G]
 
@@ -30,6 +31,7 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   val entityName: String //example: "driver"
   val entitiesName: String //example: "drivers"
 
+  protected def copyEntityWithId(entity: E): E
 
   def read = SecuredAction.async { implicit request =>
     entityService.read map { entities =>
@@ -53,6 +55,8 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
         entityService.create(entity, Some(request.identity.id)) map { saved =>
           val eJson = makeJson(entityName, saved)
           Ok(eJson)
+        } recover {
+          case e: Throwable => BadRequest(Response.bad("Ошибка создания объекта", e.toString))
         }
     }
   }
@@ -62,9 +66,12 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
     json.validate[E] match {
       case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
       case JsSuccess(entity, _) =>
-        entityService.update (entity, Some (request.identity.id) ) map { _ =>
-          val eJson = makeJson (entityName, entity)
+        val toSave = copyEntityWithId(entity)
+        entityService.update (toSave, Some (request.identity.id) ) map { saved =>
+          val eJson = makeJson (entityName, saved)
           Ok (eJson)
+        } recover {
+          case e: Throwable => BadRequest(Response.bad("Ошибка обновления объекта", e.toString))
         }
     }
   }
@@ -74,7 +81,7 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
       if (wasDeleted)
         Ok(Json.parse("{}"))
       else
-        NotFound(Response.bad(s"Сущность с id=$id не найден"))
+        NotFound(Response.bad(s"Объект с id=$id не найден"))
     }
   }
  }

@@ -3,8 +3,8 @@ package service
 import models.entities.Entity
 import play.api.db.slick.Config.driver.simple._
 import repository.GenericCRUD
-import t.EntityNotFoundException
 import repository.db.DbAccessor
+import utils.EntityNotFoundException
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future

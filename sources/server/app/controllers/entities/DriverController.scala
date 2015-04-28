@@ -9,8 +9,8 @@ import play.api.libs.json._
 import play.api.mvc.BodyParsers
 import scaldi.Injector
 import service.{AccountService, DriverService}
-import utils.serialization.DriverSerializer._
-import utils.serialization.FormatJsError._
+import serialization.DriverSerializer._
+import serialization.FormatJsError._
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future

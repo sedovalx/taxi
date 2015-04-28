@@ -1,9 +1,6 @@
-package t
-
-import java.sql.Date
+package serialization
 
 import models.generated.Tables.CarClass
-import play.api.libs.json.Reads._
 import play.api.libs.json._
 
 abstract class CarClassSerializer extends EntitySerializer[CarClass] {

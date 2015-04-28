@@ -1,4 +1,4 @@
-package utils.serialization
+package serialization
 
 import play.api.libs.json._
 
