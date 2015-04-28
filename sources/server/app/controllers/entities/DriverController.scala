@@ -1,77 +1,61 @@
 package controllers.entities
 
-import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import controllers.BaseController
-import models.generated.Tables._
-import play.api.libs.json._
-import play.api.mvc.BodyParsers
-import scaldi.Injector
-import service.{AccountService, DriverService}
-import serialization.DriverSerializer._
-import serialization.FormatJsError._
-import scala.concurrent.ExecutionContext.Implicits.global
+import java.sql.Date
 
-import scala.concurrent.Future
+import com.mohiva.play.silhouette.api.Environment
+import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
+import models.generated.Tables
+import models.generated.Tables._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import repository.DriversRepo
+import scaldi.Injector
+import service.DriverService
 
 /**
  * Контроллер операций над водителями
  */
-class DriverController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriversRepo] {
+  override val entityService = inject [DriverService]
 
-  implicit val env = inject [Environment[Account, JWTAuthenticator]]
-  implicit val accountService = inject[AccountService]
-  implicit val driverService = inject[DriverService]
+  override protected def copyEntityWithId(entity: Driver, id: Int): Driver = entity.copy(id = id)
 
-  /**
-   * Возвращает список водителей в json-формате
-   * @return
-   */
-  def read = SecuredAction.async { implicit request =>
-    driverService.read map { drivers =>
-      val driversJson = makeJson("drivers", drivers)
-      Ok(driversJson)
-    }
+  override val entitiesName: String = "drivers"
+  override implicit val reads: Reads[Tables.Driver] = (
+      (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
+      (JsPath \ "pass").read[String] and
+      (JsPath \ "license").read[String] and
+      (JsPath \ "lastName").readNullable[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "middleName").readNullable[String] and
+      (JsPath \ "phone").read[String] and
+      (JsPath \ "secPhone").read[String] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "address").read[String] and
+      (JsPath \ "creationDate").readNullable[Date] and
+      (JsPath \ "editDate").readNullable[Date] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(Driver.apply _)
+  override implicit val writes: Writes[Tables.Driver] = new Writes[Driver] {
+    def writes(driver: Driver) = Json.obj(
+      "id" -> driver.id,
+      "pass" -> driver.pass,
+      "license" -> driver.license,
+      "lastName" -> driver.lastName,
+      "firstName" -> driver.firstName,
+      "middleName" -> driver.middleName,
+      "phone" -> driver.phone,
+      "secPhone" -> driver.secPhone,
+      "address" -> driver.address,
+      "creationDate" -> driver.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> driver.editDate.map { d => dateIso8601Format.format(d)},
+      "creator" -> driver.creatorId,
+      "editor" -> driver.editorId,
+      "comment" -> driver.comment
+    )
   }
+  override val entityName: String = "driver"
 
-  def getById(id: Int) = SecuredAction.async { implicit request =>
-    driverService.findById(id) map { driver =>
-      val driverJson = makeJson("driver", driver)
-      Ok(driverJson)
-    }
-  }
-
-  def create = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ "driver"
-    json.validate[Driver] match {
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
-      case JsSuccess(driver, _) =>
-        driverService.create(driver, Some(request.identity.id)) map { saved =>
-          val driverJson = makeJson("driver", saved)
-          Ok(driverJson)
-        }
-    }
-  }
-
-  def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ "driver"
-    json.validate[Driver] match {
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
-      case JsSuccess(driver, _) =>
-        driverService.update (driver, Some (request.identity.id) ) map { _ =>
-          val driverJson = makeJson ("driver", driver)
-          Ok (driverJson)
-        }
-    }
-  }
-
-  def delete(id: Int) = SecuredAction.async { request =>
-    driverService.delete(id) map { wasDeleted =>
-      if (wasDeleted)
-        Ok(Json.parse("{}"))
-      else
-        NotFound(Response.bad(s"Водитель с id=$id не найден"))
-    }
-  }
+  override protected def env = inject [Environment[Tables.Account, JWTAuthenticator]]
 }

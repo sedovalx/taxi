@@ -1,13 +1,15 @@
 package controllers.entities
 
+import java.text.SimpleDateFormat
+
 import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.Silhouette
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import models.entities.Entity
-import models.generated.Tables.{Account}
+import models.generated.Tables.Account
 import play.api.libs.json._
-import play.api.mvc.{ BodyParsers }
+import play.api.mvc.{Result, BodyParsers}
 import repository.GenericCRUD
 import service.EntityService
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -22,19 +24,31 @@ import serialization.FormatJsError._
 abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[T, E]]
   extends BaseController  with Silhouette[Account, JWTAuthenticator] {
 
-  val entityService : EntityService[E, T, G]
+  protected val entityService : EntityService[E, T, G]
 
-  implicit val reads : Reads[E]
-  implicit val writes : Writes[E]
+  protected implicit val reads : Reads[E]
+  protected implicit val writes : Writes[E]
 
+  protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+  protected val entityName: String //example: "driver"
+  protected val entitiesName: String //example: "drivers"
 
-  val entityName: String //example: "driver"
-  val entitiesName: String //example: "drivers"
+  protected def copyEntityWithId(entity: E, id: Int): E
 
-  protected def copyEntityWithId(entity: E): E
+  protected def onCreateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
+  protected def onUpdateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
+  protected def onCreateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка создания объекта", err.toString))
+  protected def onUpdateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
+
+  protected def beforeCreate(entity: E, identity: Account): E = entity
+  protected def beforeUpdate(entityId: Int, entity: E, identity: Account): E = copyEntityWithId(entity, entityId)
+  protected def afterCreate(entity: E): E = entity
+  protected def afterUpdate(entity: E): E = entity
+
 
   def read = SecuredAction.async { implicit request =>
-    entityService.read map { entities =>
+    val filterParams = request.queryString.map { case (k, v) => k -> v.mkString }
+    entityService.read(filterParams) map { entities =>
       val eJson = makeJson[List[E]](entitiesName, entities)
       Ok(eJson)
     }
@@ -50,13 +64,15 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ entityName
     json.validate[E] match {
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case err@JsError(_) => Future.successful(onCreateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
-        entityService.create(entity, Some(request.identity.id)) map { saved =>
-          val eJson = makeJson(entityName, saved)
+        val toSave = beforeCreate(entity, request.identity)
+        entityService.create(toSave, Some(request.identity.id)) map { saved =>
+          val toSend = afterCreate(saved)
+          val eJson = makeJson(entityName, toSend)
           Ok(eJson)
         } recover {
-          case e: Throwable => BadRequest(Response.bad("Ошибка создания объекта", e.toString))
+          case e: Throwable => onCreateError(toSave, e)
         }
     }
   }
@@ -64,14 +80,15 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
     val json = request.body \ entityName
     json.validate[E] match {
-      case err@JsError(_) => Future.successful(UnprocessableEntity(Json.toJson(err)))
+      case err@JsError(_) => Future.successful(onUpdateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
-        val toSave = copyEntityWithId(entity)
+        val toSave = beforeUpdate(id, entity, request.identity)
         entityService.update (toSave, Some (request.identity.id) ) map { saved =>
-          val eJson = makeJson (entityName, saved)
+          val toSend = afterUpdate(saved)
+          val eJson = makeJson (entityName, toSend)
           Ok (eJson)
         } recover {
-          case e: Throwable => BadRequest(Response.bad("Ошибка обновления объекта", e.toString))
+          case e: Throwable => onUpdateError(toSave, e)
         }
     }
   }
@@ -79,7 +96,7 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   def delete(id: Int) = SecuredAction.async { request =>
     entityService.delete(id) map { wasDeleted =>
       if (wasDeleted)
-        Ok(Json.parse("{}"))
+        Ok(Json.obj())
       else
         NotFound(Response.bad(s"Объект с id=$id не найден"))
     }

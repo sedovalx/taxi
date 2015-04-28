@@ -6,19 +6,20 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.{PasswordInfo, PasswordHasher}
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import controllers.filter.AccountFilter
+import models.entities.Role
 import models.generated.Tables
 import models.generated.Tables.{Account, AccountTable}
 import play.api.libs.json.Json
 import repository.db.DbAccessor
-import repository.{AccountRepo, GenericCRUD}
+import repository.AccountRepo
 import utils.extensions.DateUtils
+import utils.extensions.DateUtils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait AccountService extends DbAccessor with EntityService[Account, AccountTable, GenericCRUD[AccountTable, Account]] {
+trait AccountService extends DbAccessor with EntityService[Account, AccountTable, AccountRepo] {
   def hasUsers: Future[Boolean]
-  def find(userFilter : Option[AccountFilter]) : Future[List[Account]]
 }
 
 class AccountServiceImpl(accountRepo: AccountRepo,
@@ -51,7 +52,8 @@ class AccountServiceImpl(accountRepo: AccountRepo,
     }
   }
 
-  override def find(userFilter: Option[AccountFilter]): Future[List[Account]] = Future {
+  override def find(params: Map[String, String]): List[Account] = {
+    val userFilter = tryParseFilterParams(params)
     userFilter match {
       case Some(filter) => withDb { session => accountRepo.find(filter)(session) }
       case None => withDb { session => accountRepo.read(session) }
@@ -78,6 +80,27 @@ class AccountServiceImpl(accountRepo: AccountRepo,
       case Some(u) => u
       case None => throw new AccountNotFoundException(s"Account id=$id")
     }
+
+  private def tryParseFilterParams(params: Map[String, String]): Option[AccountFilter] = {
+    val login = params.get("login")
+    val lastName = params.get("lastName")
+    val firstName = params.get("firstName")
+    val middleName = params.get("middleName")
+    val role = Role.toRole(params.get("role"))
+    //TODO: уточнить формат даты
+    val createDate = stringToDate ( params.get("createDate") )
+
+    val filter = new AccountFilter(login, lastName, firstName, middleName, role, createDate)
+
+    //TODO: вынести в utils?
+    val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })
+    val hasAny = fieldList.length > 0
+
+    hasAny match {
+      case true => Some(filter)
+      case _ => None
+    }
+  }
 }
 
 

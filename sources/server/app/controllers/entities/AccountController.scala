@@ -1,110 +1,71 @@
 package controllers.entities
 
-import _root_.util.responses.Response
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import java.sql.Date
+
+import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import controllers.BaseController
-import controllers.filter.AccountFilter
-import models.entities.Role
-import models.generated.Tables.Account
+import models.entities.Role._
+import models.generated.Tables
+import models.generated.Tables.{Account, AccountTable}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.mvc._
+import repository.AccountRepo
 import scaldi.Injector
 import service.AccountService
-import utils.extensions.DateUtils._
-import serialization.AccountSerializer._
-import serialization.FormatJsError._
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent._
+class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo] {
+  protected val entityService = inject [AccountService]
+  protected def env = inject [Environment[Account, JWTAuthenticator]]
 
-/**
- * Контроллер операций над пользователями
- */
-class AccountController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+  protected val entitiesName: String = "users"
+  protected val entityName: String = "user"
 
-  implicit val env = inject [Environment[Account, JWTAuthenticator]]
-  implicit val accountService = inject[AccountService]
+  protected def copyEntityWithId(entity: Account, id: Int) = entity.copy(id = id)
 
-
-  /**
-   * Возвращает список пользователей в json-формате
-   * @return
-   */
-  def read = SecuredAction.async { implicit request =>
-    val filter = parseUserFilterFromQueryString(request)
-    accountService.find(filter) map { users =>
-      Ok(makeJson("users", users))
-    }
+  override protected def beforeCreate(entity: Account, identity: Account) = {
+    val user = super.beforeCreate(entity, identity)
+    require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
+    user
   }
 
-  def getById(id: Int) = SecuredAction.async { implicit request =>
-    accountService.findById(id) map { user =>
-      Ok(makeJson("user", user))
-    }
-  }
+  protected implicit val reads: Reads[Tables.Account] = (
+    (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
+      (JsPath \ "login").read(minLength[String](3)) and
+      (JsPath \ "password").readNullable(minLength[String](8)).map(o => o.orNull) and
+      (JsPath \ "lastName").readNullable[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "middleName").readNullable[String] and
+      (JsPath \ "role").read[Role] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Date] and
+      (JsPath \ "editDate").readNullable[Date] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(Account.apply _)
 
-  def create = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ "user"
-    json.validate[Account] match {
-      case JsSuccess(user, _) =>
-        require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
-        accountService.create(user, Some(request.identity.id)) map { createdUser =>
-          Ok(makeJson("user", createdUser))
-        } recover {
-          case e: Throwable => BadRequest(Response.bad("Ошибка создания пользователя", e.toString))
-        }
-      case err: JsError => Future.successful(UnprocessableEntity(Json.toJson(err)))
-    }
-  }
-
-  def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ "user"
-    json.validate[Account] match {
-      case JsSuccess(user, _) =>
-        // ember sends update data without id
-        val toSave = user.copy(id = id)
-        accountService.update(toSave, Some(request.identity.id)) map { saved =>
-          val userJson = makeJson("user", saved)
-          Ok(userJson)
-        }
-      case err: JsError => Future.successful(UnprocessableEntity(Json.toJson(err)))
-    }
-  }
-
-  def delete(id: Int) = SecuredAction.async { request =>
-    accountService.delete(id) map {
-      case true => Ok(Json.obj())
-      case false => NotFound(Response.bad(s"Пользователь с id=$id не найден"))
-    }
+  protected implicit val writes: Writes[Tables.Account] = new Writes[Account] {
+    def writes(user: Account) = Json.obj(
+      "id" -> user.id.toString,
+      "login" -> user.login,
+      "password" -> JsNull,
+      "lastName" -> user.lastName,
+      "firstName" -> user.firstName,
+      "middleName" -> user.middleName,
+      "role" -> user.role.toString,
+      "creationDate" -> user.creationDate.map { d => dateIso8601Format.format(d)} ,
+      "editDate" -> user.editDate.map { d => dateIso8601Format.format(d)},
+      "creator" -> user.creatorId.map { id => id.toString },
+      "editor" -> user.editorId.map { id => id.toString },
+      "comment" -> user.comment
+    )
   }
 
   def currentUser = SecuredAction { request =>
     val user = request.identity
     Ok(makeJson("user", user))
   }
-
-  def parseUserFilterFromQueryString(implicit request:RequestHeader) : Option[AccountFilter] = {
-    val query: Map[String, String] = request.queryString.map { case (k, v) => k -> v.mkString }
-    val login = query.get("login")
-    val lastName = query.get("lastName")
-    val firstName = query.get("firstName")
-    val middleName = query.get("middleName")
-    val role = Role.toRole(query.get("role"))
-    //TODO: уточнить формат даты
-    val createDate = stringToDate ( query.get("createDate") )
-
-    val filter = new AccountFilter(login, lastName, firstName, middleName, role, createDate)
-
-    //TODO: вынести в utils?
-    val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })
-    val hasAny = fieldList.length > 0
-
-    hasAny match {
-      case true => Some(filter)
-      case _ => None
-    }
-  }
 }
+
 
 

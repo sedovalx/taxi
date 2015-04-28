@@ -9,7 +9,7 @@ import utils.extensions.DateUtils
 /**
  * Created by ipopkov on 14/04/15.
  */
-trait CarClassService extends EntityService[CarClass, CarClassTable, GenericCRUD[CarClassTable, CarClass]]
+trait CarClassService extends EntityService[CarClass, CarClassTable, CarClassRepo]
 
 class CarClassServiceImpl(carClassRepo: CarClassRepo) extends CarClassService {
   val repo = carClassRepo
@@ -25,7 +25,7 @@ class CarClassServiceImpl(carClassRepo: CarClassRepo) extends CarClassService {
 }
 
 
-trait DriverService extends EntityService[Driver, DriverTable, GenericCRUD[DriverTable, Driver]]
+trait DriverService extends EntityService[Driver, DriverTable, DriversRepo]
 
 class DriverServiceImpl(driverRepo: DriversRepo) extends DriverService {
   override val repo = driverRepo

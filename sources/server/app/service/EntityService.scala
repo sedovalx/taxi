@@ -20,6 +20,10 @@ trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: Gen
   protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(setEditorAndDate(entity, editorId))
   protected def afterUpdate(entity: E) = Future.successful(entity)
 
+  protected def find(filter: Map[String, String]): List[E] = {
+    withDb { session => repo.read(session) }
+  }
+
   def create(entity: E, creatorId: Option[Int]): Future[E] = {
     beforeCreate(entity, creatorId) flatMap { toSave =>
       val id = withDb { session => repo.create(toSave)(session) }
@@ -27,9 +31,7 @@ trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: Gen
     }
   }
 
-  def read: Future[List[E]] = Future {
-    withDb { session => repo.read(session) }
-  }
+  def read(filter: Map[String, String]): Future[List[E]] = Future { find(filter) }
 
   def update(entity: E, editorId: Option[Int]): Future[E] = {
     assert(entity != null, "Updated entity should not be null")
