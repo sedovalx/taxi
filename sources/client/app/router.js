@@ -42,6 +42,12 @@ Router.map(function() {
   this.resource("payment", { path: "/payments/:payment_id" }, function() {
     this.route("edit");
   });
+  this.resource("fines", function() {
+    this.route("new");
+  });
+  this.resource("fine", { path: "/fines/:fine_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 
