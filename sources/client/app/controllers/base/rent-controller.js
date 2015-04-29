@@ -44,6 +44,19 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     });
   }.property("model"),
   driverItems: function() {
-    return this.store.find("driver");
+    //return this.store.find("driver");
+    return DS.PromiseArray.create({
+      promise: Ember.RSVP.all([
+        this.store.find("driver"),
+        this.store.find("rent")
+      ]).then(arrays => {
+        let drivers = arrays[0];
+        let rents = arrays[1];
+        // выбираем все занятые в открытых арендах водители
+        let busyDriverIds = rents.filter(r => r.get("status") !== "Closed").map(r => r.get("driver").get("id"));
+        // из всех водителей отфильтровываем свободные
+        return drivers.filter(d => busyDriverIds.indexOf(d.get("id")) < 0);
+      })
+    });
   }.property("model")
 });
