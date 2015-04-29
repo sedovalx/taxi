@@ -1,7 +1,7 @@
 import Ember from "ember";
 
 export default Ember.ArrayController.extend({
-  sortProperties: ["payDate", "target.displayName"],
+  sortProperties: ["payDate", "rent.displayName"],
   selectedRow: null,
   selectionEmpty: function(){
     return this.get("selectedRow") == null;
