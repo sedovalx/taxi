@@ -35,6 +35,11 @@
                               Платежи
                           </a>
                       {{/link-to}}
+                      {{#link-to 'fines' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Штрафы
+                          </a>
+                      {{/link-to}}
                     </ul>
                 </div>
                 <div class="collapse navbar-collapse">
