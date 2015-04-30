@@ -48,6 +48,12 @@ Router.map(function() {
   this.resource("fine", { path: "/fines/:fine_id" }, function() {
     this.route("edit");
   });
+  this.resource("repairs", function() {
+    this.route("new");
+  });
+  this.resource("repair", { path: "/repairs/:repair_id" }, function() {
+    this.route("edit");
+  });
   this.route('login');
 });
 
