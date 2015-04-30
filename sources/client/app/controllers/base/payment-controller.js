@@ -1,4 +1,5 @@
 import Ember from "ember";
+import DS from "ember-data";
 import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
 
 export default Ember.ObjectController.extend(DirtyControllerMixin, {
@@ -15,6 +16,8 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     }
   },
   rentItems: function() {
-    return this.store.find("rent");
+    return DS.PromiseArray.create({
+      promise: this.store.find("rent").then(rents => rents.filter(r => r.get("status") !== "Closed"))
+    });
   }.property("model")
 });
