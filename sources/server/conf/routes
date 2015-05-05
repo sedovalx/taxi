@@ -32,12 +32,6 @@ GET           /api/drivers/:id           @controllers.entities.DriverController.
 POST          /api/drivers               @controllers.entities.DriverController.create
 PUT           /api/drivers/:id           @controllers.entities.DriverController.update(id: Int)
 DELETE        /api/drivers/:id           @controllers.entities.DriverController.delete(id: Int)
-# CarClass routes
-GET           /api/carClasses            @controllers.entities.CarClassController.read
-GET           /api/carClasses/:id        @controllers.entities.CarClassController.getById(id: Int)
-POST          /api/carClasses            @controllers.entities.CarClassController.create
-PUT           /api/carClasses/:id        @controllers.entities.CarClassController.update(id: Int)
-DELETE        /api/carClasses/:id        @controllers.entities.CarClassController.delete(id: Int)
 # Car routes
 GET           /api/cars                   @controllers.entities.CarController.read
 GET           /api/cars/:id               @controllers.entities.CarController.getById(id: Int)

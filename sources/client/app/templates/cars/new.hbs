@@ -3,18 +3,9 @@
       {{property-row title="Номерной знак" value=regNumber errors=errors.regNumber}}
       {{property-row title="Марка" value=make errors=errors.make}}
       {{property-row title="Модель" value=carModel errors=errors.carModel}}
+      {{property-row title="Тариф" value=rate errors=errors.rate}}
       {{property-row title="Пробег, км" value=mileage errors=errors.mileage}}
       {{property-row title="Следующий ТО, км" value=service errors=errors.service}}
-      {{#property-row title="Класс" errors=errors.carClass}}
-        {{ember-selectize
-        content=carClassItems
-        optionValuePath="content.id"
-        optionLabelPath="content.name"
-        selection=carClass
-        placeholder="Выберите класс"
-        loading=carClass.isPending
-        }}
-      {{/property-row}}
       {{property-row title="Примечания" value=comment errors=errors.comment}}
     </form>
   {{save-cancel}}

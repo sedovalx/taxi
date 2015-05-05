@@ -12,7 +12,7 @@ trait Tables {
   import scala.slick.model.ForeignKeyAction
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = AccountTable.ddl ++ CarClassTable.ddl ++ CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl
+  lazy val ddl = AccountTable.ddl ++ CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl
   
   /** Entity class storing rows of table AccountTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
@@ -22,7 +22,7 @@ trait Tables {
    *  @param firstName Database column first_name DBType(varchar), Length(254,true), Default(None)
    *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
    *  @param role Database column role DBType(varchar), Length(254,true)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editDate Database column edit_date DBType(date), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
@@ -48,8 +48,8 @@ trait Tables {
     val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
     /** Database column role DBType(varchar), Length(254,true) */
     val role = column[Role]("role", O.Length(254,varying=true))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
     val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
     /** Database column edit_date DBType(date), Default(None) */
@@ -70,69 +70,25 @@ trait Tables {
   /** Collection-like TableQuery object for table AccountTable */
   lazy val AccountTable = new TableQuery(tag => new AccountTable(tag))
   
-  /** Entity class storing rows of table CarClassTable
-   *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param name Database column name DBType(varchar), Length(255,true)
-   *  @param rate Database column rate DBType(numeric)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
-   *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
-   *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None) */
-  case class CarClass(id: Int, name: String, rate: scala.math.BigDecimal, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
-  /** Table description of table car_class. Objects of this class serve as prototypes for rows in queries. */
-  class CarClassTable(_tableTag: Tag) extends Table[CarClass](_tableTag, "car_class") {
-    def * = (id, name, rate, creationDate, creatorId, editDate, editorId, comment) <> (CarClass.tupled, CarClass.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, name.?, rate.?, creationDate, creatorId, editDate, editorId, comment).shaped.<>({r=>import r._; _1.map(_=> CarClass.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(serial), AutoInc, PrimaryKey */
-    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column name DBType(varchar), Length(255,true) */
-    val name = column[String]("name", O.Length(255,varying=true))
-    /** Database column rate DBType(numeric) */
-    val rate = column[scala.math.BigDecimal]("rate")
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
-    /** Database column creator_id DBType(int4), Default(None) */
-    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
-    /** Database column editor_id DBType(int4), Default(None) */
-    val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
-    
-    /** Foreign key referencing AccountTable (database name car_class_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("car_class_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name car_class_editor_id_fkey) */
-    lazy val editorFk = foreignKey("car_class_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    
-    /** Uniqueness Index over (name) (database name unique_name) */
-    val index1 = index("unique_name", name, unique=true)
-  }
-  /** Collection-like TableQuery object for table CarClassTable */
-  lazy val CarClassTable = new TableQuery(tag => new CarClassTable(tag))
-  
   /** Entity class storing rows of table CarTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param regNumber Database column reg_number DBType(varchar), Length(12,true)
    *  @param make Database column make DBType(varchar), Length(255,true)
    *  @param model Database column model DBType(varchar), Length(255,true)
+   *  @param rate Database column rate DBType(numeric)
    *  @param mileage Database column mileage DBType(numeric)
    *  @param service Database column service DBType(numeric), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(date), Default(None)
-   *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param classId Database column class_id DBType(int4) */
-  case class Car(id: Int, regNumber: String, make: String, model: String, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, classId: Int) extends Entity
+   *  @param editorId Database column editor_id DBType(int4), Default(None) */
+  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None) extends Entity
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
-    def * = (id, regNumber, make, model, mileage, service, comment, creationDate, creatorId, editDate, editorId, classId) <> (Car.tupled, Car.unapply)
+    def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, regNumber.?, make.?, model.?, mileage.?, service, comment, creationDate, creatorId, editDate, editorId, classId.?).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6, _7, _8, _9, _10, _11, _12.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, regNumber.?, make.?, model.?, rate.?, mileage.?, service, comment, creationDate, creatorId, editDate, editorId).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7, _8, _9, _10, _11, _12)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -142,12 +98,14 @@ trait Tables {
     val make = column[String]("make", O.Length(255,varying=true))
     /** Database column model DBType(varchar), Length(255,true) */
     val model = column[String]("model", O.Length(255,varying=true))
+    /** Database column rate DBType(numeric) */
+    val rate = column[scala.math.BigDecimal]("rate")
     /** Database column mileage DBType(numeric) */
     val mileage = column[scala.math.BigDecimal]("mileage")
     /** Database column service DBType(numeric), Default(None) */
     val service = column[Option[scala.math.BigDecimal]]("service", O.Default(None))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
     val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
@@ -156,15 +114,11 @@ trait Tables {
     val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column class_id DBType(int4) */
-    val classId = column[Int]("class_id")
     
     /** Foreign key referencing AccountTable (database name car_creator_id_fkey) */
     lazy val creatorFk = foreignKey("car_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing AccountTable (database name car_editor_id_fkey) */
     lazy val editorFk = foreignKey("car_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing CarClassTable (database name car_class_id_fkey) */
-    lazy val classFk = foreignKey("car_class_id_fkey", classId, CarClassTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Uniqueness Index over (regNumber) (database name unique_reg_number) */
     val index1 = index("unique_reg_number", regNumber, unique=true)
@@ -180,7 +134,7 @@ trait Tables {
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None) */
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
   case class Checkpoint(id: Int, pointDate: java.sql.Date, days: Int, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
@@ -202,8 +156,8 @@ trait Tables {
     val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     
     /** Foreign key referencing AccountTable (database name checkpoint_creator_id_fkey) */
     lazy val creatorFk = foreignKey("checkpoint_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -284,9 +238,9 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param fineDate Database column fine_date DBType(date)
    *  @param cost Database column cost DBType(numeric)
-   *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
+   *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -304,12 +258,12 @@ trait Tables {
     val fineDate = column[java.sql.Date]("fine_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
-    /** Database column description DBType(varchar), Length(1000,true), Default(None) */
-    val description = column[Option[String]]("description", O.Length(1000,varying=true), O.Default(None))
+    /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
+    val description = column[Option[String]]("description", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
@@ -334,7 +288,7 @@ trait Tables {
    *  @param payDate Database column pay_date DBType(date)
    *  @param amount Database column amount DBType(numeric)
    *  @param target Database column target DBType(varchar), Length(255,true)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -355,8 +309,8 @@ trait Tables {
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column target DBType(varchar), Length(255,true) */
     val target = column[String]("target", O.Length(255,varying=true))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
@@ -382,7 +336,7 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param changeDate Database column change_date DBType(date)
    *  @param status Database column status DBType(varchar), Length(255,true)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -400,8 +354,8 @@ trait Tables {
     val changeDate = column[java.sql.Date]("change_date")
     /** Database column status DBType(varchar), Length(255,true) */
     val status = column[String]("status", O.Length(255,varying=true))
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
@@ -429,7 +383,7 @@ trait Tables {
    *  @param driverId Database column driver_id DBType(int4)
    *  @param carId Database column car_id DBType(int4)
    *  @param deposit Database column deposit DBType(numeric)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -449,8 +403,8 @@ trait Tables {
     val carId = column[Int]("car_id")
     /** Database column deposit DBType(numeric) */
     val deposit = column[scala.math.BigDecimal]("deposit")
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
@@ -476,9 +430,9 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param repairDate Database column repair_date DBType(date)
    *  @param cost Database column cost DBType(numeric)
-   *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
+   *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
-   *  @param comment Database column comment DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -496,12 +450,12 @@ trait Tables {
     val repairDate = column[java.sql.Date]("repair_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
-    /** Database column description DBType(varchar), Length(1000,true), Default(None) */
-    val description = column[Option[String]]("description", O.Length(1000,varying=true), O.Default(None))
+    /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
+    val description = column[Option[String]]("description", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
-    /** Database column comment DBType(varchar), Length(1000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(date), Default(None) */
