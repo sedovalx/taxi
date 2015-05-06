@@ -50,4 +50,5 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
       t
     }
   }
+
 }

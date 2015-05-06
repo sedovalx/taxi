@@ -1,6 +1,6 @@
 package controllers.filter
 
-import java.sql.Date
+import java.sql.Timestamp
 import models.entities.Role.Role
 
 
@@ -13,5 +13,5 @@ case class AccountFilter(
                        firstName: Option[String],
                        middleName: Option[String],
                        role: Option[Role],
-                       creationDate: Option[Date]
+                       creationDate: Option[Timestamp]
                        )

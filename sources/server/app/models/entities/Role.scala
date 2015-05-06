@@ -1,12 +1,7 @@
 package models.entities
 
-
-
 object Role extends Enumeration {
-
   def toRole(role: Option[String]): Option[Role] = role.map{ r => Role.withName(r) }
-
-
 
   type Role = Value
   // администратор
@@ -18,3 +13,4 @@ object Role extends Enumeration {
   // ремонтник
   val Repairman = Value("Repairman")
 }
+

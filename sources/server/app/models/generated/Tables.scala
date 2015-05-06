@@ -23,11 +23,11 @@ trait Tables {
    *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
    *  @param role Database column role DBType(varchar), Length(254,true)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, editDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity with Identity
+  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity with Identity
   /** Table description of table account. Objects of this class serve as prototypes for rows in queries. */
   class AccountTable(_tableTag: Tag) extends Table[Account](_tableTag, "account") {
     def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (Account.tupled, Account.unapply)
@@ -50,10 +50,10 @@ trait Tables {
     val role = column[Role]("role", O.Length(254,varying=true))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
@@ -79,11 +79,11 @@ trait Tables {
    *  @param mileage Database column mileage DBType(numeric)
    *  @param service Database column service DBType(numeric), Default(None)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None) extends Entity
+  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
     def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
@@ -106,12 +106,12 @@ trait Tables {
     val service = column[Option[scala.math.BigDecimal]]("service", O.Default(None))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     
@@ -128,13 +128,13 @@ trait Tables {
   
   /** Entity class storing rows of table CheckpointTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param pointDate Database column point_date DBType(date)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param pointDate Database column point_date DBType(timestamp)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-  case class Checkpoint(id: Int, pointDate: java.sql.Date, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
+  case class Checkpoint(id: Int, pointDate: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
     def * = (id, pointDate, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
@@ -143,14 +143,14 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column point_date DBType(date) */
-    val pointDate = column[java.sql.Date]("point_date")
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column point_date DBType(timestamp) */
+    val pointDate = column[java.sql.Timestamp]("point_date")
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
@@ -178,11 +178,11 @@ trait Tables {
    *  @param secPhone Database column sec_phone DBType(varchar), Length(254,true)
    *  @param comment Database column comment DBType(varchar), Length(254,true), Default(None)
    *  @param address Database column address DBType(varchar), Length(254,true)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Driver(id: Int, pass: String, license: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Date] = None, editDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
+  case class Driver(id: Int, pass: String, license: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
   /** Table description of table driver. Objects of this class serve as prototypes for rows in queries. */
   class DriverTable(_tableTag: Tag) extends Table[Driver](_tableTag, "driver") {
     def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
@@ -209,10 +209,10 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(254,varying=true), O.Default(None))
     /** Database column address DBType(varchar), Length(254,true) */
     val address = column[String]("address", O.Length(254,varying=true))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
@@ -233,16 +233,16 @@ trait Tables {
   
   /** Entity class storing rows of table ExpenseTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param date Database column date DBType(date)
+   *  @param date Database column date DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param subject Database column subject DBType(varchar), Length(255,true)
    *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None) */
-  case class Expense(id: Int, date: java.sql.Date, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
+  case class Expense(id: Int, date: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
   /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
   class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
     def * = (id, date, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
@@ -251,8 +251,8 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column date DBType(date) */
-    val date = column[java.sql.Date]("date")
+    /** Database column date DBType(timestamp) */
+    val date = column[java.sql.Timestamp]("date")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column subject DBType(varchar), Length(255,true) */
@@ -263,12 +263,12 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
     /** Foreign key referencing AccountTable (database name expense_creator_id_fkey) */
     lazy val creatorFk = foreignKey("expense_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -280,16 +280,16 @@ trait Tables {
   
   /** Entity class storing rows of table FineTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param fineDate Database column fine_date DBType(date)
+   *  @param fineDate Database column fine_date DBType(timestamp)
    *  @param cost Database column cost DBType(numeric)
    *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None) */
-  case class Fine(id: Int, fineDate: java.sql.Date, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
+  case class Fine(id: Int, fineDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
   /** Table description of table fine. Objects of this class serve as prototypes for rows in queries. */
   class FineTable(_tableTag: Tag) extends Table[Fine](_tableTag, "fine") {
     def * = (id, fineDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
@@ -298,8 +298,8 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column fine_date DBType(date) */
-    val fineDate = column[java.sql.Date]("fine_date")
+    /** Database column fine_date DBType(timestamp) */
+    val fineDate = column[java.sql.Timestamp]("fine_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
     /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
@@ -310,12 +310,12 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
     /** Foreign key referencing AccountTable (database name fine_creator_id_fkey) */
     lazy val creatorFk = foreignKey("fine_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -329,16 +329,16 @@ trait Tables {
   
   /** Entity class storing rows of table PaymentTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param payDate Database column pay_date DBType(date)
+   *  @param payDate Database column pay_date DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param target Database column target DBType(varchar), Length(255,true)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class Payment(id: Int, payDate: java.sql.Date, amount: scala.math.BigDecimal, target: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, rentId: Int) extends Entity
+  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, target: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
     def * = (id, payDate, amount, target, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
@@ -347,8 +347,8 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column pay_date DBType(date) */
-    val payDate = column[java.sql.Date]("pay_date")
+    /** Database column pay_date DBType(timestamp) */
+    val payDate = column[java.sql.Timestamp]("pay_date")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column target DBType(varchar), Length(255,true) */
@@ -357,12 +357,12 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
     
@@ -378,15 +378,15 @@ trait Tables {
   
   /** Entity class storing rows of table RentStatusTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param changeDate Database column change_date DBType(date)
+   *  @param changeDate Database column change_date DBType(timestamp)
    *  @param status Database column status DBType(varchar), Length(255,true)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class RentStatus(id: Int, changeDate: java.sql.Date, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, rentId: Int) extends Entity
+  case class RentStatus(id: Int, changeDate: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
     def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
@@ -395,20 +395,20 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column change_date DBType(date) */
-    val changeDate = column[java.sql.Date]("change_date")
+    /** Database column change_date DBType(timestamp) */
+    val changeDate = column[java.sql.Timestamp]("change_date")
     /** Database column status DBType(varchar), Length(255,true) */
     val status = column[models.entities.RentStatus.RentStatus]("status", O.Length(255,varying=true))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
     
@@ -434,10 +434,10 @@ trait Tables {
    *  @param deposit Database column deposit DBType(numeric)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None) */
-  case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
+  case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
   /** Table description of table rent. Objects of this class serve as prototypes for rows in queries. */
   class RentTable(_tableTag: Tag) extends Table[Rent](_tableTag, "rent") {
     def * = (id, driverId, carId, deposit, comment, creatorId, creationDate, editorId, editDate) <> (Rent.tupled, Rent.unapply)
@@ -456,12 +456,12 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
     /** Foreign key referencing AccountTable (database name rent_creator_id_fkey) */
     lazy val creatorFk = foreignKey("rent_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -477,16 +477,16 @@ trait Tables {
   
   /** Entity class storing rows of table RepairTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param repairDate Database column repair_date DBType(date)
+   *  @param repairDate Database column repair_date DBType(timestamp)
    *  @param cost Database column cost DBType(numeric)
    *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None) */
-  case class Repair(id: Int, repairDate: java.sql.Date, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
+  case class Repair(id: Int, repairDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
   /** Table description of table repair. Objects of this class serve as prototypes for rows in queries. */
   class RepairTable(_tableTag: Tag) extends Table[Repair](_tableTag, "repair") {
     def * = (id, repairDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)
@@ -495,8 +495,8 @@ trait Tables {
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column repair_date DBType(date) */
-    val repairDate = column[java.sql.Date]("repair_date")
+    /** Database column repair_date DBType(timestamp) */
+    val repairDate = column[java.sql.Timestamp]("repair_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
     /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
@@ -507,12 +507,12 @@ trait Tables {
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column creation_date DBType(date), Default(None) */
-    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column edit_date DBType(date), Default(None) */
-    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
     /** Foreign key referencing AccountTable (database name repair_creator_id_fkey) */
     lazy val creatorFk = foreignKey("repair_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)

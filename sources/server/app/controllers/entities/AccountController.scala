@@ -1,6 +1,6 @@
 package controllers.entities
 
-import java.sql.Date
+import java.sql.Timestamp
 
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -43,8 +43,8 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "role").read[Role] and
       (JsPath \ "comment").readNullable[String] and
-      (JsPath \ "creationDate").readNullable[Date] and
-      (JsPath \ "editDate").readNullable[Date] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Account.apply _)

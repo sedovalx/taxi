@@ -54,22 +54,31 @@ trait ${container} {
           override def enabled = false
         }
 
+        // формируем имена FK-свойств
         override def ForeignKey = new ForeignKey(_) {
           key =>
           override def rawName =
             key.referencingColumns.map{ _.name.toString.stripSuffix("Id") }.mkString + "Fk"
         }
 
+        // для типа Account добавляем родителя Identity
         override def EntityType = new EntityType {
           entity =>
           override def parents: Seq[String] = Seq("Entity") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
         }
 
+        // генерация кода для столбцов в маппинге
         override def Column = new Column(_) {
           column =>
+          // общий вид столбца
           override def code = s"""val $name = column[$actualType]("${model.name}"${options.map(", "+_).mkString("")})"""
+
           override def rawType: String = {
+            // для столбца role из AccountTable указываем, что нужно использовать тип Role
+            // аналогичный тип будет использован и в entity Account
             if (table.TableClass.name.toString == "AccountTable" && column.name.toString == "role") parseType("Role")
+            // аналогично для rent_status.status
+            else if (table.TableClass.name.toString == "RentStatusTable" && column.name.toString == "status") parseType("models.entities.RentStatus.RentStatus")
             else super.rawType.toString
           }
         }

@@ -1,6 +1,6 @@
 package controllers.entities
 
-import java.sql.Date
+import java.sql.Timestamp
 
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -22,16 +22,16 @@ class CarController(implicit injector: Injector) extends EntityController[Car, C
   override protected implicit val reads: Reads[Tables.Car] = (
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "regNumber").read(minLength[String](8)) and
-        (JsPath \ "make").read[String] and
-        (JsPath \ "carModel").read[String] and
-        (JsPath \ "rate").read(min[BigDecimal](0)) and
-        (JsPath \ "mileage").read(min[BigDecimal](0)) and
-        (JsPath \ "service").readNullable(min[BigDecimal](0)) and
-        (JsPath \ "comment").readNullable[String] and
-        (JsPath \ "creationDate").readNullable[Date] and
-        (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
-        (JsPath \ "editDate").readNullable[Date] and
-        (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+      (JsPath \ "make").read[String] and
+      (JsPath \ "carModel").read[String] and
+      (JsPath \ "rate").read(min[BigDecimal](0)) and
+      (JsPath \ "mileage").read(min[BigDecimal](0)) and
+      (JsPath \ "service").readNullable(min[BigDecimal](0)) and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Car.apply _)
   override protected implicit val writes: Writes[Tables.Car] = new Writes[Car] {
     override def writes(o: Tables.Car) = Json.obj(

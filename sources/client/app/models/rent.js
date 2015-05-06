@@ -21,27 +21,4 @@ var RentModel = DS.Model.extend({
   }.property("driver","driver.displayName","car")
 });
 
-
-RentModel.reopenClass({
-  FIXTURES: [
-    {
-      id: 1,
-      driver: 1,
-      car: 1,
-      deposit: 5000,
-      status: "Active",
-      comment: "comment 1"
-    },
-    {
-      id: 2,
-      driver: 2,
-      car: 2,
-      deposit: 15000,
-      status: "Closed",
-      comment: "comment 1"
-    }
-  ]
-});
-
-
 export default RentModel;

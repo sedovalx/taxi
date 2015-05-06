@@ -1,5 +1,6 @@
 package controllers.entities
 
+import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 import _root_.util.responses.Response
@@ -26,10 +27,12 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
 
   protected val entityService : EntityService[E, T, G]
 
+  protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
   protected implicit val reads : Reads[E]
   protected implicit val writes : Writes[E]
+  protected implicit val timestampReads: Reads[Timestamp] = JsPath.read[String].map { s => new Timestamp(dateIso8601Format.parse(s).getTime) }
 
-  protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
   protected val entityName: String //example: "driver"
   protected val entitiesName: String //example: "drivers"
 

@@ -1,6 +1,6 @@
 package models.entities
 
-import java.sql.Date
+import java.sql.Timestamp
 
 /**
  * Этими свойствами должны обладать все сущности в БД
@@ -13,11 +13,11 @@ trait Entity {
   /**
    * Дата создания
    */
-  val creationDate: Option[Date]
+  val creationDate: Option[Timestamp]
   /**
    * Дата последнего редактирования
    */
-  val editDate: Option[Date]
+  val editDate: Option[Timestamp]
   /**
    * Создатель записи
    */

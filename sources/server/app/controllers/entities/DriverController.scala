@@ -1,6 +1,6 @@
 package controllers.entities
 
-import java.sql.Date
+import java.sql.Timestamp
 
 import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -32,8 +32,8 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
       (JsPath \ "secPhone").read[String] and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "address").read[String] and
-      (JsPath \ "creationDate").readNullable[Date] and
-      (JsPath \ "editDate").readNullable[Date] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Driver.apply _)

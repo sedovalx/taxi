@@ -15,4 +15,5 @@ class PlayModule extends Module {
   binding to new AuthController
   binding to new QueryController
   binding to new CarController
+  binding to new RentController
 }
