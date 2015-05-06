@@ -12,7 +12,7 @@ trait Tables {
   import scala.slick.model.ForeignKeyAction
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = AccountTable.ddl ++ CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl
+  lazy val ddl = AccountTable.ddl ++ CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ ExpenseTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl
   
   /** Entity class storing rows of table AccountTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
@@ -129,25 +129,22 @@ trait Tables {
   /** Entity class storing rows of table CheckpointTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param pointDate Database column point_date DBType(date)
-   *  @param days Database column days DBType(int4)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-  case class Checkpoint(id: Int, pointDate: java.sql.Date, days: Int, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
+  case class Checkpoint(id: Int, pointDate: java.sql.Date, creationDate: Option[java.sql.Date] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
-    def * = (id, pointDate, days, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
+    def * = (id, pointDate, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, pointDate.?, days.?, creationDate, creatorId, editDate, editorId, comment).shaped.<>({r=>import r._; _1.map(_=> Checkpoint.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, pointDate.?, creationDate, creatorId, editDate, editorId, comment).shaped.<>({r=>import r._; _1.map(_=> Checkpoint.tupled((_1.get, _2.get, _3, _4, _5, _6, _7)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     /** Database column point_date DBType(date) */
     val pointDate = column[java.sql.Date]("point_date")
-    /** Database column days DBType(int4) */
-    val days = column[Int]("days")
     /** Database column creation_date DBType(date), Default(None) */
     val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
@@ -233,6 +230,53 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table DriverTable */
   lazy val DriverTable = new TableQuery(tag => new DriverTable(tag))
+  
+  /** Entity class storing rows of table ExpenseTable
+   *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
+   *  @param date Database column date DBType(date)
+   *  @param amount Database column amount DBType(numeric)
+   *  @param subject Database column subject DBType(varchar), Length(255,true)
+   *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param creatorId Database column creator_id DBType(int4), Default(None)
+   *  @param creationDate Database column creation_date DBType(date), Default(None)
+   *  @param editorId Database column editor_id DBType(int4), Default(None)
+   *  @param editDate Database column edit_date DBType(date), Default(None) */
+  case class Expense(id: Int, date: java.sql.Date, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+  /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
+  class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
+    def * = (id, date, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (id.?, date.?, amount.?, subject.?, description, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Expense.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column id DBType(serial), AutoInc, PrimaryKey */
+    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column date DBType(date) */
+    val date = column[java.sql.Date]("date")
+    /** Database column amount DBType(numeric) */
+    val amount = column[scala.math.BigDecimal]("amount")
+    /** Database column subject DBType(varchar), Length(255,true) */
+    val subject = column[String]("subject", O.Length(255,varying=true))
+    /** Database column description DBType(varchar), Length(1000,true), Default(None) */
+    val description = column[Option[String]]("description", O.Length(1000,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column creator_id DBType(int4), Default(None) */
+    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
+    /** Database column creation_date DBType(date), Default(None) */
+    val creationDate = column[Option[java.sql.Date]]("creation_date", O.Default(None))
+    /** Database column editor_id DBType(int4), Default(None) */
+    val editorId = column[Option[Int]]("editor_id", O.Default(None))
+    /** Database column edit_date DBType(date), Default(None) */
+    val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    
+    /** Foreign key referencing AccountTable (database name expense_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("expense_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing AccountTable (database name expense_editor_id_fkey) */
+    lazy val editorFk = foreignKey("expense_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table ExpenseTable */
+  lazy val ExpenseTable = new TableQuery(tag => new ExpenseTable(tag))
   
   /** Entity class storing rows of table FineTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
@@ -340,20 +384,21 @@ trait Tables {
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(date), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param editDate Database column edit_date DBType(date), Default(None) */
-  case class RentStatus(id: Int, changeDate: java.sql.Date, status: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None) extends Entity
+   *  @param editDate Database column edit_date DBType(date), Default(None)
+   *  @param rentId Database column rent_id DBType(int4) */
+  case class RentStatus(id: Int, changeDate: java.sql.Date, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Date] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Date] = None, rentId: Int) extends Entity
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
-    def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate) <> (RentStatus.tupled, RentStatus.unapply)
+    def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, changeDate.?, status.?, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> RentStatus.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeDate.?, status.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> RentStatus.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     /** Database column change_date DBType(date) */
     val changeDate = column[java.sql.Date]("change_date")
     /** Database column status DBType(varchar), Length(255,true) */
-    val status = column[String]("status", O.Length(255,varying=true))
+    val status = column[models.entities.RentStatus.RentStatus]("status", O.Length(255,varying=true))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
@@ -364,11 +409,15 @@ trait Tables {
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     /** Database column edit_date DBType(date), Default(None) */
     val editDate = column[Option[java.sql.Date]]("edit_date", O.Default(None))
+    /** Database column rent_id DBType(int4) */
+    val rentId = column[Int]("rent_id")
     
     /** Foreign key referencing AccountTable (database name rent_status_creator_id_fkey) */
     lazy val creatorFk = foreignKey("rent_status_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing AccountTable (database name rent_status_editor_id_fkey) */
     lazy val editorFk = foreignKey("rent_status_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing RentTable (database name rent_status_rent_id_fkey) */
+    lazy val rentFk = foreignKey("rent_status_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Index over (changeDate) (database name change_date_index) */
     val index1 = index("change_date_index", changeDate)
