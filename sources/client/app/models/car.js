@@ -7,7 +7,7 @@ var CarsModel = DS.Model.extend({
   make: attr("string"),
   mileage: attr("number"),
   service: attr("number"),
-  carClass: DS.belongsTo("car-class", {inverse: null, async: true}),
+  rate: attr("number"),
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),

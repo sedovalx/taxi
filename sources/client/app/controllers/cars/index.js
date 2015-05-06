@@ -58,11 +58,11 @@ export default Ember.ArrayController.extend({
       headerCellName: "Следующий ТО, км",
       contentPath: "service"
     });
-    let classNameColumn = Ember.Table.ColumnDefinition.create({
+    let rateColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
-      headerCellName: "Класс автомобиля",
-      contentPath: "carClass.name"
+      headerCellName: "Тариф",
+      contentPath: "rate"
     });
     let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -70,7 +70,7 @@ export default Ember.ArrayController.extend({
       headerCellName: "Примечания",
       contentPath: "comment"
     });
-    return [regNumberColumn, makeColumn, carModelColumn, classNameColumn, mileageColumn, serviceColumn, commentColumn];
+    return [regNumberColumn, makeColumn, carModelColumn, rateColumn, mileageColumn, serviceColumn, commentColumn];
   }.property(),
   cars: function(){
     return this;

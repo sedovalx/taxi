@@ -13,8 +13,5 @@ export default Ember.ObjectController.extend(DirtyControllerMixin, {
     cancel: function(){
       this.transitionToRoute("cars");
     }
-  },
-  carClassItems: function() {
-    return this.store.find("car-class");
-  }.property("model")
+  }
 });

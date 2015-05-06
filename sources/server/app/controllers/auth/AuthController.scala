@@ -3,15 +3,19 @@ package controllers.auth
 import javax.naming.AuthenticationException
 
 import _root_.util.responses.Response
+import com.mohiva.play.silhouette.api.exceptions.{ProviderException, NotAuthenticatedException}
 import com.mohiva.play.silhouette.api.{Environment, LogoutEvent, LoginEvent, Silhouette}
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
+import com.mohiva.play.silhouette.impl.exceptions.{IdentityNotFoundException, InvalidPasswordException}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import controllers.BaseController
 import models.generated.Tables.Account
+import play.api.Logger
 import play.api.libs.json.Json
-import play.api.mvc.{BodyParsers, Action}
+import play.api.mvc.Results._
+import play.api.mvc.{Result, RequestHeader, BodyParsers, Action}
 import play.api.libs.concurrent.Execution.Implicits._
 import scaldi.Injector
 
@@ -19,6 +23,8 @@ import scala.concurrent.Future
 
 import org.joda.time.DateTime
 import play.api.libs.json._
+
+import scala.util.Try
 
 /**
  * This class represent token
@@ -57,7 +63,7 @@ class AuthController(implicit inj: Injector) extends BaseController with Silhoue
           // если найден, то пытаемся аутентифицировать
         case Some(p: CredentialsProvider) => p.authenticate(credentials)
           // если провайдер не найден, кидаем ошибку
-        case _ => Future.failed(new AuthenticationException("Cannot find credentials provider"))
+        case _ => Future.failed(new NotAuthenticatedException(play.api.i18n.Messages("auth.error.credentials_provider.not_found")))
       }) flatMap { loginInfo =>
         // по логину извлекаем пользователя из БД
         accountService.retrieve(loginInfo) flatMap {
@@ -72,8 +78,12 @@ class AuthController(implicit inj: Injector) extends BaseController with Silhoue
               })
             }
           }
-          case None => Future.failed(new AuthenticationException(s"Пользователь с логином ${loginInfo.providerKey} не найден."))
+          case None => Future.failed(new NotAuthenticatedException(play.api.i18n.Messages("auth.error.wrong_credentials")))
         }
+      } recoverWith {
+        case e @ (_ : NotAuthenticatedException | _ : InvalidPasswordException | _ : IdentityNotFoundException) =>
+          Logger.error("Ошибка аутентификации", e)
+          Future { Unauthorized(Json.toJson(Response.bad(play.api.i18n.Messages("auth.error.wrong_credentials")))) }
       } recoverWith exceptionHandler
     } recoverTotal {
       case error => Future.successful(BadRequest(Response.bad("Неверный формат идентификационных данных", JsError.toFlatJson(error))))
@@ -88,7 +98,4 @@ class AuthController(implicit inj: Injector) extends BaseController with Silhoue
   def renew = SecuredAction.async { request =>
     request.authenticator.renew(Future.successful(Ok(Json.parse("{}"))))
   }
-
-
-
 }

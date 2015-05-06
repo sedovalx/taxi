@@ -3,15 +3,13 @@ package controllers
 import base.BaseControllerSpecification
 import models.entities.Role
 import models.entities.Role.Role
-import play.api.Application
 import play.api.db.slick._
 import play.api.libs.json
-import play.api.libs.json._
 import play.api.libs.json.Reads._
+import play.api.libs.json._
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
 import repository.AccountRepo
-import scaldi.Injector
 
 /**
  * Created by ipopkov on 04/04/15.
@@ -128,10 +126,4 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
 
   private def createCreateRequest(login: Option[String], password: Option[String], role: Option[Role]) =
     createAuthenticatedRequest(POST, "/api/users", createJsonAccount(login, password, role))
-
-//  private def printLogins(implicit app: Application, accounts: AccountRepo) = {
-//    DB.withSession { session =>
-//      accounts.read(session).foreach { a => println(a.login) }
-//    }
-//  }
 }
