@@ -19,7 +19,8 @@ class ServicesModule extends Module {
 
   bind [DriverService] to new DriverServiceImpl(inject [DriverRepo])
   bind [CarService] to new CarServiceImpl(inject [CarRepo])
-  bind [RentService] to new RentServiceImpl(inject [RentRepo], inject [RentStatusRepo])
+  bind [RentService] to new RentServiceImpl(inject [RentRepo], inject [RentStatusService])
+  bind [RentStatusService] to new RentStatusServiceImpl(inject [RentStatusRepo])
 
   bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
 }

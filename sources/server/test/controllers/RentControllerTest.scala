@@ -33,7 +33,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val Some(createResponse) = route(createRequest)
 
     // check:
-    status(createResponse) must beEqualTo(OK)
+    statusMustBeOK(createResponse)
     val id = (contentAsJson(createResponse) \ "rent" \ "id").as[String]
     val statuses = getStatuses(id.toInt)
     statuses must have size 1
@@ -57,7 +57,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val Some(updateResponse) = route(updateRequest)
 
     // check:
-    status(updateResponse) must beEqualTo(OK)
+    statusMustBeOK(updateResponse)
     val statuses = getStatuses(rentId)
     statuses must have size 5
     statuses.sorted(Ordering.by((i: RS) => i.changeDate.getTime).reverse).head.status must beEqualTo(RentStatus.Closed)
@@ -81,7 +81,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val Some(updateResponse) = route(updateRequest)
 
     // check:
-    status(updateResponse) must beEqualTo(OK)
+    statusMustBeOK(updateResponse)
     val statuses = getStatuses(rentId)
     statuses must have size 4
   }
@@ -96,8 +96,26 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val Some(readResponse) = route(readRequest)
 
     // check:
-    status(readResponse) must beEqualTo(OK)
+    statusMustBeOK(readResponse)
     contentAsString(readResponse) must /("rents") /# 0 /("status" -> "SettlingUp")
+  }
+
+  "should remove status history on rent deletion" in new WithFakeDB {
+    // setup:
+    val rent1 = createRent()
+    createRentStatuses(rent1, RentStatus.Active, RentStatus.SettlingUp)
+    val rent2 = createRent()
+    createRentStatuses(rent1, RentStatus.Active, RentStatus.Suspended, RentStatus.Active)
+
+    val deleteRequest = createEmptyAuthenticatedRequest(DELETE, "/api/rents/" + rent1)
+
+    // test:
+    val Some(deleteResponse) = route(deleteRequest)
+
+    // check:
+    statusMustBeOK(deleteResponse)
+    getStatuses(rent1) must have size 0
+    getStatuses(rent2) must have size 3
   }
 
   private def createRentStatuses(rentId: Int, statuses: RentStatus*)(implicit app: Application) = {

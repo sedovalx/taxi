@@ -6,11 +6,12 @@ import models.entities.Role
 import models.generated.Tables.Account
 import play.api.http.HeaderNames
 import play.api.libs.json.{JsValue, Json}
+import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers, RouteInvokers, Writeables}
 import service.AccountService
 
-import scala.concurrent.Await
+import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 
 /**
@@ -64,5 +65,13 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
     val userService = inject [AccountService]
     val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
     Await.ready(userService.create(admin, None), Duration.create(1, TimeUnit.SECONDS))
+  }
+
+  protected def statusMustBeOK(response: Future[Result]) = {
+    val actualStatus = status(response)
+    if (actualStatus != OK){
+      println(contentAsString(response))
+      actualStatus must beEqualTo(OK)
+    }
   }
 }

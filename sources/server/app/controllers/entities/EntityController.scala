@@ -43,10 +43,10 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   protected def onCreateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка создания объекта", err.toString))
   protected def onUpdateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
 
-  protected def beforeCreate(entity: E, identity: Account): E = entity
-  protected def beforeUpdate(entityId: Int, entity: E, identity: Account): E = copyEntityWithId(entity, entityId)
-  protected def afterCreate(entity: E): E = entity
-  protected def afterUpdate(entity: E): E = entity
+  protected def beforeCreate(json: JsValue, entity: E, identity: Account): E = entity
+  protected def beforeUpdate(entityId: Int, json: JsValue, entity: E, identity: Account): E = copyEntityWithId(entity, entityId)
+  protected def afterCreate(json: JsValue, entity: E, identity: Account): E = entity
+  protected def afterUpdate(json: JsValue, entity: E, identity: Account): E = entity
 
 
   def read = SecuredAction.async { implicit request =>
@@ -65,13 +65,13 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   }
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ entityName
+    val json = getEntityJson(request.body)
     json.validate[E] match {
       case err@JsError(_) => Future.successful(onCreateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
-        val toSave = beforeCreate(entity, request.identity)
+        val toSave = beforeCreate(json, entity, request.identity)
         entityService.create(toSave, Some(request.identity.id)) map { saved =>
-          val toSend = afterCreate(saved)
+          val toSend = afterCreate(json, saved, request.identity)
           val eJson = makeJson(entityName, toSend)
           Ok(eJson)
         } recover {
@@ -81,13 +81,13 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
   }
 
   def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
-    val json = request.body \ entityName
+    val json = getEntityJson(request.body)
     json.validate[E] match {
       case err@JsError(_) => Future.successful(onUpdateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
-        val toSave = beforeUpdate(id, entity, request.identity)
+        val toSave = beforeUpdate(id, json, entity, request.identity)
         entityService.update (toSave, Some (request.identity.id) ) map { saved =>
-          val toSend = afterUpdate(saved)
+          val toSend = afterUpdate(json, saved, request.identity)
           val eJson = makeJson (entityName, toSend)
           Ok (eJson)
         } recover {
@@ -104,4 +104,6 @@ abstract class EntityController[E <: Entity, T <: Table[E]  { val id: Column[Int
         NotFound(Response.bad(s"Объект с id=$id не найден"))
     }
   }
+
+  protected def getEntityJson(json: JsValue) = json \ entityName
  }

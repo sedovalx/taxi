@@ -28,8 +28,8 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
 
   protected def copyEntityWithId(entity: Account, id: Int) = entity.copy(id = id)
 
-  override protected def beforeCreate(entity: Account, identity: Account) = {
-    val user = super.beforeCreate(entity, identity)
+  override protected def beforeCreate(json: JsValue, entity: Account, identity: Account) = {
+    val user = super.beforeCreate(json, entity, identity)
     require(user.passwordHash != null, "Пароль пользователя не должен быть пустым.")
     user
   }
