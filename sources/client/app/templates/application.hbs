@@ -31,13 +31,18 @@
                           </a>
                       {{/link-to}}
                       {{#link-to 'fines' tagName="li"}}
-                        <a {{bind-attr href="view.href"}}>
-                            Штрафы
-                        </a>
-                    {{/link-to}}
+                          <a {{bind-attr href="view.href"}}>
+                              Штрафы
+                          </a>
+                      {{/link-to}}
                       {{#link-to 'repairs' tagName="li"}}
                           <a {{bind-attr href="view.href"}}>
                               Ремонты
+                          </a>
+                      {{/link-to}}
+                      {{#link-to 'expenses' tagName="li"}}
+                          <a {{bind-attr href="view.href"}}>
+                              Расходы
                           </a>
                       {{/link-to}}
                     </ul>

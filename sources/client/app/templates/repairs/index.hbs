@@ -1,9 +1,11 @@
 <div class="list">
-  {{table-component
-  columns=columns
-  content=repairs
-  hasFooter=false
-  selection=selectedRow}}
+    <div class="table">
+      {{table-component
+      columns=columns
+      content=repairs
+      hasFooter=false
+      selection=selectedRow}}
+    </div>
 
     <div class="commands-panel btn-group pull-right" role="group">
         <button type="button" class="btn btn-primary" {{action "create"}}>

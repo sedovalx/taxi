@@ -1,0 +1,9 @@
+<div class="editor user-editor">
+    <form class="form-horizontal">
+      {{property-row title="Дата расхода" value=date errors=errors.date}}
+      {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+      {{property-row title="Статья расхода" value=subject errors=errors.subject}}
+      {{property-row title="Примечания" value=comment}}
+    </form>
+  {{save-cancel}}
+</div>
