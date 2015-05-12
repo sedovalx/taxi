@@ -36,7 +36,7 @@ CREATE TABLE checkpoint
   creator_id INT,
   edit_date TIMESTAMP,
   editor_id INT,
-  comment VARCHAR
+  comment VARCHAR(5000)
 );
 CREATE TABLE driver
 (
@@ -86,7 +86,6 @@ CREATE TABLE payment
   id SERIAL PRIMARY KEY NOT NULL,
   pay_date TIMESTAMP NOT NULL,
   amount NUMERIC(8) NOT NULL,
-  target VARCHAR(255) NOT NULL,
   comment VARCHAR(5000),
   creator_id INT,
   creation_date TIMESTAMP,

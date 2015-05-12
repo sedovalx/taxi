@@ -47,4 +47,10 @@ app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff", { des
 app.import("bower_components/font-awesome/fonts/fontawesome-webfont.woff2", { destDir: "fonts" });
 app.import("bower_components/font-awesome/fonts/FontAwesome.otf", { destDir: "fonts" });
 
+// Bootstrap-Datepicker locale
+app.import(app.bowerDirectory + '/bootstrap-datepicker/dist/locales/bootstrap-datepicker.ru.min.js');
+
+// MomentJS
+app.import(app.bowerDirectory + '/moment/moment.js');
+
 module.exports = app.toTree();

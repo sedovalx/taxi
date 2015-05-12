@@ -154,7 +154,7 @@ trait Tables {
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     
     /** Foreign key referencing AccountTable (database name checkpoint_creator_id_fkey) */
     lazy val creatorFk = foreignKey("checkpoint_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -331,19 +331,18 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param payDate Database column pay_date DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
-   *  @param target Database column target DBType(varchar), Length(255,true)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, target: String, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
+  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
-    def * = (id, payDate, amount, target, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
+    def * = (id, payDate, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, payDate.?, amount.?, target.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, payDate.?, amount.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -351,8 +350,6 @@ trait Tables {
     val payDate = column[java.sql.Timestamp]("pay_date")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
-    /** Database column target DBType(varchar), Length(255,true) */
-    val target = column[String]("target", O.Length(255,varying=true))
     /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */

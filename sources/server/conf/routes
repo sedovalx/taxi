@@ -44,6 +44,12 @@ GET           /api/rents/:id            @controllers.entities.RentController.get
 POST          /api/rents                @controllers.entities.RentController.create
 PUT           /api/rents/:id            @controllers.entities.RentController.update(id: Int)
 DELETE        /api/rents/:id            @controllers.entities.RentController.delete(id: Int)
+# Payment routes
+GET           /api/payments             @controllers.entities.PaymentController.read
+GET           /api/payments/:id         @controllers.entities.PaymentController.getById(id: Int)
+POST          /api/payments             @controllers.entities.PaymentController.create
+PUT           /api/payments/:id         @controllers.entities.PaymentController.update(id: Int)
+DELETE        /api/payments/:id         @controllers.entities.PaymentController.delete(id: Int)
 
 # Every other page (should be the last route)
 GET           /*path                    @controllers.IndexController.index(path)

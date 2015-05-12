@@ -14,4 +14,5 @@ class RepoModule extends Module{
   bind [CarRepo] to new CarRepoImpl
   bind [RentRepo] to new RentRepoImpl
   bind [RentStatusRepo] to new RentStatusRepoImpl
+  bind [PaymentRepo] to new PaymentRepoImpl
 }

@@ -16,9 +16,11 @@
     "ember-table": "ember-1.10",
     "font-awesome": "~4.3.0",
     "ember-simple-auth": "~0.7.3",
-    "selectize": "~0.12.1"
+    "selectize": "~0.12.1",
+    "bootstrap-datepicker": "~1.4.0",
+    "moment": "~2.10.2"
   },
-  "resolutions":{
+  "resolutions": {
     "bootstrap": "3.3.4"
   }
 }

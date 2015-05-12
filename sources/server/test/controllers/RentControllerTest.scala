@@ -10,7 +10,6 @@ import play.api.Application
 import play.api.db.slick.Config.driver.simple._
 import play.api.db.slick._
 import play.api.libs.json.Json
-import play.api.libs.json._
 import play.api.libs.json.Reads._
 import play.api.test.Helpers._
 import repository.{CarRepo, DriverRepo, RentRepo, RentStatusRepo}
