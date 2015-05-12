@@ -1,7 +1,7 @@
 import DS from "ember-data";
 
 let attr = DS.attr;
-var CarsModel = DS.Model.extend({
+var CashierModel = DS.Model.extend({
   regNumber: attr("string"),
   carModel: attr("string"),
   make: attr("string"),
@@ -15,7 +15,9 @@ var CarsModel = DS.Model.extend({
   editor: DS.belongsTo("user", {inverse: null, async: true}),
   displayName: function(){
     return this.get('make') + ' ' + this.get('carModel') + ' ' + this.get('regNumber') + ' (' + this.get('rate') + ')';
-  }.property('make', 'carModel', 'regNumber', 'rate')
+  }.property('make', 'carModel', 'regNumber', 'rate'),
+  rent: DS.belongsTo("rent", {inverse: null, async: true}),
+  rentDisplayName: attr("string")
 });
 
-export default CarsModel;
+export default CashierModel;
