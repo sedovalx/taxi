@@ -1,4 +1,5 @@
 import Ember from "ember";
+import DS from "ember-data";
 import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
 
 export default Ember.ObjectController.extend(DirtyControllerMixin, {
