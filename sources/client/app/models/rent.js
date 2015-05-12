@@ -1,3 +1,4 @@
+import Ember from "ember";
 import DS from "ember-data";
 import statuses from "client/models/rent-statuses";
 
@@ -16,10 +17,40 @@ var RentModel = DS.Model.extend({
     let status = statuses.filter(r => r.id === this.get("status"))[0];
     return status ? status.label : "";
   }.property("status"),
+  driverDisplayName: function(){
+    return this.get("driver").get("displayName");
+  }.property("model","driver"),
+  carDisplayName: function(){
+    return this.get("car").get("displayName");
+  }.property("model","car"),
   displayName: function(){
-    return this.get("driver").get("displayName") + " - " + this.get("car").get("displayName");
-  }.property("driver","driver.displayName","car")
+    //let model = this;
+    ////let model = this.get("model");
+    //return DS.PromiseObject.create({
+    //  promise: model.get("driver").then(function(driver){
+    //    return driver.get("id");
+    //  })
+    //});
+    //return DS.PromiseObject.create({
+    //  promise: Ember.RSVP.all([
+    //    model.get("driver"),
+    //    model.get("car"),
+    //    this.get("driver"),
+    //    this.get("car"),
+    //    model.get("driver.id"),
+    //    model.get("car.id")
+    //  ]).then(objects => {
+    //    let driver = objects[0];
+    //    let car = objects[1];
+    //    return driver.get("displayName") + " - " + car.get("make");
+    //  })
+    //});
+    //return this.get("driver").then(function(driver){return driver.displayName;}) + " - " + this.get("car").then(function(car){return car.displayName;});
+    //return this.get("driver").then(function(driver){return driver.get("displayName");}) + " - " + this.get("car").then(function(car){return car.get("displayName");});
+    return this.get("driverDisplayName") + " - " + this.get("carDisplayName");
+  }.property("driverDisplayName","carDisplayName")
 });
+
 
 
 RentModel.reopenClass({
@@ -34,7 +65,7 @@ RentModel.reopenClass({
     },
     {
       id: 2,
-      driver: 2,
+      driver: 4,
       car: 2,
       deposit: 15000,
       status: "Closed",

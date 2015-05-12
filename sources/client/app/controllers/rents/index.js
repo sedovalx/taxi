@@ -32,13 +32,13 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Водитель",
-      contentPath: "driver.displayName"
+      contentPath: "driverDisplayName"
     });
     let carColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Автомобиль",
-      contentPath: "car.displayName"
+      contentPath: "carDisplayName"
     });
     let depositColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
