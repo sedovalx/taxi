@@ -1,7 +1,5 @@
 import Ember from "ember";
 import DS from "ember-data";
-import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
-import statuses from "client/models/rent-statuses";
 
 export default Ember.ArrayController.extend({
   //sortProperties: ["regNumber", "make", "model", "mileage"],
@@ -26,6 +24,18 @@ export default Ember.ArrayController.extend({
         row.deleteRecord();
         row.save();
 	    }
+    },
+    createPayment:function(){
+      //let row = this.get("selectedRow");
+      this.transitionToRoute("payments.new");
+    },
+    createFine:function(){
+      //let row = this.get("selectedRow");
+      this.transitionToRoute("fines.new");
+    },
+    createRent:function(){
+      //let row = this.get("selectedRow");
+      this.transitionToRoute("rents.new");
     }
   },
   // Ember Table
@@ -42,12 +52,6 @@ export default Ember.ArrayController.extend({
       headerCellName: "Водитель",
       contentPath: "driverDisplayName"
     });
-    let makeColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Марка",
-      contentPath: "make"
-    });
     let mileageColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
@@ -59,12 +63,6 @@ export default Ember.ArrayController.extend({
       canAutoResize: true,
       headerCellName: "Следующий ТО, км",
       contentPath: "service"
-    });
-    let rateColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Тариф",
-      contentPath: "rate"
     });
     let rentBalanceColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -105,14 +103,14 @@ export default Ember.ArrayController.extend({
         this.store.find("fine"),
         this.store.find("repair")
       ]).then(arrays => {
-        let drivers = arrays[0];
+        //let drivers = arrays[0];
         let cars = arrays[1];
         let rents = arrays[2];
-        let payments = arrays[3];
-        let fines = arrays[4];
-        let repairs = arrays[5];
+        //let payments = arrays[3];
+        //let fines = arrays[4];
+        //let repairs = arrays[5];
         // добавляем в список машин данные из других списков
-        let cashierArray = cars.map(function(item, i, arr){
+        let cashierArray = cars.map(function(item){
           //находим активную аренду для этой машины
           item.rent = rents.filter(r => ((r.get("status") !== "Closed") && (r.get("car").get("id") === item.get("id"))))[0];
           if (item.rent == null){
@@ -130,7 +128,7 @@ export default Ember.ArrayController.extend({
           }
           return item;
         });
-        return cashierArray
+        return cashierArray;
       })
     });
     return data;
