@@ -6,8 +6,12 @@ import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.generated.Tables
 import models.generated.Tables._
+import org.postgresql.util.PSQLException
+import play.api.data.validation.ValidationError
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import play.api.libs.json.Reads._
+import play.api.mvc.Result
 import repository.DriverRepo
 import scaldi.Injector
 import service.DriverService
@@ -23,10 +27,10 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
   override val entitiesName: String = "drivers"
   override implicit val reads: Reads[Tables.Driver] = (
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
-      (JsPath \ "pass").read[String] and
-      (JsPath \ "license").read[String] and
-      (JsPath \ "lastName").readNullable[String] and
-      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "pass").read(minLength[String](10)) and
+      (JsPath \ "license").read(minLength[String](10)) and
+      (JsPath \ "lastName").read[String] and
+      (JsPath \ "firstName").read[String] and
       (JsPath \ "middleName").readNullable[String] and
       (JsPath \ "phone").read[String] and
       (JsPath \ "secPhone").read[String] and
@@ -58,4 +62,30 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
   override val entityName: String = "driver"
 
   override protected def env = inject [Environment[Tables.Account, JWTAuthenticator]]
+
+  override protected def onCreateError(entity: Tables.Driver, err: Throwable): Result = {
+    onChangeError(entity, err, super.onCreateError)
+  }
+
+  override protected def onUpdateError(entity: Tables.Driver, err: Throwable): Result = {
+    onChangeError(entity, err, super.onUpdateError)
+  }
+
+  private def onChangeError(entity: Driver, err: Throwable, fallback: (Driver, Throwable) => Result) = {
+    //todo: скорее всего по классу таблицы можно найти все поля с ограничением уникальности
+    //по ним можно построить generic обработчик ошибок уникальности
+    err match {
+      case e: PSQLException if e.getMessage.contains("idx_pass_uq") =>
+        val error = Json.obj(
+          "pass" -> "Значение паспорта должно быть уникальным среди всех водителей"
+        )
+        UnprocessableEntity(error)
+      case e: PSQLException if e.getMessage.contains("idx_license_uq") =>
+        val error = Json.obj(
+          "license" -> "Значение водительских прав должно быть уникальным среди всех водителей"
+        )
+        UnprocessableEntity(error)
+      case _ => fallback(entity, err)
+    }
+  }
 }

@@ -182,7 +182,7 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Driver(id: Int, pass: String, license: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
+  case class Driver(id: Int, pass: String, license: String, lastName: String, firstName: String, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
   /** Table description of table driver. Objects of this class serve as prototypes for rows in queries. */
   class DriverTable(_tableTag: Tag) extends Table[Driver](_tableTag, "driver") {
     def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
@@ -196,9 +196,9 @@ trait Tables {
     /** Database column license DBType(varchar), Length(254,true) */
     val license = column[String]("license", O.Length(254,varying=true))
     /** Database column last_name DBType(varchar), Length(254,true), Default(None) */
-    val lastName = column[Option[String]]("last_name", O.Length(254,varying=true), O.Default(None))
+    val lastName = column[String]("last_name", O.Length(254,varying=true))
     /** Database column first_name DBType(varchar), Length(254,true), Default(None) */
-    val firstName = column[Option[String]]("first_name", O.Length(254,varying=true), O.Default(None))
+    val firstName = column[String]("first_name", O.Length(254,varying=true))
     /** Database column middle_name DBType(varchar), Length(254,true), Default(None) */
     val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
     /** Database column phone DBType(varchar), Length(254,true) */
