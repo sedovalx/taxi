@@ -143,7 +143,15 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
   private def createDriver()(implicit app: Application): Int = {
     implicit val injector = global.injector
     val driverRepo = inject [DriverRepo]
-    val driver = Driver(id = 0, pass = UUID.randomUUID().toString, license = UUID.randomUUID().toString, phone = "12312", secPhone = "2342345", address = "sdsdf90")
+    val driver = Driver(
+      id = 0,
+      lastName = "sad",
+      firstName = "zx;lck",
+      pass = UUID.randomUUID().toString,
+      license = UUID.randomUUID().toString,
+      phone = "12312",
+      secPhone = "2342345",
+      address = "sdsdf90")
     DB.withSession { session =>
       driverRepo.create(driver)(session)
     }
