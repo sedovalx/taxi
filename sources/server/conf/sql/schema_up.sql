@@ -8,8 +8,8 @@ CREATE TABLE account
   middle_name VARCHAR(254),
   role VARCHAR(254) NOT NULL,
   comment VARCHAR,
-  creation_date DATE,
-  edit_date DATE,
+  creation_date TIMESTAMP,
+  edit_date TIMESTAMP,
   creator_id INT,
   editor_id INT
 );
@@ -23,18 +23,18 @@ CREATE TABLE car
   mileage NUMERIC(10) NOT NULL,
   service NUMERIC(10),
   comment VARCHAR,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   creator_id INT,
-  edit_date DATE,
+  edit_date TIMESTAMP,
   editor_id INT
 );
 CREATE TABLE checkpoint
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  point_date DATE NOT NULL,
-  creation_date DATE,
+  point_date TIMESTAMP NOT NULL,
+  creation_date TIMESTAMP,
   creator_id INT,
-  edit_date DATE,
+  edit_date TIMESTAMP,
   editor_id INT,
   comment VARCHAR
 );
@@ -50,48 +50,48 @@ CREATE TABLE driver
   sec_phone VARCHAR(254) NOT NULL,
   comment VARCHAR(254),
   address VARCHAR(254) NOT NULL,
-  creation_date DATE,
-  edit_date DATE,
+  creation_date TIMESTAMP,
+  edit_date TIMESTAMP,
   creator_id INT,
   editor_id INT
 );
 CREATE TABLE expense
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  date DATE NOT NULL,
+  TIMESTAMP TIMESTAMP NOT NULL,
   amount NUMERIC(10) NOT NULL,
   subject VARCHAR(255) NOT NULL,
   description VARCHAR(1000),
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE
+  edit_date TIMESTAMP
 );
 CREATE TABLE fine
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  fine_date DATE NOT NULL,
+  fine_date TIMESTAMP NOT NULL,
   cost NUMERIC(10) NOT NULL,
   description VARCHAR,
   rent_id INT NOT NULL,
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE
+  edit_date TIMESTAMP
 );
 CREATE TABLE payment
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  pay_date DATE NOT NULL,
+  pay_date TIMESTAMP NOT NULL,
   amount NUMERIC(8) NOT NULL,
   target VARCHAR(255) NOT NULL,
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE,
+  edit_date TIMESTAMP,
   rent_id INT NOT NULL
 );
 CREATE TABLE rent
@@ -102,34 +102,34 @@ CREATE TABLE rent
   deposit NUMERIC(8) NOT NULL,
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE
+  edit_date TIMESTAMP
 );
 CREATE TABLE rent_status
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  change_date DATE NOT NULL,
+  change_date TIMESTAMP NOT NULL,
   status VARCHAR(255) NOT NULL,
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE,
+  edit_date TIMESTAMP,
   rent_id INT NOT NULL
 );
 CREATE TABLE repair
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  repair_date DATE NOT NULL,
+  repair_date TIMESTAMP NOT NULL,
   cost NUMERIC(10) NOT NULL,
   description VARCHAR,
   rent_id INT NOT NULL,
   comment VARCHAR,
   creator_id INT,
-  creation_date DATE,
+  creation_date TIMESTAMP,
   editor_id INT,
-  edit_date DATE
+  edit_date TIMESTAMP
 );
 ALTER TABLE account ADD FOREIGN KEY (creator_id) REFERENCES account (id);
 ALTER TABLE account ADD FOREIGN KEY (editor_id) REFERENCES account (id);
@@ -159,7 +159,7 @@ ALTER TABLE rent ADD FOREIGN KEY (car_id) REFERENCES car (id);
 ALTER TABLE rent ADD FOREIGN KEY (driver_id) REFERENCES driver (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (creator_id) REFERENCES account (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (editor_id) REFERENCES account (id);
-ALTER TABLE rent_status ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
+ALTER TABLE rent_status ADD FOREIGN KEY (rent_id) REFERENCES rent (id) ON DELETE CASCADE;
 CREATE INDEX change_date_index ON rent_status (change_date);
 CREATE INDEX status_index ON rent_status (status);
 ALTER TABLE repair ADD FOREIGN KEY (creator_id) REFERENCES account (id);

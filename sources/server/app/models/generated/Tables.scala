@@ -233,7 +233,7 @@ trait Tables {
   
   /** Entity class storing rows of table ExpenseTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param date Database column date DBType(timestamp)
+   *  @param timestamp Database column timestamp DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param subject Database column subject DBType(varchar), Length(255,true)
    *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
@@ -242,17 +242,17 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Expense(id: Int, date: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
+  case class Expense(id: Int, timestamp: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
   /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
   class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
-    def * = (id, date, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
+    def * = (id, timestamp, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, date.?, amount.?, subject.?, description, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Expense.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, timestamp.?, amount.?, subject.?, description, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Expense.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column date DBType(timestamp) */
-    val date = column[java.sql.Timestamp]("date")
+    /** Database column timestamp DBType(timestamp) */
+    val timestamp = column[java.sql.Timestamp]("timestamp")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column subject DBType(varchar), Length(255,true) */
@@ -417,7 +417,7 @@ trait Tables {
     /** Foreign key referencing AccountTable (database name rent_status_editor_id_fkey) */
     lazy val editorFk = foreignKey("rent_status_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing RentTable (database name rent_status_rent_id_fkey) */
-    lazy val rentFk = foreignKey("rent_status_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    lazy val rentFk = foreignKey("rent_status_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.Cascade)
     
     /** Index over (changeDate) (database name change_date_index) */
     val index1 = index("change_date_index", changeDate)

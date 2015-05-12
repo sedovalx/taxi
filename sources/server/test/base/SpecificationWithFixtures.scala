@@ -1,20 +1,17 @@
 package base
 
 import com.typesafe.config.ConfigFactory
-import configuration.di.{RepoModule, PlayModule, ServicesModule, SilhouetteModule}
-import models.entities.Role
+import configuration.di.{PlayModule, RepoModule, ServicesModule, SilhouetteModule}
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
-import play.api.{Logger, Configuration, GlobalSettings, Application}
-import play.api.db.slick._
+import play.api.Configuration
+import play.api.mvc.{Filter, RequestHeader, WithFilters}
 import play.api.test.Helpers._
 import play.api.test.{FakeApplication, WithApplication}
-
-import models.generated.Tables.Account
-import repository.AccountRepo
-import scaldi.{Injector, Injectable, Module}
 import scaldi.play.ScaldiSupport
-import service.AccountService
+import scaldi.{Injectable, Injector}
+
+import scala.concurrent.Future
 
 
 /**
@@ -27,7 +24,14 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
 
   }
 
-  val global = new ScaldiSupport {
+  object RoutesLoggingFilter extends Filter {
+    override def apply(next: (RequestHeader) => Future[play.api.mvc.Result])(rh: RequestHeader): Future[play.api.mvc.Result] = {
+      println(s"${rh.method} ${rh.uri}")
+      next(rh)
+    }
+  }
+
+  val global = new WithFilters(RoutesLoggingFilter) with ScaldiSupport {
     override def applicationModule: Injector = new RepoModule ++ new ServicesModule ++ new SilhouetteModule ++ new PlayModule
 
     override def configuration = Configuration(ConfigFactory.load())

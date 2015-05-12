@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.UUID
+
 import base.BaseControllerSpecification
 import models.entities.RentStatus
 import models.entities.RentStatus.RentStatus
@@ -105,9 +107,10 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val rent1 = createRent()
     createRentStatuses(rent1, RentStatus.Active, RentStatus.SettlingUp)
     val rent2 = createRent()
-    createRentStatuses(rent1, RentStatus.Active, RentStatus.Suspended, RentStatus.Active)
+    createRentStatuses(rent2, RentStatus.Active, RentStatus.Suspended, RentStatus.Active)
 
     val deleteRequest = createEmptyAuthenticatedRequest(DELETE, "/api/rents/" + rent1)
+      .withJsonBody(Json.obj())
 
     // test:
     val Some(deleteResponse) = route(deleteRequest)
@@ -141,7 +144,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
   private def createDriver()(implicit app: Application): Int = {
     implicit val injector = global.injector
     val driverRepo = inject [DriverRepo]
-    val driver = Driver(id = 0, pass = "asd", license = "asdas", phone = "12312", secPhone = "2342345", address = "sdsdf90")
+    val driver = Driver(id = 0, pass = UUID.randomUUID().toString, license = UUID.randomUUID().toString, phone = "12312", secPhone = "2342345", address = "sdsdf90")
     DB.withSession { session =>
       driverRepo.create(driver)(session)
     }
@@ -150,7 +153,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
   private def createCar()(implicit app: Application): Int = {
     implicit val injector = global.injector
     val carRepo = inject [CarRepo]
-    val car = Car(id = 0, regNumber = "123123", make = "asd", model = "bfgh", rate = 100, mileage = 1000)
+    val car = Car(id = 0, regNumber = UUID.randomUUID().toString.substring(0, 11), make = "asd", model = "bfgh", rate = 100, mileage = 1000)
     DB.withSession { session =>
       carRepo.create(car)(session)
     }
