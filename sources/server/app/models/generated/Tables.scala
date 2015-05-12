@@ -22,7 +22,7 @@ trait Tables {
    *  @param firstName Database column first_name DBType(varchar), Length(254,true), Default(None)
    *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
    *  @param role Database column role DBType(varchar), Length(254,true)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
@@ -48,8 +48,8 @@ trait Tables {
     val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
     /** Database column role DBType(varchar), Length(254,true) */
     val role = column[Role]("role", O.Length(254,varying=true))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
     val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column edit_date DBType(timestamp), Default(None) */
@@ -78,7 +78,7 @@ trait Tables {
    *  @param rate Database column rate DBType(numeric)
    *  @param mileage Database column mileage DBType(numeric)
    *  @param service Database column service DBType(numeric), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
@@ -104,8 +104,8 @@ trait Tables {
     val mileage = column[scala.math.BigDecimal]("mileage")
     /** Database column service DBType(numeric), Default(None) */
     val service = column[Option[scala.math.BigDecimal]]("service", O.Default(None))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
     val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
@@ -237,7 +237,7 @@ trait Tables {
    *  @param amount Database column amount DBType(numeric)
    *  @param subject Database column subject DBType(varchar), Length(255,true)
    *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -259,8 +259,8 @@ trait Tables {
     val subject = column[String]("subject", O.Length(255,varying=true))
     /** Database column description DBType(varchar), Length(1000,true), Default(None) */
     val description = column[Option[String]]("description", O.Length(1000,varying=true), O.Default(None))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
@@ -282,9 +282,9 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param fineDate Database column fine_date DBType(timestamp)
    *  @param cost Database column cost DBType(numeric)
-   *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param description Database column description DBType(varchar), Length(5000,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -302,12 +302,12 @@ trait Tables {
     val fineDate = column[java.sql.Timestamp]("fine_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
-    /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
-    val description = column[Option[String]]("description", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column description DBType(varchar), Length(5000,true), Default(None) */
+    val description = column[Option[String]]("description", O.Length(5000,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
@@ -332,7 +332,7 @@ trait Tables {
    *  @param payDate Database column pay_date DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param target Database column target DBType(varchar), Length(255,true)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -353,8 +353,8 @@ trait Tables {
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column target DBType(varchar), Length(255,true) */
     val target = column[String]("target", O.Length(255,varying=true))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
@@ -380,7 +380,7 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param changeDate Database column change_date DBType(timestamp)
    *  @param status Database column status DBType(varchar), Length(255,true)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -399,8 +399,8 @@ trait Tables {
     val changeDate = column[java.sql.Timestamp]("change_date")
     /** Database column status DBType(varchar), Length(255,true) */
     val status = column[models.entities.RentStatus.RentStatus]("status", O.Length(255,varying=true))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
@@ -432,7 +432,7 @@ trait Tables {
    *  @param driverId Database column driver_id DBType(int4)
    *  @param carId Database column car_id DBType(int4)
    *  @param deposit Database column deposit DBType(numeric)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -452,8 +452,8 @@ trait Tables {
     val carId = column[Int]("car_id")
     /** Database column deposit DBType(numeric) */
     val deposit = column[scala.math.BigDecimal]("deposit")
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
@@ -479,9 +479,9 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param repairDate Database column repair_date DBType(timestamp)
    *  @param cost Database column cost DBType(numeric)
-   *  @param description Database column description DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param description Database column description DBType(varchar), Length(5000,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
@@ -499,12 +499,12 @@ trait Tables {
     val repairDate = column[java.sql.Timestamp]("repair_date")
     /** Database column cost DBType(numeric) */
     val cost = column[scala.math.BigDecimal]("cost")
-    /** Database column description DBType(varchar), Length(2147483647,true), Default(None) */
-    val description = column[Option[String]]("description", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column description DBType(varchar), Length(5000,true), Default(None) */
+    val description = column[Option[String]]("description", O.Length(5000,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(2147483647,varying=true), O.Default(None))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creator_id DBType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column creation_date DBType(timestamp), Default(None) */
