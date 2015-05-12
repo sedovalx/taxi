@@ -4,10 +4,6 @@ import repository._
 
 import scaldi.Module
 
-
-/**
- * Created by ipopkov on 15/04/15.
- */
 class RepoModule extends Module{
   bind [AccountRepo] to new AccountRepoImpl()
   bind [DriverRepo] to new DriverRepoImpl()
@@ -15,4 +11,5 @@ class RepoModule extends Module{
   bind [RentRepo] to new RentRepoImpl
   bind [RentStatusRepo] to new RentStatusRepoImpl
   bind [PaymentRepo] to new PaymentRepoImpl
+  bind [FineRepo] to new FineRepoImpl
 }

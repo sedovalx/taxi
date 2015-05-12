@@ -22,6 +22,7 @@ class ServicesModule extends Module {
   bind [RentService] to new RentServiceImpl(inject [RentRepo], inject [RentStatusService])
   bind [RentStatusService] to new RentStatusServiceImpl(inject [RentStatusRepo])
   bind [PaymentService] to new PaymentServiceImpl(inject [PaymentRepo])
+  bind [FineService] to new FineServiceImpl(inject [FineRepo])
 
   bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
 }

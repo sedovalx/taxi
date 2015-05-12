@@ -18,7 +18,7 @@ var PaymentModel = DS.Model.extend({
 
   displayPayDate: function(){
     return moment(this.get("payDate")).format("DD-MM-YYYY");
-  }.property("payDate") 
+  }.property("payDate")
 });
 
 export default PaymentModel;
