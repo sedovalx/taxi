@@ -23,6 +23,7 @@ class ServicesModule extends Module {
   bind [CarService] to new CarService { val repo = inject [CarRepo] }
   bind [PaymentService] to new PaymentService { val repo = inject [PaymentRepo] }
   bind [FineService] to new FineService { val repo = inject [FineRepo] }
+  bind [RepairService] to new RepairService { val repo = inject [RepairRepo] }
 
   bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
 }

@@ -56,6 +56,12 @@ GET           /api/fines/:id            @controllers.entities.FineController.get
 POST          /api/fines                @controllers.entities.FineController.create
 PUT           /api/fines/:id            @controllers.entities.FineController.update(id: Int)
 DELETE        /api/fines/:id            @controllers.entities.FineController.delete(id: Int)
+# Repair routes
+GET           /api/repairs              @controllers.entities.RepairController.read
+GET           /api/repairs/:id          @controllers.entities.RepairController.getById(id: Int)
+POST          /api/repairs              @controllers.entities.RepairController.create
+PUT           /api/repairs/:id          @controllers.entities.RepairController.update(id: Int)
+DELETE        /api/repairs/:id          @controllers.entities.RepairController.delete(id: Int)
 
 # Every other page (should be the last route)
 GET           /*path                    @controllers.IndexController.index(path)

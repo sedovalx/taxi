@@ -1,6 +1,16 @@
 <div class="editor user-editor">
     <form class="form-horizontal">
-      {{property-row title="Дата ремонта" value=repairDate errors=errors.repairDate}}
+	{{#property-row title="Дата ремонта" errors=errors.repairDate}}
+        {{bootstrap-datepicker
+        class="form-control"
+        value=repairDate
+        autoclose=true
+        clearBtn=true
+        format="dd-mm-yyyy"
+        language="ru"
+        weekStart=1
+        }}
+      {{/property-row}}
       {{property-row title="Сумма, р" value=cost errors=errors.cost}}
       {{#property-row title="Аренда" errors=errors.rent}}
         {{ember-selectize

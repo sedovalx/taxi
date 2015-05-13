@@ -14,4 +14,5 @@ class RepoModule extends Module{
   bind [RentRepo] to new RentRepo { val tableQuery = RentTable }
   bind [PaymentRepo] to new PaymentRepo { val tableQuery = PaymentTable }
   bind [FineRepo] to new FineRepo { val tableQuery = FineTable }
+  bind [RepairRepo] to new RepairRepo { val tableQuery = RepairTable }
 }
