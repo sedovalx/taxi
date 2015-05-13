@@ -13,12 +13,14 @@ import repository.CarRepo
 import scaldi.Injector
 import service.CarService
 
-class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo] {
+class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo]()(injector) {
   override protected val entityService = inject [CarService]
 
   override protected def copyEntityWithId(entity: Tables.Car, id: Int): Tables.Car = entity.copy(id = id)
 
   override protected val entitiesName: String = "cars"
+  override protected val entityName: String = "car"
+
   override protected implicit val reads: Reads[Tables.Car] = (
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "regNumber").read(minLength[String](8)) and
@@ -49,7 +51,4 @@ class CarController(implicit injector: Injector) extends EntityController[Car, C
       "comment" -> o.comment
     )
   }
-  override protected val entityName: String = "car"
-
-  override protected def env = inject [Environment[Tables.Account, JWTAuthenticator]]
 }

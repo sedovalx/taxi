@@ -2,15 +2,12 @@ package controllers.entities
 
 import java.sql.Timestamp
 
-import com.mohiva.play.silhouette.api.Environment
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.generated.Tables
 import models.generated.Tables._
 import org.postgresql.util.PSQLException
-import play.api.data.validation.ValidationError
 import play.api.libs.functional.syntax._
-import play.api.libs.json._
 import play.api.libs.json.Reads._
+import play.api.libs.json._
 import play.api.mvc.Result
 import repository.DriverRepo
 import scaldi.Injector
@@ -19,12 +16,14 @@ import service.DriverService
 /**
  * Контроллер операций над водителями
  */
-class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo] {
+class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo]()(injector) {
   override val entityService = inject [DriverService]
 
   override protected def copyEntityWithId(entity: Driver, id: Int): Driver = entity.copy(id = id)
 
   override val entitiesName: String = "drivers"
+  override val entityName: String = "driver"
+
   override implicit val reads: Reads[Tables.Driver] = (
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "pass").read(minLength[String](10)) and
@@ -59,9 +58,6 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
       "comment" -> o.comment
     )
   }
-  override val entityName: String = "driver"
-
-  override protected def env = inject [Environment[Tables.Account, JWTAuthenticator]]
 
   override protected def onCreateError(entity: Tables.Driver, err: Throwable): Result = {
     onChangeError(entity, err, super.onCreateError)

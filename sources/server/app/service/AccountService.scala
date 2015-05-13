@@ -22,25 +22,15 @@ trait AccountService extends DbAccessor with EntityService[Account, AccountTable
   def hasUsers: Future[Boolean]
 }
 
-class AccountServiceImpl(accountRepo: AccountRepo,
+class AccountServiceImpl(val repo: AccountRepo,
                           passwordHasher: PasswordHasher,
                       authInfoService: DelegableAuthInfoService,
                        identityService: IdentityService[Account]) extends AccountService {
 
-  override val repo = accountRepo
-
   implicit val passwordFormat = Json.format[PasswordInfo]
 
-  override def setCreatorAndDate(entity: Account, creatorId: Option[Int])  =
-    entity.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
-  override def setEditorAndDate(entity: Account, editorId: Option[Int])  =
-    entity.copy(editorId = editorId, editDate = Some(DateUtils.now))
-
-  override def setId(entity: Account, id: Int) = entity.copy(id = id)
-
   def hasUsers: Future[Boolean] = Future {
-    withDb { session => accountRepo.isEmpty(session) }
+    withDb { session => repo.isEmpty(session) }
   }
 
   override protected def beforeCreate(entity: Tables.Account, creatorId: Option[Int]): Future[Tables.Account] = {
@@ -55,8 +45,8 @@ class AccountServiceImpl(accountRepo: AccountRepo,
   override def find(params: Map[String, String]): List[Account] = {
     val userFilter = tryParseFilterParams(params)
     userFilter match {
-      case Some(filter) => withDb { session => accountRepo.find(filter)(session) }
-      case None => withDb { session => accountRepo.read(session) }
+      case Some(filter) => withDb { session => repo.find(filter)(session) }
+      case None => withDb { session => repo.read(session) }
     }
   }
 

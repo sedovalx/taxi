@@ -16,9 +16,8 @@ import scaldi.Injector
 import service.AccountService
 import utils.serialization.EnumSerializer
 
-class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo] {
+class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo]()(inj) {
   protected val entityService = inject [AccountService]
-  protected def env = inject [Environment[Account, JWTAuthenticator]]
 
   protected val entitiesName: String = "users"
   protected val entityName: String = "user"

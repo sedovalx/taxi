@@ -13,14 +13,6 @@ trait RentService extends EntityService[Rent, RentTable, RentRepo] {
 }
 
 class RentServiceImpl(val repo: RentRepo, val statusService: RentStatusService) extends RentService {
-  override protected def setCreatorAndDate(entity: Tables.Rent, creatorId: Option[Int]): Tables.Rent =
-    entity.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
-  override protected def setEditorAndDate(entity: Tables.Rent, editorId: Option[Int]): Tables.Rent =
-    entity.copy(editorId = editorId, editDate = Some(DateUtils.now))
-
-  override protected def setId(entity: Tables.Rent, id: Int): Tables.Rent = entity.copy(id = id)
-
   override def getCurrentStatus(entity: Rent): RentStatus = {
       statusService.getBy(entity.id).sorted(Ordering.by((i: RS) => i.changeDate.getTime).reverse).headOption match {
         case None => RentStatus.Active

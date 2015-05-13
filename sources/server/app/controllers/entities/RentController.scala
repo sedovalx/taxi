@@ -16,12 +16,13 @@ import scaldi.Injector
 import service.RentService
 import utils.serialization.EnumSerializer
 
-class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo] {
+class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo]()(injector) {
   override protected val entityService = inject [RentService]
 
   override protected def copyEntityWithId(entity: Tables.Rent, id: Int): Tables.Rent = entity.copy(id = id)
 
   override protected val entitiesName: String = "rents"
+  override protected val entityName: String = "rent"
 
   override protected implicit val reads: Reads[Tables.Rent] = (
       (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
@@ -48,9 +49,6 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
       "comment" -> o.comment
     )
   }
-  override protected val entityName: String = "rent"
-
-  override protected def env = inject [Environment[Tables.Account, JWTAuthenticator]]
 
   private implicit val enumReads = EnumSerializer.enumReads(RentStatus)
 

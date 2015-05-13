@@ -9,6 +9,7 @@ trait Tables {
   import models.entities.Role.Role
   import repository.db.MappedColumnTypes._
   import com.mohiva.play.silhouette.api.Identity
+  import utils.extensions.DateUtils
   import scala.slick.model.ForeignKeyAction
   
   /** DDL for all tables. Call .create to execute. */
@@ -27,7 +28,15 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity with Identity
+  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[Account] with Identity
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table account. Objects of this class serve as prototypes for rows in queries. */
   class AccountTable(_tableTag: Tag) extends Table[Account](_tableTag, "account") {
     def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (Account.tupled, Account.unapply)
@@ -83,7 +92,15 @@ trait Tables {
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity
+  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Car]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
     def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
@@ -133,8 +150,16 @@ trait Tables {
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
-   *  @param comment Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
-  case class Checkpoint(id: Int, pointDate: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None) */
+  case class Checkpoint(id: Int, pointDate: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity[Checkpoint]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
     def * = (id, pointDate, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
@@ -153,7 +178,7 @@ trait Tables {
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column comment DBType(varchar), Length(2147483647,true), Default(None) */
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     
     /** Foreign key referencing AccountTable (database name checkpoint_creator_id_fkey) */
@@ -171,8 +196,8 @@ trait Tables {
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param pass Database column pass DBType(varchar), Length(254,true)
    *  @param license Database column license DBType(varchar), Length(254,true)
-   *  @param lastName Database column last_name DBType(varchar), Length(254,true), Default(None)
-   *  @param firstName Database column first_name DBType(varchar), Length(254,true), Default(None)
+   *  @param lastName Database column last_name DBType(varchar), Length(254,true)
+   *  @param firstName Database column first_name DBType(varchar), Length(254,true)
    *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
    *  @param phone Database column phone DBType(varchar), Length(254,true)
    *  @param secPhone Database column sec_phone DBType(varchar), Length(254,true)
@@ -182,12 +207,20 @@ trait Tables {
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Driver(id: Int, pass: String, license: String, lastName: String, firstName: String, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity
+  case class Driver(id: Int, pass: String, license: String, lastName: String, firstName: String, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[Driver]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table driver. Objects of this class serve as prototypes for rows in queries. */
   class DriverTable(_tableTag: Tag) extends Table[Driver](_tableTag, "driver") {
     def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, pass.?, license.?, lastName, firstName, middleName, phone.?, secPhone.?, comment, address.?, creationDate, editDate, creatorId, editorId).shaped.<>({r=>import r._; _1.map(_=> Driver.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7.get, _8.get, _9, _10.get, _11, _12, _13, _14)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, pass.?, license.?, lastName.?, firstName.?, middleName, phone.?, secPhone.?, comment, address.?, creationDate, editDate, creatorId, editorId).shaped.<>({r=>import r._; _1.map(_=> Driver.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6, _7.get, _8.get, _9, _10.get, _11, _12, _13, _14)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -195,9 +228,9 @@ trait Tables {
     val pass = column[String]("pass", O.Length(254,varying=true))
     /** Database column license DBType(varchar), Length(254,true) */
     val license = column[String]("license", O.Length(254,varying=true))
-    /** Database column last_name DBType(varchar), Length(254,true), Default(None) */
+    /** Database column last_name DBType(varchar), Length(254,true) */
     val lastName = column[String]("last_name", O.Length(254,varying=true))
-    /** Database column first_name DBType(varchar), Length(254,true), Default(None) */
+    /** Database column first_name DBType(varchar), Length(254,true) */
     val firstName = column[String]("first_name", O.Length(254,varying=true))
     /** Database column middle_name DBType(varchar), Length(254,true), Default(None) */
     val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
@@ -242,7 +275,15 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Expense(id: Int, timestamp: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
+  case class Expense(id: Int, timestamp: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Expense]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
   class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
     def * = (id, timestamp, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
@@ -289,7 +330,15 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Fine(id: Int, fineDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
+  case class Fine(id: Int, fineDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Fine]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table fine. Objects of this class serve as prototypes for rows in queries. */
   class FineTable(_tableTag: Tag) extends Table[Fine](_tableTag, "fine") {
     def * = (id, fineDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
@@ -337,7 +386,15 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
+  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[Payment]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
     def * = (id, payDate, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
@@ -383,7 +440,15 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class RentStatus(id: Int, changeDate: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity
+  case class RentStatus(id: Int, changeDate: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[RentStatus]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
     def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
@@ -434,7 +499,15 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
+  case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Rent]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table rent. Objects of this class serve as prototypes for rows in queries. */
   class RentTable(_tableTag: Tag) extends Table[Rent](_tableTag, "rent") {
     def * = (id, driverId, carId, deposit, comment, creatorId, creationDate, editorId, editDate) <> (Rent.tupled, Rent.unapply)
@@ -483,7 +556,15 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Repair(id: Int, repairDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity
+  case class Repair(id: Int, repairDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Repair]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
   /** Table description of table repair. Objects of this class serve as prototypes for rows in queries. */
   class RepairTable(_tableTag: Tag) extends Table[Repair](_tableTag, "repair") {
     def * = (id, repairDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)

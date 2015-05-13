@@ -6,7 +6,7 @@ import utils.db.MaybeFilter
 
 import scala.language.{implicitConversions, reflectiveCalls}
 
-trait GenericCRUD[E <: Entity, T <: Table[E] { val id: Column[Int] }] {
+trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }] {
 
   val tableQuery: TableQuery[T]
 

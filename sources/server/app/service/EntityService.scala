@@ -9,11 +9,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-trait EntityService[E <: Entity, T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T]] extends DbAccessor {
+trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T]] extends DbAccessor {
   val repo: G
-  protected def setCreatorAndDate(entity: E, creatorId: Option[Int]): E
-  protected def setEditorAndDate(entity: E, editorId: Option[Int]): E
-  protected def setId(entity: E, id: Int): E
+  private def setCreatorAndDate(entity: E, creatorId: Option[Int]): E = entity.copyWithCreator(creatorId)
+  private def setEditorAndDate(entity: E, editorId: Option[Int]): E = entity.copyWithEditor(editorId)
+  private def setId(entity: E, id: Int): E = entity.copyWithId(id)
 
   protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(setCreatorAndDate(entity, creatorId))
   protected def afterCreate(entity: E) = Future.successful(entity)

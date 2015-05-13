@@ -41,6 +41,7 @@ trait ${container} {
         "\n" + "import models.entities.Role.Role" +
         "\n" + "import repository.db.MappedColumnTypes._" +
         "\n" + "import com.mohiva.play.silhouette.api.Identity" +
+        "\n" + "import utils.extensions.DateUtils" +
         "\n" + super.code
 
       override def entityName = (dbName: String) => dbName.toCamelCase
@@ -64,7 +65,20 @@ trait ${container} {
         // для типа Account добавляем родителя Identity
         override def EntityType = new EntityType {
           entity =>
-          override def parents: Seq[String] = Seq("Entity") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
+          override def parents: Seq[String] = Seq(s"Entity[${entity.name.toString}]") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
+
+          override def code = {
+            super.code +
+            s"""
+               |{
+               |  def copyWithId(id: Int) = this.copy(id = id)
+               |
+               |  def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+               |
+               |  def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+               |}
+             """.stripMargin
+          }
         }
 
         // генерация кода для столбцов в маппинге

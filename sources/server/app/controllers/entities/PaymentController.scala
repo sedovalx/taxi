@@ -13,12 +13,14 @@ import repository.PaymentRepo
 import scaldi.Injector
 import service.PaymentService
 
-class PaymentController(implicit injector: Injector) extends EntityController[Payment, PaymentTable, PaymentRepo] {
+class PaymentController(implicit injector: Injector) extends EntityController[Payment, PaymentTable, PaymentRepo]()(injector) {
   override protected val entityService = inject [PaymentService]
 
   override protected def copyEntityWithId(entity: Tables.Payment, id: Int): Tables.Payment = entity.copy(id = id)
 
   override protected val entitiesName: String = "payments"
+  override protected val entityName: String = "payment"
+
   override protected implicit val reads: Reads[Tables.Payment] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "payDate").read[Timestamp] and
@@ -43,7 +45,4 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
       "comment" -> o.comment
     )
   }
-  override protected val entityName: String = "payment"
-
-  override protected def env: Environment[Tables.Account, JWTAuthenticator] = inject [Environment[Tables.Account, JWTAuthenticator]]
 }

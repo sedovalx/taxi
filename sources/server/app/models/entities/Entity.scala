@@ -5,7 +5,7 @@ import java.sql.Timestamp
 /**
  * Этими свойствами должны обладать все сущности в БД
  */
-trait Entity {
+trait Entity[+T <: Entity[T]] {
   /**
    * Идентификатор
    */
@@ -30,4 +30,10 @@ trait Entity {
    * Произвольный комментарий
    */
   val comment: Option[String]
+
+  def copyWithId(id: Int): T
+
+  def copyWithCreator(creatorId: Option[Int]): T
+
+  def copyWithEditor(editorId: Option[Int]): T
 }
