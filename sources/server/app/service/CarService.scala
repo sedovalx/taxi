@@ -5,4 +5,4 @@ import repository.CarRepo
 
 trait CarService extends EntityService[Car, CarTable, CarRepo]
 
-class CarServiceImpl(val repo: CarRepo) extends CarService
+

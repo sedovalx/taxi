@@ -11,13 +11,10 @@ import scala.concurrent.Future
 
 trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T]] extends DbAccessor {
   val repo: G
-  private def setCreatorAndDate(entity: E, creatorId: Option[Int]): E = entity.copyWithCreator(creatorId)
-  private def setEditorAndDate(entity: E, editorId: Option[Int]): E = entity.copyWithEditor(editorId)
-  private def setId(entity: E, id: Int): E = entity.copyWithId(id)
 
-  protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(setCreatorAndDate(entity, creatorId))
+  protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(entity.copyWithCreator(creatorId))
   protected def afterCreate(entity: E) = Future.successful(entity)
-  protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(setEditorAndDate(entity, editorId))
+  protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(entity.copyWithEditor(editorId))
   protected def afterUpdate(entity: E) = Future.successful(entity)
 
   protected def find(filter: Map[String, String]): List[E] = {
@@ -27,7 +24,7 @@ trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: 
   def create(entity: E, creatorId: Option[Int]): Future[E] = {
     beforeCreate(entity, creatorId) flatMap { toSave =>
       val id = withDb { session => repo.create(toSave)(session) }
-      afterCreate(setId(toSave, id))
+      afterCreate(toSave.copyWithId(id))
     }
   }
 
