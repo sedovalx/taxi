@@ -32,7 +32,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Дата штрафа",
-      contentPath: "fineDate"
+      contentPath: "displayFineDate"
     });
     let costColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,

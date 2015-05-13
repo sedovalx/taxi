@@ -20,8 +20,8 @@ export default Ember.ArrayController.extend({
     remove: function(){
 	  let row = this.get("selectedRow");
 	  if (row && confirm("Вы подтверждаете удаление водителя?")) {
-		//row.deleteRecord();
-		row.save().then(() => row.deleteRecord(), error => console.error(error));
+		row.deleteRecord();
+		row.save();
 	  }
     }
   },

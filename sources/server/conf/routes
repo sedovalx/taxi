@@ -50,7 +50,7 @@ GET           /api/payments/:id         @controllers.entities.PaymentController.
 POST          /api/payments             @controllers.entities.PaymentController.create
 PUT           /api/payments/:id         @controllers.entities.PaymentController.update(id: Int)
 DELETE        /api/payments/:id         @controllers.entities.PaymentController.delete(id: Int)
-# Payment routes
+# Fine routes
 GET           /api/fines                @controllers.entities.FineController.read
 GET           /api/fines/:id            @controllers.entities.FineController.getById(id: Int)
 POST          /api/fines                @controllers.entities.FineController.create
