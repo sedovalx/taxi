@@ -2,10 +2,8 @@ package controllers.entities
 
 import java.sql.Timestamp
 
-import com.mohiva.play.silhouette.api.Environment
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import models.entities.RentStatus.RentStatus
 import models.entities.RentStatus
+import models.entities.RentStatus.RentStatus
 import models.generated.Tables
 import models.generated.Tables.{Account, Rent, RentTable}
 import play.api.libs.functional.syntax._
@@ -18,8 +16,6 @@ import utils.serialization.EnumSerializer
 
 class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo]()(injector) {
   override protected val entityService = inject [RentService]
-
-  override protected def copyEntityWithId(entity: Tables.Rent, id: Int): Tables.Rent = entity.copy(id = id)
 
   override protected val entitiesName: String = "rents"
   override protected val entityName: String = "rent"

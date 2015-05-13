@@ -21,9 +21,6 @@ import scala.concurrent.Future
 import play.api.db.slick.Config.driver.simple._
 import utils.serialization.FormatJsError._
 
-/**
- * Created by ipopkov on 25/04/15.
- */
 abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T]](implicit val injector: Injector)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
@@ -40,7 +37,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
   protected val entityName: String //example: "driver"
   protected val entitiesName: String //example: "drivers"
 
-  protected def copyEntityWithId(entity: E, id: Int): E
+  private def copyEntityWithId(entity: E, id: Int): E = entity.copyWithId(id)
 
   protected def onCreateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
   protected def onUpdateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))

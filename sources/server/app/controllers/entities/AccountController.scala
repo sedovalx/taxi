@@ -2,8 +2,6 @@ package controllers.entities
 
 import java.sql.Timestamp
 
-import com.mohiva.play.silhouette.api.Environment
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.entities.Role
 import models.entities.Role._
 import models.generated.Tables
@@ -24,8 +22,6 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
 
   private implicit val enumReads = EnumSerializer.enumReads(Role)
   private implicit val enumWrites = EnumSerializer.enumWrites
-
-  protected def copyEntityWithId(entity: Account, id: Int) = entity.copy(id = id)
 
   override protected def beforeCreate(json: JsValue, entity: Account, identity: Account) = {
     val user = super.beforeCreate(json, entity, identity)

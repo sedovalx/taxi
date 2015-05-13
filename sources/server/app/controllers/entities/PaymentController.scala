@@ -2,8 +2,6 @@ package controllers.entities
 
 import java.sql.Timestamp
 
-import com.mohiva.play.silhouette.api.Environment
-import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import models.generated.Tables
 import models.generated.Tables.{Payment, PaymentTable}
 import play.api.libs.functional.syntax._
@@ -15,8 +13,6 @@ import service.PaymentService
 
 class PaymentController(implicit injector: Injector) extends EntityController[Payment, PaymentTable, PaymentRepo]()(injector) {
   override protected val entityService = inject [PaymentService]
-
-  override protected def copyEntityWithId(entity: Tables.Payment, id: Int): Tables.Payment = entity.copy(id = id)
 
   override protected val entitiesName: String = "payments"
   override protected val entityName: String = "payment"

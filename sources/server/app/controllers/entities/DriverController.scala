@@ -19,8 +19,6 @@ import service.DriverService
 class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo]()(injector) {
   override val entityService = inject [DriverService]
 
-  override protected def copyEntityWithId(entity: Driver, id: Int): Driver = entity.copy(id = id)
-
   override val entitiesName: String = "drivers"
   override val entityName: String = "driver"
 
