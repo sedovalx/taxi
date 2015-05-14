@@ -1,5 +1,6 @@
 import Ember from "ember";
 import DS from "ember-data";
+import statuses from "client/models/rent-statuses";
 
 export default Ember.ArrayController.extend({
   //sortProperties: ["regNumber", "make", "model", "mileage"],
@@ -86,7 +87,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Статус",
-      contentPath: "rentStatus"
+      contentPath: "rentDisplayStatus"
     });
     return [displayNameColumn, driverDisplayNameColumn, rentBalanceColumn,repairBalanceColumn, fineBalanceColumn, mileageColumn, serviceColumn,rentStatusColumn];
   }.property(),
@@ -117,7 +118,7 @@ export default Ember.ArrayController.extend({
             //добавляем имя Водителя
             item.driverDisplayName = "-";
             //добавляем состояние аренды
-            item.rentStatus = "Закрыта";
+            item.rentStatus = "Closed";
             //здесь надо расчитать баланс по аренде, по штрафам и по ремонтам
           } else {
             //добавляем имя Водителя
@@ -126,6 +127,7 @@ export default Ember.ArrayController.extend({
             item.rentStatus = item.rent.get("status");
             //здесь надо расчитать баланс по аренде, по штрафам и по ремонтам
           }
+          item.rentDisplayStatus = statuses.filter(r => r.id === item.rentStatus)[0].label;
           return item;
         });
         return cashierArray;
