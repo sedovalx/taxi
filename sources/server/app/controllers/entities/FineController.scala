@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Fine, FineTable}
+import models.generated.Tables.{FineFilter, Fine, FineTable}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,7 +11,7 @@ import repository.FineRepo
 import scaldi.Injector
 import service.FineService
 
-class FineController(implicit injector: Injector) extends EntityController[Fine, FineTable, FineRepo]()(injector) {
+class FineController(implicit injector: Injector) extends EntityController[Fine, FineTable, FineRepo, FineFilter]()(injector) {
   override protected val entityService = inject [FineService]
 
   override protected val entitiesName: String = "fines"

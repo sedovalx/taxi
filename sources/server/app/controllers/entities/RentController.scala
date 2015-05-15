@@ -5,7 +5,7 @@ import java.sql.Timestamp
 import models.entities.RentStatus
 import models.entities.RentStatus.RentStatus
 import models.generated.Tables
-import models.generated.Tables.{Account, Rent, RentTable}
+import models.generated.Tables.{RentFilter, Account, Rent, RentTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -14,7 +14,7 @@ import scaldi.Injector
 import service.RentService
 import utils.serialization.EnumSerializer
 
-class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo]()(injector) {
+class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo, RentFilter]()(injector) {
   override protected val entityService = inject [RentService]
 
   override protected val entitiesName: String = "rents"

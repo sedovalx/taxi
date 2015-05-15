@@ -16,7 +16,7 @@ import service.DriverService
 /**
  * Контроллер операций над водителями
  */
-class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo]()(injector) {
+class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo, DriverFilter]()(injector) {
   override val entityService = inject [DriverService]
 
   override val entitiesName: String = "drivers"

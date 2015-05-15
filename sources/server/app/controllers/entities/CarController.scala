@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Car, CarTable}
+import models.generated.Tables.{CarFilter, Car, CarTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -11,7 +11,7 @@ import repository.CarRepo
 import scaldi.Injector
 import service.CarService
 
-class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo]()(injector) {
+class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo, CarFilter]()(injector) {
   override protected val entityService = inject [CarService]
 
   override protected val entitiesName: String = "cars"

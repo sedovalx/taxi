@@ -6,7 +6,7 @@ import utils.db.MaybeFilter
 
 import scala.language.{implicitConversions, reflectiveCalls}
 
-trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }] {
+trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, F] {
 
   val tableQuery: TableQuery[T]
 
@@ -54,19 +54,7 @@ trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }] {
    * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  def read(implicit session: Session): List[E] = {
-    /*
-    * по классу T получить словарь (имя столбца -> тип столбца)
-    * пробежаться по всем ключам словаря. для каждого ключа/имени столбца
-    *   если имя столбца ("${имяСтолбца}Id") совпадает с именем какого-либо свойства из json
-    *     пытаемся преобразовать значение соответствующего свойства из json к типу столбца, учитывая, что это может быть X или Option[X]
-     *    строим функцию f: T => Column[Boolean]
-      *     (x: T) => {
-      *       при помощи рефлексии получаем значение свойства имяСтолбца у объекта х
-      *       оно будет иметь тип Any
-      *
-      *     }
-    * */
+  def read(filter: Option[F] = None)(implicit session: Session): List[E] = {
     tableQuery.list
   }
 }

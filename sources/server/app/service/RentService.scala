@@ -3,11 +3,11 @@ package service
 import models.entities.RentStatus
 import models.entities.RentStatus.RentStatus
 import models.generated.Tables
-import models.generated.Tables.{Rent, RentStatus => RS, RentTable}
+import models.generated.Tables.{RentStatus => RS, RentFilter, Rent, RentTable}
 import repository.RentRepo
 import utils.extensions.DateUtils
 
-trait RentService extends EntityService[Rent, RentTable, RentRepo] {
+trait RentService extends EntityService[Rent, RentTable, RentRepo, RentFilter] {
   def getCurrentStatus(entity: Rent): RentStatus
   def createNewStatus(entity: Rent, status: RentStatus, editorId: Option[Int])
 }

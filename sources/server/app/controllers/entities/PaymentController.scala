@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Payment, PaymentTable}
+import models.generated.Tables.{PaymentFilter, Payment, PaymentTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -11,7 +11,7 @@ import repository.PaymentRepo
 import scaldi.Injector
 import service.PaymentService
 
-class PaymentController(implicit injector: Injector) extends EntityController[Payment, PaymentTable, PaymentRepo]()(injector) {
+class PaymentController(implicit injector: Injector) extends EntityController[Payment, PaymentTable, PaymentRepo, PaymentFilter]()(injector) {
   override protected val entityService = inject [PaymentService]
 
   override protected val entitiesName: String = "payments"

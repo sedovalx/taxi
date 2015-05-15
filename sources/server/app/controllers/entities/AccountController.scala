@@ -5,7 +5,7 @@ import java.sql.Timestamp
 import models.entities.Role
 import models.entities.Role._
 import models.generated.Tables
-import models.generated.Tables.{Account, AccountTable}
+import models.generated.Tables.{AccountFilter, Account, AccountTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -14,7 +14,7 @@ import scaldi.Injector
 import service.AccountService
 import utils.serialization.EnumSerializer
 
-class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo]()(inj) {
+class AccountController(implicit inj: Injector) extends EntityController[Account, AccountTable, AccountRepo, AccountFilter]()(inj) {
   protected val entityService = inject [AccountService]
 
   protected val entitiesName: String = "users"
@@ -60,6 +60,21 @@ class AccountController(implicit inj: Injector) extends EntityController[Account
       "comment" -> o.comment
     )
   }
+
+  override protected implicit val filterReads: Reads[Tables.AccountFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "login").readNullable[String] and
+      (JsPath \ "password").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "middleName").readNullable[String] and
+      (JsPath \ "role").readNullable[Role] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(AccountFilter.apply _)
 
   def currentUser = SecuredAction { request =>
     val user = request.identity

@@ -21,15 +21,16 @@ import scala.concurrent.Future
 import play.api.db.slick.Config.driver.simple._
 import utils.serialization.FormatJsError._
 
-abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T]](implicit val injector: Injector)
+abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T, F], F](implicit val injector: Injector)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
-  protected val entityService : EntityService[E, T, G]
+  protected val entityService : EntityService[E, T, G, F]
 
   override protected def env: Environment[Tables.Account, JWTAuthenticator] = inject [Environment[Tables.Account, JWTAuthenticator]]
 
   protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
+  protected implicit val filterReads : Reads[F] = ???
   protected implicit val reads : Reads[E]
   protected implicit val writes : Writes[E]
   protected implicit val timestampReads: Reads[Timestamp] = JsPath.read[String].map { s => new Timestamp(dateIso8601Format.parse(s).getTime) }
@@ -49,10 +50,18 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
   protected def afterCreate(json: JsValue, entity: E, identity: Account): E = entity
   protected def afterUpdate(json: JsValue, entity: E, identity: Account): E = entity
 
+  private def tryParseFilter(json: JsValue): Option[F] = {
+    json.validate[F] match {
+      case JsSuccess(f, _) => Some(f)
+      case _ => None
+    }
+  }
 
   def read = SecuredAction.async { implicit request =>
     val filterParams = request.queryString.map { case (k, v) => k -> v.mkString }
-    entityService.read(filterParams) map { entities =>
+    val filterJson = Json.toJson(filterParams)
+    val filter = tryParseFilter(filterJson)
+    entityService.read(filter) map { entities =>
       val eJson = makeJson[List[E]](entitiesName, entities)
       Ok(eJson)
     }

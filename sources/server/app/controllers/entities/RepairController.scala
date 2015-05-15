@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Repair, RepairTable}
+import models.generated.Tables.{RepairFilter, Repair, RepairTable}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,7 +11,7 @@ import repository.RepairRepo
 import scaldi.Injector
 import service.{EntityService, RepairService}
 
-class RepairController(implicit injector: Injector) extends EntityController[Repair, RepairTable, RepairRepo]()(injector){
+class RepairController(implicit injector: Injector) extends EntityController[Repair, RepairTable, RepairRepo, RepairFilter]()(injector){
   override protected val entityService = inject [RepairService]
 
   override protected val entitiesName: String = "repairs"
