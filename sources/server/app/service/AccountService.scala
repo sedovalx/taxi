@@ -42,7 +42,7 @@ class AccountServiceImpl(val repo: AccountRepo,
     }
   }
 
-  override def find(params: Map[String, String]): List[Account] = {
+  override protected def find(params: Map[String, String]): List[Account] = {
     val userFilter = tryParseFilterParams(params)
     userFilter match {
       case Some(filter) => withDb { session => repo.find(filter)(session) }

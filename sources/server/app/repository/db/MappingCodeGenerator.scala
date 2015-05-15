@@ -68,7 +68,8 @@ trait ${container} {
           override def parents: Seq[String] = Seq(s"Entity[${entity.name.toString}]") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
 
           override def code = {
-            super.code +
+            val caseClassCode = super.code
+            val caseClassAndCopyCode = caseClassCode +
             s"""
                |{
                |  def copyWithId(id: Int) = this.copy(id = id)
@@ -78,6 +79,34 @@ trait ${container} {
                |  def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
                |}
              """.stripMargin
+
+            caseClassAndCopyCode + "\n" + entityFilterCode(caseClassCode) + "\n"
+          }
+
+          private def entityFilterCode(entityCode: String) = {
+            val caseClassPattern = """case class (.*)\((.*)\)""".r.unanchored
+            val argPartsPattern = """(.+): (.+?)(?:( = None)|$)""".r
+            val Some(results) = entityCode match {
+              case caseClassPattern(n, a) => Some((n, a))
+              case _ => None
+            }
+            val name = results._1
+            val args = results._2
+
+            args.split(',').map { _.trim }.foldLeft(s"case class ${name}Filter(") ((agg, part) => {
+              val parsedArgs = part match {
+                case argPartsPattern(argName, argType, _) => Some((argName, argType))
+                case _ => None
+              }
+              parsedArgs map { results =>
+                val name = results._1
+                val tpe = if (results._2.startsWith("Option")) results._2 else "Option[" + results._2 + "]"
+                s"$name: $tpe = None"
+              } match {
+                case Some(x) => agg + x + ", "
+                case _ => agg
+              }
+            }).dropRight(2) + ")"
           }
         }
 

@@ -37,6 +37,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class AccountFilter(id: Option[Int] = None, login: Option[String] = None, passwordHash: Option[String] = None, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Option[Role] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None)
+  
   /** Table description of table account. Objects of this class serve as prototypes for rows in queries. */
   class AccountTable(_tableTag: Tag) extends Table[Account](_tableTag, "account") {
     def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (Account.tupled, Account.unapply)
@@ -101,6 +103,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class CarFilter(id: Option[Int] = None, regNumber: Option[String] = None, make: Option[String] = None, model: Option[String] = None, rate: Option[scala.math.BigDecimal] = None, mileage: Option[scala.math.BigDecimal] = None, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None)
+  
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
     def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
@@ -160,6 +164,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class CheckpointFilter(id: Option[Int] = None, pointDate: Option[java.sql.Timestamp] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None)
+  
   /** Table description of table checkpoint. Objects of this class serve as prototypes for rows in queries. */
   class CheckpointTable(_tableTag: Tag) extends Table[Checkpoint](_tableTag, "checkpoint") {
     def * = (id, pointDate, creationDate, creatorId, editDate, editorId, comment) <> (Checkpoint.tupled, Checkpoint.unapply)
@@ -216,6 +222,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class DriverFilter(id: Option[Int] = None, pass: Option[String] = None, license: Option[String] = None, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, phone: Option[String] = None, secPhone: Option[String] = None, comment: Option[String] = None, address: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None)
+  
   /** Table description of table driver. Objects of this class serve as prototypes for rows in queries. */
   class DriverTable(_tableTag: Tag) extends Table[Driver](_tableTag, "driver") {
     def * = (id, pass, license, lastName, firstName, middleName, phone, secPhone, comment, address, creationDate, editDate, creatorId, editorId) <> (Driver.tupled, Driver.unapply)
@@ -284,6 +292,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class ExpenseFilter(id: Option[Int] = None, timestamp: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, subject: Option[String] = None, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  
   /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
   class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
     def * = (id, timestamp, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
@@ -339,6 +349,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class FineFilter(id: Option[Int] = None, fineDate: Option[java.sql.Timestamp] = None, cost: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  
   /** Table description of table fine. Objects of this class serve as prototypes for rows in queries. */
   class FineTable(_tableTag: Tag) extends Table[Fine](_tableTag, "fine") {
     def * = (id, fineDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
@@ -395,6 +407,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class PaymentFilter(id: Option[Int] = None, payDate: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
+  
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
     def * = (id, payDate, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
@@ -449,6 +463,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class RentStatusFilter(id: Option[Int] = None, changeDate: Option[java.sql.Timestamp] = None, status: Option[models.entities.RentStatus.RentStatus] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
+  
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
     def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
@@ -508,6 +524,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class RentFilter(id: Option[Int] = None, driverId: Option[Int] = None, carId: Option[Int] = None, deposit: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  
   /** Table description of table rent. Objects of this class serve as prototypes for rows in queries. */
   class RentTable(_tableTag: Tag) extends Table[Rent](_tableTag, "rent") {
     def * = (id, driverId, carId, deposit, comment, creatorId, creationDate, editorId, editDate) <> (Rent.tupled, Rent.unapply)
@@ -565,6 +583,8 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
+  case class RepairFilter(id: Option[Int] = None, repairDate: Option[java.sql.Timestamp] = None, cost: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  
   /** Table description of table repair. Objects of this class serve as prototypes for rows in queries. */
   class RepairTable(_tableTag: Tag) extends Table[Repair](_tableTag, "repair") {
     def * = (id, repairDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)
