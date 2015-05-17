@@ -41,4 +41,15 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
       "comment" -> o.comment
     )
   }
+  override protected implicit val filterReads: Reads[Tables.PaymentFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "payDate").readNullable[Timestamp] and
+      (JsPath \ "amount").readNullable[BigDecimal] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "rent").readNullable[String].map { id => id.map(_.toInt) }
+    )(PaymentFilter.apply _)
 }

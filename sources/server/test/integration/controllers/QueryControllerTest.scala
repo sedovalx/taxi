@@ -1,4 +1,4 @@
-package controllers
+package integration.controllers
 
 import base.BaseControllerSpecification
 

@@ -46,6 +46,18 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
     )
   }
 
+  override protected implicit val filterReads: Reads[Tables.RentFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "driver").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "car").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "deposit").readNullable[BigDecimal] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp]
+    )(RentFilter.apply _)
+
   private implicit val enumReads = EnumSerializer.enumReads(RentStatus)
 
   override protected def afterCreate(json: JsValue, entity: Tables.Rent, identity: Account): Tables.Rent = {

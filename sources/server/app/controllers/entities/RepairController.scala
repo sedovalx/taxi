@@ -43,5 +43,16 @@ class RepairController(implicit injector: Injector) extends EntityController[Rep
       "comment" -> o.comment
     )
   }
-
+  override protected implicit val filterReads: Reads[Tables.RepairFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "repairDate").readNullable[Timestamp] and
+      (JsPath \ "cost").readNullable[BigDecimal] and
+      (JsPath \ "description").readNullable[String] and
+      (JsPath \ "rent").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp]
+    )(RepairFilter.apply _)
 }

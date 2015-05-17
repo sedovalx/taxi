@@ -30,7 +30,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
 
   protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
-  protected implicit val filterReads : Reads[F] = ???
+  protected implicit val filterReads : Reads[F]
   protected implicit val reads : Reads[E]
   protected implicit val writes : Writes[E]
   protected implicit val timestampReads: Reads[Timestamp] = JsPath.read[String].map { s => new Timestamp(dateIso8601Format.parse(s).getTime) }

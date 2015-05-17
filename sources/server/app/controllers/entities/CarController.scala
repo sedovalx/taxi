@@ -47,4 +47,18 @@ class CarController(implicit injector: Injector) extends EntityController[Car, C
       "comment" -> o.comment
     )
   }
+  override protected implicit val filterReads: Reads[Tables.CarFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "regNumber").readNullable[String] and
+      (JsPath \ "make").readNullable[String] and
+      (JsPath \ "carModel").readNullable[String] and
+      (JsPath \ "rate").readNullable[BigDecimal] and
+      (JsPath \ "mileage").readNullable[BigDecimal] and
+      (JsPath \ "service").readNullable[BigDecimal] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(CarFilter.apply _)
 }

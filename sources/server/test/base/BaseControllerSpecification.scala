@@ -9,6 +9,7 @@ import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers, RouteInvokers, Writeables}
+import scaldi.Injector
 import service.AccountService
 
 import scala.concurrent.{Future, Await}
@@ -43,8 +44,8 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
     }
   }
 
-  protected override def beforeAll() {
-    createAdminAccount()
+  protected override def beforeAll(inj: Injector) {
+    createAdminAccount(inj)
     LoginUtil.login()
   }
 
@@ -60,8 +61,7 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
     createEmptyAuthenticatedRequest(method, route) .withJsonBody(json)
   }
 
-  private def createAdminAccount() = {
-    implicit val injector = global.injector
+  private def createAdminAccount(implicit injector: Injector) = {
     val userService = inject [AccountService]
     val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
     Await.ready(userService.create(admin, None), Duration.create(1, TimeUnit.SECONDS))
