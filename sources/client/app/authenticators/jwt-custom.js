@@ -41,15 +41,17 @@ export default JWTAuthenticator.extend({
       };
       options.headers[authorizationHeaderName] = token;
       _this.makeRequest(_this.serverTokenRefreshEndpoint, data, options).then(function(response) {
-        Ember.run(function() {
-          var tokenData = _this.getTokenData(response[_this.tokenPropertyName]),
+        Ember.run(function () {
+          var token = response[_this.tokenPropertyName],
+            tokenData = _this.getTokenData(token),
             expiresAt = tokenData[_this.tokenExpireName],
-            data = Ember.merge(response, {
-              expiresAt: expiresAt
-            });
+            tokenExpireData = {};
 
-          _this.scheduleAccessTokenRefresh(expiresAt, response[_this.tokenPropertyName]);
+          tokenExpireData[_this.tokenExpireName] = expiresAt;
 
+          data = Ember.merge(response, tokenExpireData);
+
+          _this.scheduleAccessTokenRefresh(expiresAt, response.token);
           _this.trigger('sessionDataUpdated', data);
 
           resolve(response);
