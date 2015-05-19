@@ -76,12 +76,12 @@ class AccountRepositoryTest extends SpecificationWithFixtures with Injectable {
         accountRepo.read() must have size 3
         accountRepo.read(Some(AccountFilter())) must have size 3
         accountRepo.read(Some(AccountFilter(login = Some("u1")))) must have size 1
-        accountRepo.read(Some(AccountFilter(lastName = Some("Ива")))) must have size 2
-        accountRepo.read(Some(AccountFilter(lastName = Some("Ива"), firstName = Some("Пет")))) must have size 1
-        accountRepo.read(Some(AccountFilter(lastName = Some("Ива"), firstName = Some("Пет"), middleName = Some("Иванови")))) must have size 1
-        accountRepo.read(Some(AccountFilter(lastName = Some("Хренова"), firstName = Some("Гадя"), middleName = Some("Петрович")))) must have size 0
+        accountRepo.read(Some(AccountFilter(lastName = Some("иВа")))) must have size 2
+        accountRepo.read(Some(AccountFilter(lastName = Some("ива"), firstName = Some("пет")))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("ивА"), firstName = Some("пет"), middleName = Some("иванови")))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("Хренова"), firstName = Some("Гадя"), middleName = Some("петрович")))) must have size 0
         accountRepo.read(Some(AccountFilter(role = Some(Role.Accountant)))) must have size 2
-        accountRepo.read(Some(AccountFilter(lastName = Some("Сидоров"), role = Some(Role.Repairman)))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("сИдоров"), role = Some(Role.Repairman)))) must have size 1
       }
 
     }

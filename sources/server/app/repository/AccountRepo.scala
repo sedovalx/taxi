@@ -34,10 +34,10 @@ class AccountRepoImpl extends AccountRepo {
       case Some(f) =>
         tableQuery
           .filteredBy(f.id)           (_.id === f.id.get)
-          .filteredBy(f.login)        (_.login like f.login.map {s => s"%$s%" }.get)
-          .filteredBy(f.lastName)     (_.lastName like f.lastName.map {s => s"%$s%" })
-          .filteredBy(f.firstName)    (_.firstName like f.firstName.map {s => s"%$s%" })
-          .filteredBy(f.middleName)   (_.middleName like f.middleName.map {s => s"%$s%" })
+          .filteredBy(f.login)        (_.login.toLowerCase like f.login.map {s => s"%${s.toLowerCase}%" }.get)
+          .filteredBy(f.lastName)     (_.lastName.toLowerCase like f.lastName.map {s => s"%${s.toLowerCase}%" })
+          .filteredBy(f.firstName)    (_.firstName.toLowerCase like f.firstName.map {s => s"%${s.toLowerCase}%" })
+          .filteredBy(f.middleName)   (_.middleName.toLowerCase like f.middleName.map {s => s"%${s.toLowerCase}%" })
           .filteredBy(f.role)         (_.role === f.role.get)
           .query.list
     }
