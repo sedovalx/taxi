@@ -20,7 +20,7 @@ import scala.concurrent.Future
 abstract class SpecificationWithFixtures extends Specification  with Injectable {
 
 
-  protected def beforeAll(inj: Injector) {
+  protected def beforeAll(implicit inj: Injector) {
 
   }
 
@@ -31,14 +31,13 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
     }
   }
 
-  private def global(overrides: Option[Module] = None) = new WithFilters(RoutesLoggingFilter) with ScaldiSupport {
-    override def applicationModule: Injector = new RepoModule ++ new ServicesModule ++ new SilhouetteModule ++ new PlayModule ++ overrides.getOrElse(new Module {})
+  private def global(overrides: Module) = new WithFilters(RoutesLoggingFilter) with ScaldiSupport {
+    override def applicationModule: Injector = overrides :: new PlayModule :: new SilhouetteModule :: new ServicesModule :: new RepoModule
 
     override def configuration = Configuration(ConfigFactory.load())
   }
 
-
-  protected def repositoryTestFakeApp(overrides: Option[Module] = None) = {
+  protected def repositoryTestFakeApp(overrides: Module) = {
     FakeApplication(
       additionalConfiguration = inMemoryDatabase("default", Map("TRACE_LEVEL_SYSTEM_OUT" -> "4")),
       withoutPlugins = Seq("play.api.db.BoneCPPlugin"),
@@ -47,9 +46,11 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
     )
   }
 
-  abstract class WithFakeDB(overrides: Option[Module] = None) extends WithApplication(repositoryTestFakeApp(overrides)) {
+  abstract class WithFakeDB(overrides: => Module) extends WithApplication(repositoryTestFakeApp(overrides)) {
 
-    protected implicit lazy val injector = implicitApp.global.asInstanceOf[ScaldiSupport].injector
+    def this() = this(new Module {})
+
+    protected implicit lazy val injector: Injector = implicitApp.global.asInstanceOf[ScaldiSupport].applicationModule
 
     override def around[T: AsResult](t: => T): Result = super.around {
       beforeAll(injector)

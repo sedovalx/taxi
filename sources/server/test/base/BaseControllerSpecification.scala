@@ -12,12 +12,9 @@ import play.api.test.{FakeRequest, Helpers, RouteInvokers, Writeables}
 import scaldi.Injector
 import service.AccountService
 
-import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
-/**
- * Created by ipopkov on 05/04/15.
- */
 class BaseControllerSpecification extends SpecificationWithFixtures {
 
   object MediaTypes {
@@ -44,8 +41,8 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
     }
   }
 
-  protected override def beforeAll(inj: Injector) {
-    createAdminAccount(inj)
+  protected override def beforeAll(implicit inj: Injector) {
+    createAdminAccount
     LoginUtil.login()
   }
 
@@ -62,7 +59,7 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
   }
 
   private def createAdminAccount(implicit injector: Injector) = {
-    val userService = inject [AccountService]
+    val userService = inject [AccountService] (identified by 'accountService2)
     val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
     Await.ready(userService.create(admin, None), Duration.create(1, TimeUnit.SECONDS))
   }

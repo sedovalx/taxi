@@ -39,16 +39,6 @@ class AccountServiceImpl(
     }
   }
 
-
-
-//  override protected def find(params: Map[String, String]): List[Account] = {
-//    val userFilter = tryParseFilterParams(params)
-//    userFilter match {
-//      case Some(filter) => withDb { session => repo.find(filter)(session) }
-//      case None => withDb { session => repo.read(session) }
-//    }
-//  }
-
   override protected def beforeUpdate(entity: Tables.Account, editorId: Option[Int]): Future[Tables.Account] = {
     super.beforeUpdate(entity, editorId) flatMap { toSave =>
       // если поменялся пароль, то нужно пересчитать хеш
@@ -69,27 +59,6 @@ class AccountServiceImpl(
       case Some(u) => u
       case None => throw new AccountNotFoundException(s"Account id=$id")
     }
-
-//  private def tryParseFilterParams(params: Map[String, String]): Option[AccountFilter] = {
-//    val login = params.get("login")
-//    val lastName = params.get("lastName")
-//    val firstName = params.get("firstName")
-//    val middleName = params.get("middleName")
-//    val role = Role.toRole(params.get("role"))
-//    //TODO: уточнить формат даты
-//    val createDate = stringToDate ( params.get("createDate") )
-//
-//    val filter = new AccountFilter(login, lastName, firstName, middleName, role, createDate)
-//
-//    //TODO: вынести в utils?
-//    val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })
-//    val hasAny = fieldList.length > 0
-//
-//    hasAny match {
-//      case true => Some(filter)
-//      case _ => None
-//    }
-//  }
 }
 
 

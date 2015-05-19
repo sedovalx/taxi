@@ -27,4 +27,7 @@ project/target
 # Play! specific
 public
 conf/*.override.conf
+conf/generated.keystore
 /bin/
+
+
