@@ -1,9 +1,9 @@
 package repository
 
-import models.generated.Tables.{RentStatus, RentStatusTable}
+import models.generated.Tables.{RentStatusFilter, RentStatus, RentStatusTable}
 import play.api.db.slick.Config.driver.simple._
 
-trait RentStatusRepo extends GenericCRUD[RentStatus, RentStatusTable] {
+trait RentStatusRepo extends GenericCRUD[RentStatus, RentStatusTable, RentStatusFilter] {
   def getBy(rentId: Int)(implicit session: Session): Seq[RentStatus]
 }
 

@@ -6,7 +6,7 @@ import utils.db.MaybeFilter
 
 import scala.language.{implicitConversions, reflectiveCalls}
 
-trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }] {
+trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, F] {
 
   val tableQuery: TableQuery[T]
 
@@ -54,7 +54,7 @@ trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }] {
    * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  def read(implicit session: Session): List[E] = {
+  def read(filter: Option[F] = None)(implicit session: Session): List[E] = {
     tableQuery.list
   }
 }

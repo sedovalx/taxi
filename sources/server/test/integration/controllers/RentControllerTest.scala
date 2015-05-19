@@ -1,4 +1,4 @@
-package controllers
+package integration.controllers
 
 import java.util.UUID
 
@@ -13,6 +13,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Reads._
 import play.api.test.Helpers._
 import repository.{CarRepo, DriverRepo, RentRepo, RentStatusRepo}
+import scaldi.Injector
 import utils.extensions.DateUtils
 
 class RentControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
@@ -120,8 +121,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     getStatuses(rent2) must have size 3
   }
 
-  private def createRentStatuses(rentId: Int, statuses: RentStatus*)(implicit app: Application) = {
-    implicit val injector = global.injector
+  private def createRentStatuses(rentId: Int, statuses: RentStatus*)(implicit app: Application, injector: Injector) = {
     val rentStatusRepo = inject [RentStatusRepo]
     DB.withSession { session =>
       statuses.foreach { s =>
@@ -131,8 +131,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     }
   }
 
-  private def createRent()(implicit app: Application): Int = {
-    implicit val injector = global.injector
+  private def createRent()(implicit app: Application, injector: Injector): Int = {
     val rentRepo = inject [RentRepo]
     val rent = Rent(id = 0, driverId = createDriver(), carId = createCar(), deposit = 1000)
     DB.withSession { session =>
@@ -140,8 +139,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     }
   }
 
-  private def createDriver()(implicit app: Application): Int = {
-    implicit val injector = global.injector
+  private def createDriver()(implicit app: Application, injector: Injector): Int = {
     val driverRepo = inject [DriverRepo]
     val driver = Driver(
       id = 0,
@@ -157,8 +155,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     }
   }
 
-  private def createCar()(implicit app: Application): Int = {
-    implicit val injector = global.injector
+  private def createCar()(implicit app: Application, injector: Injector): Int = {
     val carRepo = inject [CarRepo]
     val car = Car(id = 0, regNumber = UUID.randomUUID().toString.substring(0, 11), make = "asd", model = "bfgh", rate = 100, mileage = 1000)
     DB.withSession { session =>
@@ -166,8 +163,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     }
   }
 
-  private def getStatuses(rentId: Int)(implicit app: Application) = {
-    implicit val injector = global.injector
+  private def getStatuses(rentId: Int)(implicit app: Application, injector: Injector) = {
     val rentStatusRepo = inject [RentStatusRepo]
     DB.withSession { session =>
       rentStatusRepo.tableQuery.filter(_.rentId === rentId).run(session)

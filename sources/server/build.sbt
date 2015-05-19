@@ -20,14 +20,15 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
   "com.typesafe.slick"                %% "slick"                          % "2.1.0",
-  "org.postgresql"                    %  "postgresql"                     % "9.4-1201-jdbc41",
-  "com.h2database"                    % "h2"                              % "1.4.181"                   % "test",
+  "com.typesafe.slick"                %% "slick-codegen"                  % "2.1.0",
   "com.typesafe.play"                 % "play-slick_2.11"                 % "0.8.0",
+  "org.postgresql"                    %  "postgresql"                     % "9.4-1201-jdbc41",
   "org.slf4j"                         % "slf4j-log4j12"                   % "1.7.10",
   "com.mohiva"                        %% "play-silhouette"                % "2.0-RC2",
-  "com.mohiva"                        %% "play-silhouette-testkit"        % "2.0-RC2"                   % "test",
   "org.scaldi"                        %% "scaldi-play"                    % "0.5.3",
-  "com.typesafe.slick"                %% "slick-codegen"                  % "2.1.0"
+
+  "com.h2database"                    % "h2"                              % "1.4.181"                   % "test",
+  "com.mohiva"                        %% "play-silhouette-testkit"        % "2.0-RC2"                   % "test"
 )
 
 scalacOptions ++= Seq("-feature", "-deprecation")

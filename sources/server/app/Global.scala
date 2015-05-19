@@ -24,8 +24,12 @@ import scala.language.postfixOps
 
 object RoutesLoggingFilter extends Filter {
   override def apply(next: (RequestHeader) => Future[Result])(rh: RequestHeader): Future[Result] = {
-    println(rh.uri)
-    next(rh)
+    val resultFuture = next(rh)
+    resultFuture.foreach { result =>
+      println(rh)
+      println(result)
+    }
+    resultFuture
   }
 }
 

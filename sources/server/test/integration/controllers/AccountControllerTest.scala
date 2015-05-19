@@ -1,28 +1,47 @@
-package controllers
+package integration.controllers
 
 import base.BaseControllerSpecification
 import models.entities.Role
 import models.entities.Role.Role
+import models.generated.Tables.AccountFilter
+import org.specs2.mock.Mockito
 import play.api.db.slick._
 import play.api.libs.json
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import play.api.test.FakeRequest
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
 import repository.AccountRepo
+import scaldi.Module
+import service.AccountService
 
-/**
- * Created by ipopkov on 04/04/15.
- */
-class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers {
+import scala.concurrent.Future
 
-  "filter test" in new WithFakeDB {
-    DB.withSession { implicit session: Session =>
-      val request = FakeRequest(GET, "/api/users?login=Vasya&role=Administrator&createDate=2015-07-30")
-        .withHeaders(LoginUtil.X_AUTH_TOKEN_HEADER -> LoginUtil.token )
-      val Some(result) = route(request)
-      status(result) must equalTo(OK)
-    }
+class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers with Mockito {
+
+  "filter test" in new WithFakeDB (new Module {
+    val mockAccountService = mock [AccountService]
+    mockAccountService.read(any[Option[AccountFilter]]) returns Future { Nil }
+    bind [AccountService] to mockAccountService
+  }) {
+    // setup:
+    val url = "/api/users?login=u1&lastName=1&firstName=2&middleName=3&role=Accountant"
+    val expectedFilter = Some(AccountFilter(
+      login = Some("u1"),
+      lastName = Some("1"),
+      firstName = Some("2"),
+      middleName = Some("3"),
+      role = Some(Role.Accountant)
+    ))
+    val mockAccountService = inject [AccountService]
+    val readRequest = createEmptyAuthenticatedRequest(GET, url)
+
+    // when:
+    val Some(readResult) = route(readRequest)
+
+    // then:
+    status(readResult) must beEqualTo(OK)
+    // see: http://etorreborre.github.io/specs2/guide/SPECS2-2.3.9/org.specs2.guide.Matchers.html#Mock+expectations
+    there was one(mockAccountService).read(expectedFilter)
   }
 
   "validation error should has Ember format" in new WithFakeDB {
@@ -66,7 +85,6 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   }
 
   "should not update password if got null back" in new WithFakeDB {
-    implicit val injector = global.injector
     val accounts = inject[AccountRepo]
     // setup:
     val login = "user1"
@@ -87,7 +105,6 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   }
 
   "should do update password if got something" in new WithFakeDB {
-    implicit val injector = global.injector
     val accounts = inject[AccountRepo]
     // setup:
     val createRequest = createCreateRequest(Some("user1"), Some("password1"), Some(Role.Accountant))

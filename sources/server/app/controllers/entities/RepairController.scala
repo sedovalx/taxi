@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Repair, RepairTable}
+import models.generated.Tables.{RepairFilter, Repair, RepairTable}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,7 +11,7 @@ import repository.RepairRepo
 import scaldi.Injector
 import service.{EntityService, RepairService}
 
-class RepairController(implicit injector: Injector) extends EntityController[Repair, RepairTable, RepairRepo]()(injector){
+class RepairController(implicit injector: Injector) extends EntityController[Repair, RepairTable, RepairRepo, RepairFilter]()(injector){
   override protected val entityService = inject [RepairService]
 
   override protected val entitiesName: String = "repairs"
@@ -43,5 +43,16 @@ class RepairController(implicit injector: Injector) extends EntityController[Rep
       "comment" -> o.comment
     )
   }
-
+  override protected implicit val filterReads: Reads[Tables.RepairFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "repairDate").readNullable[Timestamp] and
+      (JsPath \ "cost").readNullable[BigDecimal] and
+      (JsPath \ "description").readNullable[String] and
+      (JsPath \ "rent").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp]
+    )(RepairFilter.apply _)
 }

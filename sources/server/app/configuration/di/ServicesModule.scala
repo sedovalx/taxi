@@ -11,11 +11,17 @@ import service.queries.{Query, QueryManager, QueryManagerImpl}
 
 class ServicesModule extends Module {
 
-  bind [AccountService] to new AccountServiceImpl(
-    inject [AccountRepo],
-    inject [PasswordHasher],
-    inject [DelegableAuthInfoService],
-    inject [IdentityService[Account]])
+  val accountServiceBinding = () =>
+    new AccountServiceImpl(
+      inject [AccountRepo],
+      inject [PasswordHasher],
+      inject [DelegableAuthInfoService],
+      inject [IdentityService[Account]])
+
+  bind [AccountService] to accountServiceBinding()
+  // второй раз для тестов, т.к. в них может быть переопределен оригинальный сервис,
+  // а учетку админа чем-то создавать все равно нужно
+  bind [AccountService] identifiedBy 'accountService2 to accountServiceBinding()
   bind [RentService] to new RentServiceImpl(inject [RentRepo], inject [RentStatusService])
   bind [RentStatusService] to new RentStatusServiceImpl(inject [RentStatusRepo])
 

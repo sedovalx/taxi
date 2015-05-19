@@ -1,14 +1,13 @@
-package repositories
+package unit.repositories
 
 import base.SpecificationWithFixtures
-import controllers.filter.AccountFilter
 import models.entities.Role.Role
 import models.entities.Role
 import play.api.db.slick.{DB, Session}
 import repository.AccountRepo
-import scaldi.{Injectable}
+import scaldi.Injectable
 import utils.extensions.DateUtils
-import models.generated.Tables.Account
+import models.generated.Tables.{Account, AccountFilter}
 
 import scala.util.Random
 
@@ -36,7 +35,6 @@ class AccountRepositoryTest extends SpecificationWithFixtures with Injectable {
   "UserRepository" should {
     "save and query" in new WithFakeDB {
 
-      implicit val injector = global.injector
       val accountRepo = inject[AccountRepo]
       val userHelper = new User(accountRepo)
 
@@ -47,7 +45,6 @@ class AccountRepositoryTest extends SpecificationWithFixtures with Injectable {
     }
 
     "save, update, query" in new WithFakeDB {
-      implicit val injector = global.injector
       val accountRepo = inject[AccountRepo]
       val userHelper = new User(accountRepo)
 
@@ -65,22 +62,26 @@ class AccountRepositoryTest extends SpecificationWithFixtures with Injectable {
     }
 
     "filter test" in new WithFakeDB {
-
-      implicit val injector = global.injector
+      // setup:
       val accountRepo = inject[AccountRepo]
-      val userHelper = new User(accountRepo)
 
       DB.withSession { implicit session: Session =>
-        userHelper.createUser("User", "User", "user1", "pass", Role.Accountant)
-        userHelper.createUser("User1", "User", "user2", "pass", Role.Cashier)
-        userHelper.createUser("User", "User2", "user3", "pass", Role.Repairman)
-        userHelper.createUser("User", "User", "user4", "pass", Role.Repairman)
-        var uf = new AccountFilter(None, Some("User"), Some("User"), None, None, None)
-        var filteredUsers = accountRepo.find(uf)
-        filteredUsers.length must beEqualTo (2)
+        Seq(
+          Account(id = 0, login = "u1", passwordHash = "pass", lastName = Some("Иванов"), firstName = Some("Сидор"), middleName = Some("Петрович"),role = Role.Accountant),
+          Account(id = 0, login = "u2", passwordHash = "pass", lastName = Some("Сидоров"), firstName = Some("Иван"), middleName = Some("Сидорович"),role = Role.Repairman),
+          Account(id = 0, login = "u3", passwordHash = "pass", lastName = Some("Иванов"), firstName = Some("Петр"), middleName = Some("Иванович"),role = Role.Accountant)
+        ) foreach { a => accountRepo.create(a) }
 
-        uf = new AccountFilter(None, None, None, None, Some(Role.Administrator), None)
-        filteredUsers = accountRepo.find(uf)
+        // expect:
+        accountRepo.read() must have size 3
+        accountRepo.read(Some(AccountFilter())) must have size 3
+        accountRepo.read(Some(AccountFilter(login = Some("u1")))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("иВа")))) must have size 2
+        accountRepo.read(Some(AccountFilter(lastName = Some("ива"), firstName = Some("пет")))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("ивА"), firstName = Some("пет"), middleName = Some("иванови")))) must have size 1
+        accountRepo.read(Some(AccountFilter(lastName = Some("Хренова"), firstName = Some("Гадя"), middleName = Some("петрович")))) must have size 0
+        accountRepo.read(Some(AccountFilter(role = Some(Role.Accountant)))) must have size 2
+        accountRepo.read(Some(AccountFilter(lastName = Some("сИдоров"), role = Some(Role.Repairman)))) must have size 1
       }
 
     }

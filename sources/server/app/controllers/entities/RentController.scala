@@ -5,7 +5,7 @@ import java.sql.Timestamp
 import models.entities.RentStatus
 import models.entities.RentStatus.RentStatus
 import models.generated.Tables
-import models.generated.Tables.{Account, Rent, RentTable}
+import models.generated.Tables.{RentFilter, Account, Rent, RentTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -14,7 +14,7 @@ import scaldi.Injector
 import service.RentService
 import utils.serialization.EnumSerializer
 
-class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo]()(injector) {
+class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo, RentFilter]()(injector) {
   override protected val entityService = inject [RentService]
 
   override protected val entitiesName: String = "rents"
@@ -45,6 +45,18 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
       "comment" -> o.comment
     )
   }
+
+  override protected implicit val filterReads: Reads[Tables.RentFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "driver").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "car").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "deposit").readNullable[BigDecimal] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp]
+    )(RentFilter.apply _)
 
   private implicit val enumReads = EnumSerializer.enumReads(RentStatus)
 

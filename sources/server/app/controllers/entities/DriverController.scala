@@ -16,7 +16,7 @@ import service.DriverService
 /**
  * Контроллер операций над водителями
  */
-class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo]()(injector) {
+class DriverController(implicit injector: Injector) extends EntityController[Driver, DriverTable, DriverRepo, DriverFilter]()(injector) {
   override val entityService = inject [DriverService]
 
   override val entitiesName: String = "drivers"
@@ -56,6 +56,23 @@ class DriverController(implicit injector: Injector) extends EntityController[Dri
       "comment" -> o.comment
     )
   }
+
+  override protected implicit val filterReads: Reads[Tables.DriverFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "pass").readNullable[String] and
+      (JsPath \ "license").readNullable[String] and
+      (JsPath \ "lastName").readNullable[String] and
+      (JsPath \ "firstName").readNullable[String] and
+      (JsPath \ "middleName").readNullable[String] and
+      (JsPath \ "phone").readNullable[String] and
+      (JsPath \ "secPhone").readNullable[String] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "address").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(DriverFilter.apply _)
 
   override protected def onCreateError(entity: Tables.Driver, err: Throwable): Result = {
     onChangeError(entity, err, super.onCreateError)

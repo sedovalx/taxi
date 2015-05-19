@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Fine, FineTable}
+import models.generated.Tables.{FineFilter, Fine, FineTable}
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
@@ -11,7 +11,7 @@ import repository.FineRepo
 import scaldi.Injector
 import service.FineService
 
-class FineController(implicit injector: Injector) extends EntityController[Fine, FineTable, FineRepo]()(injector) {
+class FineController(implicit injector: Injector) extends EntityController[Fine, FineTable, FineRepo, FineFilter]()(injector) {
   override protected val entityService = inject [FineService]
 
   override protected val entitiesName: String = "fines"
@@ -43,4 +43,16 @@ class FineController(implicit injector: Injector) extends EntityController[Fine,
       "comment" -> o.comment
     )
   }
+  override protected implicit val filterReads: Reads[Tables.FineFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "fineDate").readNullable[Timestamp] and
+      (JsPath \ "cost").readNullable[BigDecimal] and
+      (JsPath \ "description").readNullable[String] and
+      (JsPath \ "rent").readNullable[String].map { id => id.map(_.toInt) } and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp]
+    )(FineFilter.apply _)
 }

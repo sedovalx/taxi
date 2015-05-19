@@ -43,7 +43,6 @@ class SilhouetteModule extends Module {
     clock = Clock()
   )
 
-
   bind [LoginInfoService] to injected[LoginInfoServiceImpl]
 
   // хранение паролей

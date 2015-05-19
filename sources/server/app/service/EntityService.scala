@@ -9,17 +9,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
 
-trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T]] extends DbAccessor {
+trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: GenericCRUD[E, T, F], F] extends DbAccessor {
   val repo: G
 
   protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(entity.copyWithCreator(creatorId))
   protected def afterCreate(entity: E) = Future.successful(entity)
   protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(entity.copyWithEditor(editorId))
   protected def afterUpdate(entity: E) = Future.successful(entity)
-
-  protected def find(filter: Map[String, String]): List[E] = {
-    withDb { session => repo.read(session) }
-  }
 
   def create(entity: E, creatorId: Option[Int]): Future[E] = {
     beforeCreate(entity, creatorId) flatMap { toSave =>
@@ -28,7 +24,9 @@ trait EntityService[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, G <: 
     }
   }
 
-  def read(filter: Map[String, String]): Future[List[E]] = Future { find(filter) }
+  def read(filter: Option[F]): Future[List[E]] = Future {
+    withDb { session => repo.read(filter)(session) }
+  }
 
   def update(entity: E, editorId: Option[Int]): Future[E] = {
     assert(entity != null, "Updated entity should not be null")

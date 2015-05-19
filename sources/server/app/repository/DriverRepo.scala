@@ -1,6 +1,6 @@
 package repository
 
-import models.generated.Tables.{Driver, DriverTable}
+import models.generated.Tables.{DriverFilter, Driver, DriverTable}
 
-trait DriverRepo extends GenericCRUD[Driver, DriverTable]
+trait DriverRepo extends GenericCRUD[Driver, DriverTable, DriverFilter]
 

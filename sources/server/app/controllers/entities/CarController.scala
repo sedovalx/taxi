@@ -3,7 +3,7 @@ package controllers.entities
 import java.sql.Timestamp
 
 import models.generated.Tables
-import models.generated.Tables.{Car, CarTable}
+import models.generated.Tables.{CarFilter, Car, CarTable}
 import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
@@ -11,7 +11,7 @@ import repository.CarRepo
 import scaldi.Injector
 import service.CarService
 
-class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo]()(injector) {
+class CarController(implicit injector: Injector) extends EntityController[Car, CarTable, CarRepo, CarFilter]()(injector) {
   override protected val entityService = inject [CarService]
 
   override protected val entitiesName: String = "cars"
@@ -47,4 +47,18 @@ class CarController(implicit injector: Injector) extends EntityController[Car, C
       "comment" -> o.comment
     )
   }
+  override protected implicit val filterReads: Reads[Tables.CarFilter] = (
+    (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "regNumber").readNullable[String] and
+      (JsPath \ "make").readNullable[String] and
+      (JsPath \ "carModel").readNullable[String] and
+      (JsPath \ "rate").readNullable[BigDecimal] and
+      (JsPath \ "mileage").readNullable[BigDecimal] and
+      (JsPath \ "service").readNullable[BigDecimal] and
+      (JsPath \ "comment").readNullable[String] and
+      (JsPath \ "creationDate").readNullable[Timestamp] and
+      (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "editDate").readNullable[Timestamp] and
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+    )(CarFilter.apply _)
 }

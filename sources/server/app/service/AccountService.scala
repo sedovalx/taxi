@@ -3,29 +3,26 @@ package service
 import javax.security.auth.login.AccountNotFoundException
 
 import com.mohiva.play.silhouette.api.services.IdentityService
-import com.mohiva.play.silhouette.api.util.{PasswordInfo, PasswordHasher}
+import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
-import controllers.filter.AccountFilter
-import models.entities.Role
 import models.generated.Tables
-import models.generated.Tables.{Account, AccountTable}
+import models.generated.Tables.{Account, AccountFilter, AccountTable}
 import play.api.libs.json.Json
-import repository.db.DbAccessor
 import repository.AccountRepo
-import utils.extensions.DateUtils
-import utils.extensions.DateUtils._
+import repository.db.DbAccessor
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait AccountService extends DbAccessor with EntityService[Account, AccountTable, AccountRepo] {
+trait AccountService extends DbAccessor with EntityService[Account, AccountTable, AccountRepo, AccountFilter] {
   def hasUsers: Future[Boolean]
 }
 
-class AccountServiceImpl(val repo: AccountRepo,
+class AccountServiceImpl(
+                          val repo: AccountRepo,
                           passwordHasher: PasswordHasher,
-                      authInfoService: DelegableAuthInfoService,
-                       identityService: IdentityService[Account]) extends AccountService {
+                          authInfoService: DelegableAuthInfoService,
+                          identityService: IdentityService[Account]) extends AccountService {
 
   implicit val passwordFormat = Json.format[PasswordInfo]
 
@@ -39,14 +36,6 @@ class AccountServiceImpl(val repo: AccountRepo,
       val authInfo = passwordHasher.hash(toSave.passwordHash)
       val passwordHash = Json.toJson(authInfo).toString()
       toSave.copy(passwordHash = passwordHash)
-    }
-  }
-
-  override def find(params: Map[String, String]): List[Account] = {
-    val userFilter = tryParseFilterParams(params)
-    userFilter match {
-      case Some(filter) => withDb { session => repo.find(filter)(session) }
-      case None => withDb { session => repo.read(session) }
     }
   }
 
@@ -70,27 +59,6 @@ class AccountServiceImpl(val repo: AccountRepo,
       case Some(u) => u
       case None => throw new AccountNotFoundException(s"Account id=$id")
     }
-
-  private def tryParseFilterParams(params: Map[String, String]): Option[AccountFilter] = {
-    val login = params.get("login")
-    val lastName = params.get("lastName")
-    val firstName = params.get("firstName")
-    val middleName = params.get("middleName")
-    val role = Role.toRole(params.get("role"))
-    //TODO: уточнить формат даты
-    val createDate = stringToDate ( params.get("createDate") )
-
-    val filter = new AccountFilter(login, lastName, firstName, middleName, role, createDate)
-
-    //TODO: вынести в utils?
-    val fieldList = filter.productIterator.toList.collect({ case Some(x) => x })
-    val hasAny = fieldList.length > 0
-
-    hasAny match {
-      case true => Some(filter)
-      case _ => None
-    }
-  }
 }
 
 

@@ -1,7 +1,7 @@
 package service
 
-import models.generated.Tables.{Fine, FineTable}
+import models.generated.Tables.{FineFilter, Fine, FineTable}
 import repository.FineRepo
 
-trait FineService extends EntityService[Fine, FineTable, FineRepo]
+trait FineService extends EntityService[Fine, FineTable, FineRepo, FineFilter]
 
