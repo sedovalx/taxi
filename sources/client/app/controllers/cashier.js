@@ -8,7 +8,9 @@ export default Ember.ArrayController.extend({
   selectionEmpty: function(){
     return this.get("selectedRow") == null;
   }.property("selectedRow"),
-
+  selectionRentEmpty: function(){
+    return this.get("selectedRow.rent") == null;
+  }.property("selectedRow.rent"),
   actions: {
     edit: function(){
       let row = this.get("selectedRow");
@@ -27,8 +29,8 @@ export default Ember.ArrayController.extend({
 	    }
     },
     createPayment:function(){
-      //let row = this.get("selectedRow");
-      this.transitionToRoute("payments.new");
+      let row = this.get("selectedRow");
+      this.transitionToRoute("rents.newPayment", row.rent);
     },
     createFine:function(){
       //let row = this.get("selectedRow");
