@@ -1,4 +1,33 @@
 <div class="list">
+
+    <form class="form-horizontal">
+      {{input placeholder="Фильтрация по фамилии" value=filterLastName}}
+    </form>
+    <form class="form-horizontal">
+      {{input placeholder="Фильтрация по имени" value=filterFirstName}}
+    </form>
+    <form class="form-horizontal">
+      {{input placeholder="Фильтрация по отчеству" value=filterMiddleName}}
+    </form>
+    <form class="form-horizontal">
+        {{ember-selectize
+        content=allRoles
+        optionValuePath="content.id"
+        optionLabelPath="content.label"
+        selection=filterRole
+        placeholder="Фильтрация по роли"
+        }}
+    </form>
+    <form class="form-horizontal">
+      {{input placeholder="Фильтрация по логину" value=filterLogin}}
+    </form>
+    <button type="button" class="btn btn-primary" {{action "filterTable"}}>
+        <i class="fa fa-user-plus"></i> Фильтровать
+    </button>
+    <button type="button" class="btn btn-primary" {{action "clearFilter"}}>
+        <i class="fa fa-user-plus"></i> Очистить фильтр
+    </button>
+
     <div class="table">
       {{table-component
       columns=columns
