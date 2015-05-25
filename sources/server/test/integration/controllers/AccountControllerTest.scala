@@ -18,7 +18,7 @@ import scala.concurrent.Future
 
 class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers with Mockito {
 
-  "filter test" in new WithFakeDB (new Module {
+  "filter test happy path" in new WithFakeDB (new Module {
     val mockAccountService = mock [AccountService]
     mockAccountService.read(any[Option[AccountFilter]]) returns Future { Nil }
     bind [AccountService] to mockAccountService

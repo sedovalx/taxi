@@ -7,6 +7,10 @@ trait Query {
   def execute(parameters: Map[String, Seq[String]]): JsArray
 }
 
+abstract class CodeQuery extends Query
+
+abstract class XmlQuery extends Query
+
 
 
 

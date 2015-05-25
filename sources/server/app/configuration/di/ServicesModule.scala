@@ -7,7 +7,7 @@ import models.generated.Tables.Account
 import repository._
 import scaldi.Module
 import service._
-import service.queries.{Query, QueryManager, QueryManagerImpl}
+import service.queries._
 
 class ServicesModule extends Module {
 
@@ -32,4 +32,6 @@ class ServicesModule extends Module {
   bind [RepairService] to new RepairService { val repo = inject [RepairRepo] }
 
   bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
+
+  bind [BalanceCalculator] to new BalanceCalculatorImpl
 }

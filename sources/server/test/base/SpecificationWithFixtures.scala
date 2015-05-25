@@ -1,6 +1,7 @@
 package base
 
 import com.typesafe.config.ConfigFactory
+import configuration.TestHelperModule
 import configuration.di.{PlayModule, RepoModule, ServicesModule, SilhouetteModule}
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
@@ -32,7 +33,13 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
   }
 
   private def global(overrides: Module) = new WithFilters(RoutesLoggingFilter) with ScaldiSupport {
-    override def applicationModule: Injector = overrides :: new PlayModule :: new SilhouetteModule :: new ServicesModule :: new RepoModule
+    override def applicationModule: Injector =
+      new TestHelperModule ::
+        overrides ::
+        new PlayModule ::
+        new SilhouetteModule ::
+        new ServicesModule ::
+        new RepoModule
 
     override def configuration = Configuration(ConfigFactory.load())
   }
