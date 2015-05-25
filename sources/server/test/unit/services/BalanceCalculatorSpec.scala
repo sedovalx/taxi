@@ -5,12 +5,20 @@ import java.sql.Timestamp
 import base.SpecificationWithFixtures
 import helpers.DomainHelper
 import models.entities.RentStatus
-import models.generated.Tables.{Payment, Driver, Fine, Repair}
+import scaldi.Injector
 import service.queries.BalanceCalculator
 
-import scala.language.implicitConversions
-
 class BalanceCalculatorSpec extends SpecificationWithFixtures {
+
+  implicit def StringToTimestamp(value: String): Timestamp = Timestamp.valueOf(value + " 00:00:00")
+  implicit def OptionStringToOptionTimestamp(value: Option[String]): Option[Timestamp] = value.map(s => s)
+  implicit def RentStateToRentStatus(value: RentState): RentStatus.RentStatus = value match {
+    case _: ActiveState => RentStatus.Active
+    case _: SuspendedState => RentStatus.Suspended
+    case _: SettlingUpState => RentStatus.SettlingUp
+    case _: ClosedState => RentStatus.Closed
+  }
+
   "should calculate closed rent balance as of future date" in new WithFakeDB() {
     // setup:
     var rent = createRent(1000, 7500)(
@@ -44,7 +52,7 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     )
 
     // when:
-    val date = Some(Timestamp.valueOf("2015-04-02"))
+    val date = Some("2015-04-02")
     val calculator = inject [BalanceCalculator]
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
@@ -80,7 +88,7 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     )
 
     // when:
-    val date = Some(Timestamp.valueOf("2015-03-19"))
+    val date = Some("2015-03-19")
     val calculator = inject [BalanceCalculator]
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
@@ -116,7 +124,7 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     )
 
     // when:
-    val date = Some(Timestamp.valueOf("2015-03-14"))
+    val date = Some("2015-03-14")
     val calculator = inject [BalanceCalculator]
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
@@ -130,46 +138,39 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     rentBalance must beEqualTo(500 + 500 - 500 - 100 - 150)
   }
 
-  implicit def StringToTimestamp(value: String): Timestamp = Timestamp.valueOf(value)
-  implicit def RentStateToRentStatus(value: RentState): RentStatus.RentStatus = value match {
-    case _: ActiveState => RentStatus.Active
-    case _: SuspendedState => RentStatus.Suspended
-    case _: SettlingUpState => RentStatus.SettlingUp
-    case _: ClosedState => RentStatus.Closed
-  }
-
   trait BalanceChange {
     val date: Timestamp
     val amount: BigDecimal
   }
 
-  case class Payment(date: String, amount: BigDecimal) extends BalanceChange
-  case class Fine(date: String, amount: BigDecimal) extends BalanceChange
-  case class Repair(date: String, amount: BigDecimal) extends BalanceChange
+  case class Payment(date: Timestamp, amount: BigDecimal) extends BalanceChange
+  case class Fine(date: Timestamp, amount: BigDecimal) extends BalanceChange
+  case class Repair(date: Timestamp, amount: BigDecimal) extends BalanceChange
 
   trait RentState {
     val date: Timestamp
     val changes: Seq[BalanceChange]
   }
-  case class ActiveState(date: String)(val changes: BalanceChange*) extends RentState
-  case class SuspendedState(date: String)(val changes: BalanceChange*) extends RentState
-  case class ClosedState(date: String)(val changes: BalanceChange*) extends RentState
-  case class SettlingUpState(date: String)(val changes: BalanceChange*) extends RentState
+  case class ActiveState(date: Timestamp)(val changes: BalanceChange*) extends RentState
+  case class SuspendedState(date: Timestamp)(val changes: BalanceChange*) extends RentState
+  case class ClosedState(date: Timestamp)(val changes: BalanceChange*) extends RentState
+  case class SettlingUpState(date: Timestamp)(val changes: BalanceChange*) extends RentState
 
-  def createRent(rate: Int, deposit: BigDecimal)(statuses: RentState*) = {
+  def createRent(rate: Int, deposit: BigDecimal)(statuses: RentState*)(implicit injector: Injector) = {
     val domainHelper = inject [DomainHelper]
-    import domainHelper._
-    val driver = createDriver()
-    val car = createCar(rate)
+    val driver = domainHelper.createDriver()
+    val car = domainHelper.createCar(rate)
     val s = statuses.map ( i => i.date -> RentStateToRentStatus(i) ).toMap
-    val rent = createRent(driver, car, deposit, s)
-    statuses flatMap { s => s.changes } foreach {
+    val rent = domainHelper.createRent(driver, car, deposit, s)
+    val changes: Seq[BalanceChange] = statuses flatMap { s => s.changes }
+    changes.foreach {
       case Payment(date, amount) =>
-        createPayment(rent, amount, date)
+        domainHelper.createPayment(rent, amount, date)
       case Fine(date, amount) =>
-        createFine(rent, amount, date)
+        domainHelper.createFine(rent, amount, date)
       case Repair(date, amount) =>
-        createRepair(rent, amount, date)
+        domainHelper.createRepair(rent, amount, date)
+      case _ => /*без этого почему-то не компилируется*/
     }
     rent
   }
