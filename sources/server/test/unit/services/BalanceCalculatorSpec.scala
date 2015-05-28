@@ -57,13 +57,15 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
     val paymentBalance = calculator.getPaymentsTotal(rent, date)
-    val rentBalance = calculator.getBalance(rent, date)
+    val debtsBalance = calculator.getDebtsTotal(rent, date)
+    val rentBalance = calculator.getRentBalance(rent, date)
     
     // then:
-    rentBalance must beEqualTo(-300)
     repairBalance must beEqualTo(6700)
     fineBalance must beEqualTo(2000)
     paymentBalance must beEqualTo(16900)
+    debtsBalance must beEqualTo(16000)
+    rentBalance must beEqualTo(-300)
   }
 
   "should calculate active rent balance as of future date" in new WithFakeDB() {
@@ -93,13 +95,15 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
     val paymentBalance = calculator.getPaymentsTotal(rent, date)
-    val rentBalance = calculator.getBalance(rent, date)
+    val debtsBalance = calculator.getDebtsTotal(rent, date)
+    val rentBalance = calculator.getRentBalance(rent, date)
 
     // then:
     repairBalance must beEqualTo(300)
     fineBalance must beEqualTo(150)
-    paymentBalance must beEqualTo(800)
-    rentBalance must beEqualTo(500 + 800 - 1000 - 300 - 150)
+    paymentBalance must beEqualTo(700)
+    debtsBalance must beEqualTo(900)
+    rentBalance must beEqualTo(500 + 700 - 900 - 300 - 150)
   }
 
   "should calculate rent balance as of past date" in new WithFakeDB() {
@@ -129,12 +133,14 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     val repairBalance = calculator.getRepairsTotal(rent, date)
     val fineBalance = calculator.getFinesTotal(rent, date)
     val paymentBalance = calculator.getPaymentsTotal(rent, date)
-    val rentBalance = calculator.getBalance(rent, date)
+    val debtsBalance = calculator.getDebtsTotal(rent, date)
+    val rentBalance = calculator.getRentBalance(rent, date)
 
     // then:
     repairBalance must beEqualTo(100)
     fineBalance must beEqualTo(150)
     paymentBalance must beEqualTo(500)
+    debtsBalance must beEqualTo(500)
     rentBalance must beEqualTo(500 + 500 - 500 - 100 - 150)
   }
 
