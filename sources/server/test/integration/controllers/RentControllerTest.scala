@@ -62,7 +62,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     statusMustBeOK(updateResponse)
     val statuses = getStatuses(rentId)
     statuses must have size 5
-    statuses.sorted(Ordering.by((i: RS) => i.changeDate.getTime).reverse).head.status must beEqualTo(RentStatus.Closed)
+    statuses.sorted(Ordering.by((i: RS) => i.changeTime.getTime).reverse).head.status must beEqualTo(RentStatus.Closed)
   }
 
   "should not create status history record on rent update if status the same" in new WithFakeDB {
@@ -125,7 +125,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     val rentStatusRepo = inject [RentStatusRepo]
     DB.withSession { session =>
       statuses.foreach { s =>
-        val rentStatus = RS(id = 0, changeDate = DateUtils.now, status = s, rentId = rentId)
+        val rentStatus = RS(id = 0, changeTime = DateUtils.now, status = s, rentId = rentId)
         rentStatusRepo.create(rentStatus)(session)
       }
     }
