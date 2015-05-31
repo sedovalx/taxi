@@ -5,7 +5,7 @@ import DS from "ember-data";
 
 let attr = DS.attr;
 var PaymentModel = DS.Model.extend({
-  payDate: attr("date", {
+  changeTime: attr("date", {
     defaultValue: () => new Date()
   }),
   amount: attr("number"),
@@ -16,9 +16,9 @@ var PaymentModel = DS.Model.extend({
   creator: DS.belongsTo("user", {inverse: null, async: true}),
   editor: DS.belongsTo("user", {inverse: null, async: true}),
 
-  displayPayDate: function(){
-    return moment(this.get("payDate")).format("DD-MM-YYYY");
-  }.property("payDate")
+  displayChangeTime: function(){
+    return moment(this.get("changeTime")).format("DD-MM-YYYY");
+  }.property("changeTime")
 });
 
 export default PaymentModel;

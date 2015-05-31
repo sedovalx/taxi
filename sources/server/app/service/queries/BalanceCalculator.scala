@@ -33,21 +33,21 @@ class BalanceCalculatorImpl extends BalanceCalculator with DbAccessor {
   override def getRepairsTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
     val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      RepairTable.filter(r => r.rentId === rent.id && wasBeforeDate(r.creationDate, r.repairDate, date))
-        .map(r => r.cost).foldLeft(BigDecimal("0"))(_ + _)
+      RepairTable.filter(r => r.rentId === rent.id && wasBeforeDate(r.creationDate, r.changeTime, date))
+        .map(r => r.amount).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
   override def getFinesTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
     val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      FineTable.filter(f => f.rentId === rent.id && wasBeforeDate(f.creationDate, f.fineDate, date))
-        .map(f => f.cost).foldLeft(BigDecimal("0"))(_ + _)
+      FineTable.filter(f => f.rentId === rent.id && wasBeforeDate(f.creationDate, f.changeTime, date))
+        .map(f => f.amount).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
   override def getPaymentsTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
     val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      PaymentTable.filter(p => p.rentId === rent.id && wasBeforeDate(p.creationDate, p.payDate, date))
+      PaymentTable.filter(p => p.rentId === rent.id && wasBeforeDate(p.creationDate, p.changeTime, date))
         .map(p => p.amount).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
@@ -73,15 +73,15 @@ class BalanceCalculatorImpl extends BalanceCalculator with DbAccessor {
 
   private def getStatusPeriods(rent: Rent, limitDate: Timestamp): Seq[StatusPeriod] = {
     val statuses = withDb { implicit session =>
-      RentStatusTable.filter(s => s.rentId === rent.id).filter(s => s.changeDate <= limitDate).sortBy { s => s.changeDate }.run.toList
+      RentStatusTable.filter(s => s.rentId === rent.id).filter(s => s.changeTime <= limitDate).sortBy { s => s.changeTime }.run.toList
     }
     statuses.indices.map { i =>
       val current = statuses(i)
-      val currentDate = current.changeDate
+      val currentDate = current.changeTime
       val nextDate = if (i + 1 <= statuses.size - 1){
-        statuses(i + 1).changeDate
+        statuses(i + 1).changeTime
       } else {
-        if (current.status == RS.Closed) current.changeDate
+        if (current.status == RS.Closed) current.changeTime
         else limitDate
       }
       StatusPeriod(current, currentDate, nextDate)

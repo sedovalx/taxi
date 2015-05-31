@@ -5,20 +5,20 @@ import DS from "ember-data";
 
 let attr = DS.attr;
 var RepairModel = DS.Model.extend({
-  repairDate: attr("date",{
+  changeTime: attr("date",{
     defaultValue: () => new Date()
   }),
-  cost: attr("number"),
+  amount: attr("number"),
   rent: DS.belongsTo("rent", {inverse: null, async: true}),
   description: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
   creator: DS.belongsTo("user", {inverse: null, async: true}),
   editor: DS.belongsTo("user", {inverse: null, async: true}),
-  
-  displayRepairDate: function(){
-    return moment(this.get("repairDate")).format("DD-MM-YYYY");
-  }.property("repairDate")
+
+  displayChangeTime: function(){
+    return moment(this.get("changeTime")).format("DD-MM-YYYY");
+  }.property("changeTime")
 });
 
 export default RepairModel;

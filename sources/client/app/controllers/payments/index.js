@@ -1,7 +1,7 @@
 import Ember from "ember";
 
 export default Ember.ArrayController.extend({
-  sortProperties: ["payDate", "rent.displayName"],
+  sortProperties: ["changeTime", "rent.displayName"],
   selectedRow: null,
   selectionEmpty: function(){
     return this.get("selectedRow") == null;
@@ -32,7 +32,7 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Дата платежа",
-      contentPath: "displayPayDate"
+      contentPath: "displayChangeTime"
     });
     let amountColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,

@@ -1,7 +1,7 @@
 import Ember from "ember";
 
 export default Ember.ArrayController.extend({
-  sortProperties: ["repairDate", "rent.displayName"],
+  sortProperties: ["changeTime", "rent.displayName"],
   selectedRow: null,
   selectionEmpty: function(){
     return this.get("selectedRow") == null;
@@ -32,13 +32,13 @@ export default Ember.ArrayController.extend({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Дата ремонта",
-      contentPath: "displayRepairDate"
+      contentPath: "displayChangeTime"
     });
-    let costColumn = Ember.Table.ColumnDefinition.create({
+    let amountColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Сумма, р",
-      contentPath: "cost"
+      contentPath: "amount"
     });
     let rentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
@@ -52,7 +52,7 @@ export default Ember.ArrayController.extend({
       headerCellName: "Описание",
       contentPath: "description"
     });
-    return [repairDateColumn, costColumn, rentColumn, descriptionColumn];
+    return [repairDateColumn, amountColumn, rentColumn, descriptionColumn];
   }.property(),
   repairs: function(){
     return this;

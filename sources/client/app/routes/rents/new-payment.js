@@ -12,7 +12,7 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
     }
     // Implement your custom setup after
     let payDate = new Date();
-    let newPayment = this.store.createRecord("payment", {payDate: payDate, rent: model});
+    let newPayment = this.store.createRecord("payment", {changeTime: payDate, rent: model});
     //this.generateController('payments.new', newPayment).set('model', newPayment);
     this.controllerFor('payments.new').set('model', newPayment);
   },

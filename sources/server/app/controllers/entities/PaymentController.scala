@@ -19,7 +19,7 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
 
   override protected implicit val reads: Reads[Tables.Payment] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
-      (JsPath \ "payDate").read[Timestamp] and
+      (JsPath \ "changeTime").read[Timestamp] and
       (JsPath \ "amount").read(min[BigDecimal](0)) and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
@@ -32,7 +32,7 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
     override def writes(o: Tables.Payment) = Json.obj(
       "id" -> o.id.toString,
       "rent" -> o.rentId.toString,
-      "payDate" -> dateIso8601Format.format(o.payDate),
+      "changeTime" -> dateIso8601Format.format(o.changeTime),
       "amount" -> o.amount.toString,
       "creationDate" -> o.creationDate.map { d => dateIso8601Format.format(d)},
       "editDate" -> o.editDate.map { d => dateIso8601Format.format(d)},

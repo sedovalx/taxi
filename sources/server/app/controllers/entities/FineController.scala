@@ -19,8 +19,8 @@ class FineController(implicit injector: Injector) extends EntityController[Fine,
 
   override protected implicit val reads: Reads[Tables.Fine] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
-      (JsPath \ "fineDate").read[Timestamp] and
-      (JsPath \ "cost").read(min[BigDecimal](0)) and
+      (JsPath \ "changeTime").read[Timestamp] and
+      (JsPath \ "amount").read(min[BigDecimal](0)) and
       (JsPath \ "description").readNullable[String] and
       (JsPath \ "rent").read[String].map { id => id.toInt } and
       (JsPath \ "comment").readNullable[String] and
@@ -33,8 +33,8 @@ class FineController(implicit injector: Injector) extends EntityController[Fine,
     override def writes(o: Tables.Fine): JsValue = Json.obj(
       "id" -> o.id.toString,
       "rent" -> o.rentId.toString,
-      "fineDate" -> dateIso8601Format.format(o.fineDate),
-      "cost" -> o.cost.toString(),
+      "changeTime" -> dateIso8601Format.format(o.changeTime),
+      "amount" -> o.amount.toString(),
       "description" -> o.description,
       "creationDate" -> o.creationDate.map { d => dateIso8601Format.format(d)},
       "editDate" -> o.editDate.map { d => dateIso8601Format.format(d)},

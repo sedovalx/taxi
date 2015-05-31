@@ -62,10 +62,14 @@ trait ${container} {
             key.referencingColumns.map{ _.name.toString.stripSuffix("Id") }.mkString + "Fk"
         }
 
-        // для типа Account добавляем родителя Identity
+        // для некоторых типов добавляем родителей
         override def EntityType = new EntityType {
           entity =>
-          override def parents: Seq[String] = Seq(s"Entity[${entity.name.toString}]") ++ (if (entity.name.toString == "Account") Seq("Identity") else Seq())
+          override def parents: Seq[String] = Seq(s"Entity[${entity.name.toString}]") ++ (entity.name.toString match {
+            case "Account" => Seq("Identity")
+            case "Payment" | "Fine" | "Repair" => Seq("BalanceChange")
+            case _ => Nil
+          })
 
           override def code = {
             val caseClassCode = super.code

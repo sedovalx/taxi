@@ -274,7 +274,7 @@ trait Tables {
   
   /** Entity class storing rows of table ExpenseTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param timestamp Database column timestamp DBType(timestamp)
+   *  @param changeTime Database column change_time DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param subject Database column subject DBType(varchar), Length(255,true)
    *  @param description Database column description DBType(varchar), Length(1000,true), Default(None)
@@ -283,7 +283,7 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Expense(id: Int, timestamp: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Expense]
+  case class Expense(id: Int, changeTime: java.sql.Timestamp, amount: scala.math.BigDecimal, subject: String, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Expense]
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -292,18 +292,18 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class ExpenseFilter(id: Option[Int] = None, timestamp: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, subject: Option[String] = None, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  case class ExpenseFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, subject: Option[String] = None, description: Option[String] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
   
   /** Table description of table expense. Objects of this class serve as prototypes for rows in queries. */
   class ExpenseTable(_tableTag: Tag) extends Table[Expense](_tableTag, "expense") {
-    def * = (id, timestamp, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
+    def * = (id, changeTime, amount, subject, description, comment, creatorId, creationDate, editorId, editDate) <> (Expense.tupled, Expense.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, timestamp.?, amount.?, subject.?, description, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Expense.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, amount.?, subject.?, description, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Expense.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column timestamp DBType(timestamp) */
-    val timestamp = column[java.sql.Timestamp]("timestamp")
+    /** Database column change_time DBType(timestamp) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column subject DBType(varchar), Length(255,true) */
@@ -331,8 +331,8 @@ trait Tables {
   
   /** Entity class storing rows of table FineTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param fineDate Database column fine_date DBType(timestamp)
-   *  @param cost Database column cost DBType(numeric)
+   *  @param changeTime Database column change_time DBType(timestamp)
+   *  @param amount Database column amount DBType(numeric)
    *  @param description Database column description DBType(varchar), Length(5000,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
@@ -340,7 +340,7 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Fine(id: Int, fineDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Fine]
+  case class Fine(id: Int, changeTime: java.sql.Timestamp, amount: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Fine] with BalanceChange
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -349,20 +349,20 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class FineFilter(id: Option[Int] = None, fineDate: Option[java.sql.Timestamp] = None, cost: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  case class FineFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
   
   /** Table description of table fine. Objects of this class serve as prototypes for rows in queries. */
   class FineTable(_tableTag: Tag) extends Table[Fine](_tableTag, "fine") {
-    def * = (id, fineDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
+    def * = (id, changeTime, amount, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Fine.tupled, Fine.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, fineDate.?, cost.?, description, rentId.?, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Fine.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, amount.?, description, rentId.?, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Fine.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column fine_date DBType(timestamp) */
-    val fineDate = column[java.sql.Timestamp]("fine_date")
-    /** Database column cost DBType(numeric) */
-    val cost = column[scala.math.BigDecimal]("cost")
+    /** Database column change_time DBType(timestamp) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
+    /** Database column amount DBType(numeric) */
+    val amount = column[scala.math.BigDecimal]("amount")
     /** Database column description DBType(varchar), Length(5000,true), Default(None) */
     val description = column[Option[String]]("description", O.Length(5000,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */
@@ -390,7 +390,7 @@ trait Tables {
   
   /** Entity class storing rows of table PaymentTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param payDate Database column pay_date DBType(timestamp)
+   *  @param changeTime Database column change_time DBType(timestamp)
    *  @param amount Database column amount DBType(numeric)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
@@ -398,7 +398,7 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class Payment(id: Int, payDate: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[Payment]
+  case class Payment(id: Int, changeTime: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[Payment] with BalanceChange
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -407,18 +407,18 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class PaymentFilter(id: Option[Int] = None, payDate: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
+  case class PaymentFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
   
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
-    def * = (id, payDate, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
+    def * = (id, changeTime, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, payDate.?, amount.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, amount.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column pay_date DBType(timestamp) */
-    val payDate = column[java.sql.Timestamp]("pay_date")
+    /** Database column change_time DBType(timestamp) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
@@ -446,7 +446,7 @@ trait Tables {
   
   /** Entity class storing rows of table RentStatusTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param changeDate Database column change_date DBType(timestamp)
+   *  @param changeTime Database column change_time DBType(timestamp)
    *  @param status Database column status DBType(varchar), Length(255,true)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
@@ -454,7 +454,7 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class RentStatus(id: Int, changeDate: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[RentStatus]
+  case class RentStatus(id: Int, changeTime: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[RentStatus]
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -463,18 +463,18 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class RentStatusFilter(id: Option[Int] = None, changeDate: Option[java.sql.Timestamp] = None, status: Option[models.entities.RentStatus.RentStatus] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
+  case class RentStatusFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, status: Option[models.entities.RentStatus.RentStatus] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
   
   /** Table description of table rent_status. Objects of this class serve as prototypes for rows in queries. */
   class RentStatusTable(_tableTag: Tag) extends Table[RentStatus](_tableTag, "rent_status") {
-    def * = (id, changeDate, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
+    def * = (id, changeTime, status, comment, creatorId, creationDate, editorId, editDate, rentId) <> (RentStatus.tupled, RentStatus.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, changeDate.?, status.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> RentStatus.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, status.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> RentStatus.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column change_date DBType(timestamp) */
-    val changeDate = column[java.sql.Timestamp]("change_date")
+    /** Database column change_time DBType(timestamp) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
     /** Database column status DBType(varchar), Length(255,true) */
     val status = column[models.entities.RentStatus.RentStatus]("status", O.Length(255,varying=true))
     /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
@@ -497,8 +497,8 @@ trait Tables {
     /** Foreign key referencing RentTable (database name rent_status_rent_id_fkey) */
     lazy val rentFk = foreignKey("rent_status_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.Cascade)
     
-    /** Index over (changeDate) (database name change_date_index) */
-    val index1 = index("change_date_index", changeDate)
+    /** Index over (changeTime) (database name change_date_index) */
+    val index1 = index("change_date_index", changeTime)
     /** Index over (status) (database name status_index) */
     val index2 = index("status_index", status)
   }
@@ -565,8 +565,8 @@ trait Tables {
   
   /** Entity class storing rows of table RepairTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param repairDate Database column repair_date DBType(timestamp)
-   *  @param cost Database column cost DBType(numeric)
+   *  @param changeTime Database column change_time DBType(timestamp)
+   *  @param amount Database column amount DBType(numeric)
    *  @param description Database column description DBType(varchar), Length(5000,true), Default(None)
    *  @param rentId Database column rent_id DBType(int4)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
@@ -574,7 +574,7 @@ trait Tables {
    *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None) */
-  case class Repair(id: Int, repairDate: java.sql.Timestamp, cost: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Repair]
+  case class Repair(id: Int, changeTime: java.sql.Timestamp, amount: scala.math.BigDecimal, description: Option[String] = None, rentId: Int, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Repair] with BalanceChange
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -583,20 +583,20 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class RepairFilter(id: Option[Int] = None, repairDate: Option[java.sql.Timestamp] = None, cost: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
+  case class RepairFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, description: Option[String] = None, rentId: Option[Int] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None)
   
   /** Table description of table repair. Objects of this class serve as prototypes for rows in queries. */
   class RepairTable(_tableTag: Tag) extends Table[Repair](_tableTag, "repair") {
-    def * = (id, repairDate, cost, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)
+    def * = (id, changeTime, amount, description, rentId, comment, creatorId, creationDate, editorId, editDate) <> (Repair.tupled, Repair.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, repairDate.?, cost.?, description, rentId.?, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Repair.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, amount.?, description, rentId.?, comment, creatorId, creationDate, editorId, editDate).shaped.<>({r=>import r._; _1.map(_=> Repair.tupled((_1.get, _2.get, _3.get, _4, _5.get, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column repair_date DBType(timestamp) */
-    val repairDate = column[java.sql.Timestamp]("repair_date")
-    /** Database column cost DBType(numeric) */
-    val cost = column[scala.math.BigDecimal]("cost")
+    /** Database column change_time DBType(timestamp) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
+    /** Database column amount DBType(numeric) */
+    val amount = column[scala.math.BigDecimal]("amount")
     /** Database column description DBType(varchar), Length(5000,true), Default(None) */
     val description = column[Option[String]]("description", O.Length(5000,varying=true), O.Default(None))
     /** Database column rent_id DBType(int4) */

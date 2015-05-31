@@ -58,7 +58,7 @@ CREATE TABLE driver
 CREATE TABLE expense
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  TIMESTAMP TIMESTAMP NOT NULL,
+  change_time TIMESTAMP NOT NULL,
   amount NUMERIC(10) NOT NULL,
   subject VARCHAR(255) NOT NULL,
   description VARCHAR(1000),
@@ -71,8 +71,8 @@ CREATE TABLE expense
 CREATE TABLE fine
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  fine_date TIMESTAMP NOT NULL,
-  cost NUMERIC(10) NOT NULL,
+  change_time TIMESTAMP NOT NULL,
+  amount NUMERIC(10) NOT NULL,
   description VARCHAR(5000),
   rent_id INT NOT NULL,
   comment VARCHAR(5000),
@@ -84,7 +84,7 @@ CREATE TABLE fine
 CREATE TABLE payment
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  pay_date TIMESTAMP NOT NULL,
+  change_time TIMESTAMP NOT NULL,
   amount NUMERIC(8) NOT NULL,
   comment VARCHAR(5000),
   creator_id INT,
@@ -108,7 +108,7 @@ CREATE TABLE rent
 CREATE TABLE rent_status
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  change_date TIMESTAMP NOT NULL,
+  change_time TIMESTAMP NOT NULL,
   status VARCHAR(255) NOT NULL,
   comment VARCHAR(5000),
   creator_id INT,
@@ -120,8 +120,8 @@ CREATE TABLE rent_status
 CREATE TABLE repair
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  repair_date TIMESTAMP NOT NULL,
-  cost NUMERIC(10) NOT NULL,
+  change_time TIMESTAMP NOT NULL,
+  amount NUMERIC(10) NOT NULL,
   description VARCHAR(5000),
   rent_id INT NOT NULL,
   comment VARCHAR(5000),
@@ -159,7 +159,7 @@ ALTER TABLE rent ADD FOREIGN KEY (driver_id) REFERENCES driver (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (creator_id) REFERENCES account (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (editor_id) REFERENCES account (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (rent_id) REFERENCES rent (id) ON DELETE CASCADE;
-CREATE INDEX change_date_index ON rent_status (change_date);
+CREATE INDEX change_date_index ON rent_status (change_time);
 CREATE INDEX status_index ON rent_status (status);
 ALTER TABLE repair ADD FOREIGN KEY (creator_id) REFERENCES account (id);
 ALTER TABLE repair ADD FOREIGN KEY (editor_id) REFERENCES account (id);
