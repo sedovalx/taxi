@@ -46,7 +46,7 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
 
   protected def repositoryTestFakeApp(overrides: Module) = {
     FakeApplication(
-      additionalConfiguration = inMemoryDatabase("default", Map("TRACE_LEVEL_SYSTEM_OUT" -> "4")),
+      additionalConfiguration = inMemoryDatabase("default", Map(/*"TRACE_LEVEL_SYSTEM_OUT" -> "4"*/)),
       withoutPlugins = Seq("play.api.db.BoneCPPlugin"),
       additionalPlugins = Seq("play.api.db.RestartableBoneCPPlugin"),
       withGlobal = Some(global(overrides))

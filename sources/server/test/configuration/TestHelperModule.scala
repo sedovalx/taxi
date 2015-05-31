@@ -1,8 +1,8 @@
 package configuration
 
-import helpers.DomainHelper
+import helpers.DomainDSL
 import scaldi.Module
 
 class TestHelperModule extends Module{
-  binding to new DomainHelper
+  binding to new DomainDSL
 }
