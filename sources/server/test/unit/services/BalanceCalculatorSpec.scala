@@ -21,6 +21,12 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     val rent = createRent(inject [DomainDSL], closed = true)
     val calc = inject [BalanceCalculator]
     val date: Option[Timestamp] = Some("2015-03-30")
+    val expectedRepairs = 40
+    val expectedFines = 20
+    val expectedPayments = 180
+    val expectedDebts = BigDecimal(132.17)
+    val expectedBalance = rent.deposit + expectedPayments - expectedRepairs - expectedFines - expectedDebts
+    val delta = BigDecimal(0.01)
 
     // when:
     val repairs = calc.getRepairsTotal(rent, date)
@@ -30,11 +36,65 @@ class BalanceCalculatorSpec extends SpecificationWithFixtures {
     val balance = calc.getRentBalance(rent, date)
 
     // then:
-    repairs must beEqualTo(40)
-    fines must beEqualTo(20)
-    payments must beEqualTo(180)
-    debts must beCloseTo(BigDecimal(132.17), BigDecimal(0.01))
-    balance must beCloseTo(50 + 180 - 40 - 10 - BigDecimal(132.17), BigDecimal(0.01))
+    repairs must beEqualTo(expectedRepairs)
+    fines must beEqualTo(expectedFines)
+    payments must beEqualTo(expectedPayments)
+    debts must beCloseTo(expectedDebts, delta)
+    balance must beCloseTo(expectedBalance, delta)
+  }
+
+  "should calculate balance for open rent" in new WithFakeDB() {
+    // given:
+    val rent = createRent(inject [DomainDSL], closed = false)
+    val calc = inject [BalanceCalculator]
+    val date: Option[Timestamp] = Some("2015-03-30")
+    val expectedRepairs = 40
+    val expectedFines = 15
+    val expectedPayments = 170
+    val expectedDebts = BigDecimal(243.74)
+    val expectedBalance = rent.deposit + expectedPayments - expectedRepairs - expectedFines - expectedDebts
+    val delta = BigDecimal(0.01)
+
+    // when:
+    val repairs = calc.getRepairsTotal(rent, date)
+    val fines = calc.getFinesTotal(rent, date)
+    val payments = calc.getPaymentsTotal(rent, date)
+    val debts = calc.getDebtsTotal(rent, date)
+    val balance = calc.getRentBalance(rent, date)
+
+    // then:
+    repairs must beEqualTo(expectedRepairs)
+    fines must beEqualTo(expectedFines)
+    payments must beEqualTo(expectedPayments)
+    debts must beCloseTo(expectedDebts, delta)
+    balance must beCloseTo(expectedBalance, delta)
+  }
+
+  "should calculate balance on past date" in new WithFakeDB() {
+    // given:
+    val rent = createRent(inject [DomainDSL], closed = true)
+    val calc = inject [BalanceCalculator]
+    val date: Option[Timestamp] = Some("2015-03-16 16:33:23")
+    val expectedRepairs = 15
+    val expectedFines = 15
+    val expectedPayments = 130
+    val expectedDebts = BigDecimal(110.63)
+    val expectedBalance = rent.deposit + expectedPayments - expectedRepairs - expectedFines - expectedDebts
+    val delta = BigDecimal(0.01)
+
+    // when:
+    val repairs = calc.getRepairsTotal(rent, date)
+    val fines = calc.getFinesTotal(rent, date)
+    val payments = calc.getPaymentsTotal(rent, date)
+    val debts = calc.getDebtsTotal(rent, date)
+    val balance = calc.getRentBalance(rent, date)
+
+    // then:
+    repairs must beEqualTo(expectedRepairs)
+    fines must beEqualTo(expectedFines)
+    payments must beEqualTo(expectedPayments)
+    debts must beCloseTo(expectedDebts, delta)
+    balance must beCloseTo(expectedBalance, delta)
   }
 
   private def createRent(domain: DomainDSL, closed: Boolean = true): Rent = {

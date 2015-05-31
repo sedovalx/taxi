@@ -31,43 +31,50 @@ class BalanceCalculatorImpl extends BalanceCalculator with DbAccessor {
     deposit + payments - debts - repairs - fines
   }
   override def getRepairsTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
+    val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      RepairTable.filter(r => r.rentId === rent.id && (r.repairDate <= asOfDate.get || asOfDate.isEmpty))
+      RepairTable.filter(r => r.rentId === rent.id && wasBeforeDate(r.creationDate, r.repairDate, date))
         .map(r => r.cost).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
   override def getFinesTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
+    val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      FineTable.filter(f => f.rentId === rent.id && (f.fineDate <= asOfDate.get || asOfDate.isEmpty))
+      FineTable.filter(f => f.rentId === rent.id && wasBeforeDate(f.creationDate, f.fineDate, date))
         .map(f => f.cost).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
   override def getPaymentsTotal(rent: Tables.Rent, asOfDate: Option[Timestamp]): BigDecimal = {
+    val date = asOfDate getOrElse DateUtils.now
     withDb { implicit session =>
-      PaymentTable.filter(p => p.rentId === rent.id && (p.payDate <= asOfDate.get || asOfDate.isEmpty))
+      PaymentTable.filter(p => p.rentId === rent.id && wasBeforeDate(p.creationDate, p.payDate, date))
         .map(p => p.amount).foldLeft(BigDecimal("0"))(_ + _)
     }
   }
 
   def getDebtsTotal(rent: Rent, asOfDate: Option[Timestamp]): BigDecimal = {
+    val date = asOfDate getOrElse DateUtils.now
     val car = withDb { implicit session =>
       CarTable.filter(c => c.id === rent.carId).run.head
     }
-    val rate = car.rate
-    val periods = getStatusPeriods(rent, asOfDate).filter(p => p._1.status == RS.Active)
-    periods.map(_._2).foldLeft(BigDecimal("0")){(seed, i) => seed + i*rate }
+    val ratePerDay = car.rate
+    val ratePerMin = ratePerDay / 24 / 60
+    val periods = getStatusPeriods(rent, date).filter(p => p.period.status == RS.Active)
+    periods.map { sp => getDateDiff(sp.start, sp.end, MINUTES) }.foldLeft(BigDecimal("0")){(seed, i) => seed + i*ratePerMin }
   }
 
   override def getDriverBalance(driver: Tables.Driver, asOfDate: Option[Timestamp]): BigDecimal = 0
 
-  private def getStatusPeriods(rent: Rent, asOfDate: Option[Timestamp]): Seq[(RentStatus, Long)] = {
+  private def wasBeforeDate(creationTime: Column[Option[Timestamp]], changeTime: Column[Timestamp], asOfDate: Timestamp) = {
+    (creationTime.isEmpty && changeTime <= asOfDate) || (creationTime <= asOfDate)
+  }
+
+  private case class StatusPeriod(period: RentStatus, start: Timestamp, end: Timestamp)
+
+  private def getStatusPeriods(rent: Rent, limitDate: Timestamp): Seq[StatusPeriod] = {
     val statuses = withDb { implicit session =>
-      val statusQuery = RentStatusTable.filter(s => s.rentId === rent.id)
-      asOfDate match {
-        case Some(date) => statusQuery.filter(s => s.changeDate <= date).run
-        case None => statusQuery.run
-      }
-    }.sortBy { s => s.changeDate.getTime }.toList
+      RentStatusTable.filter(s => s.rentId === rent.id).filter(s => s.changeDate <= limitDate).sortBy { s => s.changeDate }.run.toList
+    }
     statuses.indices.map { i =>
       val current = statuses(i)
       val currentDate = current.changeDate
@@ -75,14 +82,14 @@ class BalanceCalculatorImpl extends BalanceCalculator with DbAccessor {
         statuses(i + 1).changeDate
       } else {
         if (current.status == RS.Closed) current.changeDate
-        else asOfDate getOrElse DateUtils.now
+        else limitDate
       }
-      (current, getDateDiff(currentDate, nextDate))
+      StatusPeriod(current, currentDate, nextDate)
     }
   }
 
-  private def getDateDiff(date1: Timestamp, date2: Timestamp) = {
+  private def getDateDiff(date1: Timestamp, date2: Timestamp, units: TimeUnit) = {
     val diffInMilliseconds = date2.getTime - date1.getTime
-    DAYS.convert(diffInMilliseconds, MILLISECONDS)
+    units.convert(diffInMilliseconds, MILLISECONDS)
   }
 }
