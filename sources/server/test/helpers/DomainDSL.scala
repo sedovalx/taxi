@@ -64,7 +64,7 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
 
   def rentStatus(status: RS, changeTime: String)(implicit rent: Rent) = {
     val repo = inject [RentStatusRepo]
-    val obj = RentStatus(id = 0, changeDate = changeTime, status = status, rentId = rent.id, creationDate = Some(changeTime))
+    val obj = RentStatus(id = 0, changeTime = changeTime, status = status, rentId = rent.id, creationDate = Some(changeTime))
     val statusId = withDb { session => repo.create(obj)(session) }
     obj.copy(id = statusId)
   }
@@ -73,7 +73,7 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
     val repo = inject [PaymentRepo]
     val change = Payment(
       id = 0,
-      payDate = changeTime,
+      changeTime = changeTime,
       amount = amount,
       creationDate = Some(creationTime),
       rentId = rent.id
@@ -89,8 +89,8 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
     val repo = inject [RepairRepo]
     val change = Repair(
       id = 0,
-      repairDate = changeTime,
-      cost = amount,
+      changeTime = changeTime,
+      amount = amount,
       creationDate = Some(creationTime),
       rentId = rent.id
     )
@@ -105,8 +105,8 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
     val repo = inject [FineRepo]
     val change = Fine(
       id = 0,
-      fineDate = changeTime,
-      cost = amount,
+      changeTime = changeTime,
+      amount = amount,
       creationDate = Some(creationTime),
       rentId = rent.id
     )
