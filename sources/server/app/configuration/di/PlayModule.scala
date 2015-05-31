@@ -19,4 +19,5 @@ class PlayModule extends Module {
   binding to new PaymentController
   binding to new FineController
   binding to new RepairController
+  binding to injected [TestController]
 }

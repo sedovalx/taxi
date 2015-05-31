@@ -17,33 +17,52 @@ import play.api.db.slick.Config.driver.simple._
 
 class TestModelGenerator(implicit val injector: Injector) extends Injectable with DbAccessor{
   def generate() = Future {
-    generateDrivers(20, Timestamp.valueOf("2015-04-28 00:00:00"))
-    generateCars(50, Timestamp.valueOf("2015-04-03 00:00:00"))
-    generateRents(18, 44, Timestamp.valueOf("2015-05-15"))
-    generateRentStates(60)
+    withDb { implicit session => session.withTransaction {
+      deleteAll
+      generateDrivers(20, Timestamp.valueOf("2015-04-28 00:00:00"))
+      generateCars(50, Timestamp.valueOf("2015-04-03 00:00:00"))
+      generateRents(18, 44, Timestamp.valueOf("2015-05-15 00:00:00"))
+      generateRentStates(60)
+      generateBalanceChanges
+    }}
   }
 
-  def generateBalanceChanges(): Unit = {
-    import repository.db.MappedColumnTypes._
-    withDb { implicit session =>
-      val rents = RentStatusTable.groupBy(s => s.rentId).map { case (rentId, group) =>
-        val startTime = group.map(s => s.changeTime).min
-        val endTime = group.map(s => s.changeTime).max
-        val isClosed = group.filter(s => s.status === RS.Closed).countDistinct > 0
-        (rentId, startTime, endTime, isClosed)
-      }.run
+  def deleteAll(implicit session: Session): Unit = {
+    PaymentTable.delete.run
+    FineTable.delete.run
+    RepairTable.delete.run
+    RentStatusTable.delete.run
+    RentTable.delete.run
+    DriverTable.delete.run
+    CarTable.delete.run
+  }
 
-      rents.foreach { r =>
-        val changesCount = Random.nextInt(20) + 2
-        (0 to changesCount).foreach { _ =>
-          Random.nextInt(5) match {
-            case 1 | 2 | 3 =>
-              createPayment(r._1, r._2.get, if (r._4) r._3.get else DateUtils.now)
-            case 3 =>
-              createFine(r._1, r._2.get, if (r._4) r._3.get else DateUtils.now)
-            case 4 =>
-              createRepair(r._1, r._2.get, if (r._4) r._3.get else DateUtils.now)
-          }
+  def generateBalanceChanges(implicit session: Session): Unit = {
+    import repository.db.MappedColumnTypes._
+    val rents = RentStatusTable.groupBy(s => s.rentId).map { case (rentId, group) =>
+      val startTime = group.map(s => s.changeTime).min
+      val endTime = group.map(s => s.changeTime).max
+      val isClosed = group.map { s => Case If(s.status === RS.Closed) Then 1 Else 0 }.sum > 0
+      (rentId, startTime, endTime, isClosed)
+    }.run
+
+    rents.map { i =>
+      (
+        i._1,
+        i._2.get,
+        i._3.get,
+        i._4 match { case Some(x) if x => true case _ => false }
+      )
+    }.foreach { r =>
+      val changesCount = Random.nextInt(20) + 2
+      (0 to changesCount).foreach { _ =>
+        Random.nextInt(5) match {
+          case 0 | 1 | 2 =>
+            createPayment(r._1, r._2, if (r._4) r._3 else DateUtils.now)
+          case 3 =>
+            createFine(r._1, r._2, if (r._4) r._3 else DateUtils.now)
+          case 4 =>
+            createRepair(r._1, r._2, if (r._4) r._3 else DateUtils.now)
         }
       }
     }
@@ -56,7 +75,7 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
       id = 0,
       rentId = rentId,
       changeTime = creationTime,
-      amount = BigDecimal(Random.nextFloat()*4000 + 1000),
+      amount = BigDecimal(Random.nextDouble()*4000 + 1000),
       creationDate = Some(creationTime)
     ))
   }
@@ -68,7 +87,7 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
       id = 0,
       rentId = rentId,
       changeTime = creationTime,
-      amount = BigDecimal(Random.nextFloat()*500 + 100),
+      amount = BigDecimal(Random.nextDouble()*500 + 100),
       creationDate = Some(creationTime)
     ))
   }
@@ -80,18 +99,16 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
       id = 0,
       rentId = rentId,
       changeTime = creationTime,
-      amount = BigDecimal(Random.nextFloat()*1500 + 500),
+      amount = BigDecimal(Random.nextDouble()*1500 + 500),
       creationDate = Some(creationTime)
     ))
   }
 
-  def generateRentStates(closedPercent: Int): Unit = {
-    withDb { implicit session =>
-      RentTable.map(r => (r.id, r.creationDate)).run.foreach { i =>
-        addGeneralStates(i._1, i._2.get)
-        if (isClosed(closedPercent)){
-          addFinalStates(i._1, i._2.get)
-        }
+  def generateRentStates(closedPercent: Int)(implicit session: Session): Unit = {
+    RentTable.map(r => (r.id, r.creationDate)).run.foreach { i =>
+      addGeneralStates(i._1, i._2.get)
+      if (isClosed(closedPercent)){
+        addFinalStates(i._1, i._2.get)
       }
     }
   }
@@ -143,31 +160,29 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
     Random.nextInt(100) <= closedPercent
   }
 
-  def generateRents(drivers: Int, cars: Int, endDate: Timestamp): Unit = {
+  def generateRents(drivers: Int, cars: Int, endDate: Timestamp)(implicit session: Session): Unit = {
     val rentRepo = inject [RentRepo]
-    withDb { implicit session =>
-      val data = (for {
-        car <- CarTable.sortBy(c => c.id*Random.nextInt()).take(cars)
-        driver <- DriverTable.sortBy(d => d.id*Random.nextInt()).take(drivers)
-      } yield (driver.id, car.id, driver.creationDate, car.creationDate)).run
+    val data = (for {
+      car <- CarTable.sortBy(c => c.id*Random.nextInt(100)).take(cars)
+      driver <- DriverTable.sortBy(d => d.id*Random.nextInt(100)).take(drivers)
+    } yield (driver.id, car.id, driver.creationDate, car.creationDate)).run
 
-      data.foreach { d =>
-        val startDate = getMaxDate(d._3, d._4)
-        val date = getRandomDateBetween(startDate, endDate)
-        val rent = Rent(
-          id = 0,
-          driverId = d._1,
-          carId = d._2,
-          deposit = Random.nextInt(5000) + 1000,
-          creationDate = Some(date)
-        )
-        rentRepo.create(rent)
-      }
+    data.foreach { d =>
+      val startDate = getMaxDate(d._3, d._4)
+      val date = getRandomDateBetween(startDate, endDate)
+      val rent = Rent(
+        id = 0,
+        driverId = d._1,
+        carId = d._2,
+        deposit = Random.nextInt(5000) + 1000,
+        creationDate = Some(date)
+      )
+      rentRepo.create(rent)
     }
   }
 
   private def getMaxDate(dates: Option[Timestamp]*): Timestamp = {
-    val t = dates.map { case Some(d) => d.getTime }.max
+    val t = dates.map { d => d.get.getTime }.max
     new Timestamp(t)
   }
 
@@ -181,41 +196,37 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
   private def getRandomDateBetween(startTime: Timestamp, endTime: Timestamp) =
     getDateBetween(startTime, endTime, Random.nextFloat())
 
-  def generateDrivers(count: Int, onDate: Timestamp): Unit = {
+  def generateDrivers(count: Int, onDate: Timestamp)(implicit session: Session): Unit = {
     val repo = inject [DriverRepo]
-    withDb { implicit session =>
-      (0 to count).foreach { _ =>
-        val driver = Driver(
-          id = 0,
-          lastName = UUID.randomUUID().toString.take(200),
-          firstName = UUID.randomUUID().toString.take(200),
-          pass = UUID.randomUUID().toString,
-          license = UUID.randomUUID().toString,
-          phone = UUID.randomUUID().toString.take(11),
-          secPhone = UUID.randomUUID().toString.take(11),
-          address = UUID.randomUUID().toString,
-          creationDate = Some(onDate)
-        )
-        repo.create(driver)
-      }
+    (0 to count).foreach { _ =>
+      val driver = Driver(
+        id = 0,
+        lastName = UUID.randomUUID().toString.take(200),
+        firstName = UUID.randomUUID().toString.take(200),
+        pass = UUID.randomUUID().toString,
+        license = UUID.randomUUID().toString,
+        phone = UUID.randomUUID().toString.take(11),
+        secPhone = UUID.randomUUID().toString.take(11),
+        address = UUID.randomUUID().toString,
+        creationDate = Some(onDate)
+      )
+      repo.create(driver)
     }
   }
 
-  def generateCars(count: Int, onDate: Timestamp): Unit = {
+  def generateCars(count: Int, onDate: Timestamp)(implicit session: Session): Unit = {
     val repo = inject [CarRepo]
-    withDb { implicit session =>
-      (0 to count).foreach { _ =>
-        val car = Car(
-          id = 0,
-          regNumber = UUID.randomUUID().toString.take(11),
-          make = UUID.randomUUID().toString,
-          model = UUID.randomUUID().toString,
-          rate = Random.nextInt(5000) + 1000,
-          mileage = 1000,
-          creationDate = Some(onDate)
-        )
-        repo.create(car)
-      }
+    (0 to count).foreach { _ =>
+      val car = Car(
+        id = 0,
+        regNumber = UUID.randomUUID().toString.take(11),
+        make = UUID.randomUUID().toString,
+        model = UUID.randomUUID().toString,
+        rate = Random.nextInt(5000) + 1000,
+        mileage = 1000,
+        creationDate = Some(onDate)
+      )
+      repo.create(car)
     }
   }
 }

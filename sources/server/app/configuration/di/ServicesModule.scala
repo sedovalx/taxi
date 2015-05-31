@@ -8,6 +8,7 @@ import repository._
 import scaldi.Module
 import service._
 import service.queries._
+import utils.TestModelGenerator
 
 class ServicesModule extends Module {
 
@@ -34,4 +35,6 @@ class ServicesModule extends Module {
   bind [QueryManager] to new QueryManagerImpl(injectAllOfType [Query])
 
   bind [BalanceCalculator] to new BalanceCalculatorImpl
+
+  binding to new TestModelGenerator
 }
