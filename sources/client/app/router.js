@@ -55,6 +55,9 @@ Router.map(function() {
   this.resource("expense", { path: "/expenses/:expense_id" }, function() {
     this.route("edit");
   });
+
+  this.resource("cashier-list");
+
   this.resource("cashier", function() {
     this.route("new");
   });

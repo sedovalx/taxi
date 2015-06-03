@@ -106,13 +106,15 @@ with status_finish_time as (
 	) t
 	where t.rk = 1
 )
-select 
-	c.make || ' ' || c.reg_number || ' (' || c.rate || ')' as "Машина",
-	r.last_name || ' ' || r.first_name || coalesce(' ' || r.middle_name, '') as "ФИО водителя",
-	--'' as "Явка",
-	r.repairs as "Баланс ремонтов",
-	r.fines as "Баланс штрафов",
-	r.deposit + r.payments - r.fines - r.repairs - r.active_minutes*(c.rate/24/60) as "Баланс аренды",
+select
+	c.id as "car_id",
+	c.make || ' ' || c.reg_number || ' (' || c.rate || ')' as "car",
+	r.id as "rent_id",
+	r.last_name || ' ' || r.first_name || coalesce(' ' || r.middle_name, '') as "driver",
+	false as "presence",
+	r.repairs,
+	r.fines,
+	r.deposit + r.payments - r.fines - r.repairs - r.active_minutes*(c.rate/24/60) as "balance",
 	c.mileage,
 	c.service,
 	r.status

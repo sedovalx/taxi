@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 
 import models.entities.RentStatus.RentStatus
 import play.api.Logger
-import play.api.libs.json.{Writes, JsValue, Json}
+import play.api.libs.json.{JsObject, Writes, JsValue, Json}
 import repository.db.DbAccessor
 import scaldi.{Injectable, Injector}
 import utils.RunSqlException
@@ -22,8 +22,11 @@ class CashierQuery(implicit injector: Injector) extends ConfQuery with Injectabl
   private case class Filter(car: Option[String] = None, driver: Option[String] = None, status: Option[RentStatus] = None, date: Timestamp)
 
   private case class DataItem(
+     id: Int,
      car: String,
+     rentId: Option[Int],
      driver: Option[String],
+     presence: Option[Boolean],
      repairs: Option[BigDecimal],
      fines: Option[BigDecimal],
      balance: Option[BigDecimal],
@@ -37,7 +40,7 @@ class CashierQuery(implicit injector: Injector) extends ConfQuery with Injectabl
     val controlDate = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(filter.date)
     val sql = readSql(Map("@control_date" -> s"'$controlDate'::timestamp"))
 
-    implicit val getDataResult = GetResult(d => DataItem(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<))
+    implicit val getDataResult = GetResult(d => DataItem(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<))
     val query = Q.queryNA[DataItem](sql)
     val data = try {
       withDb { implicit session => query.list }
@@ -47,7 +50,7 @@ class CashierQuery(implicit injector: Injector) extends ConfQuery with Injectabl
         Logger.error(s"Ошибка при выполнении запроса $name", e)
         throw new RunSqlException("Ошибка получения данных формы кассира", e)
     }
-    Json.toJson(data)
+    JsObject(Seq("cashier-list" -> Json.toJson(data)))
   }
 
   private def parseFilter(parameters: Map[String, Seq[String]]): Filter = Filter(date = DateUtils.now)
