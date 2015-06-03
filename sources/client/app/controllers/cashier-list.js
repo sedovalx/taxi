@@ -19,6 +19,8 @@ export default Ember.ArrayController.extend({
       Ember.Table.ColumnDefinition.create({
         savedWidth: 200,
         canAutoResize: true,
+        textAlign: "text-align-center",
+        tableCellViewClass: "check-icon-cell",
         headerCellName: "Явка",
         contentPath: "presence"
       }),

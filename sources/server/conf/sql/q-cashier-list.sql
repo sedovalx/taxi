@@ -111,7 +111,7 @@ select
 	c.make || ' ' || c.reg_number || ' (' || c.rate || ')' as "car",
 	r.id as "rent_id",
 	r.last_name || ' ' || r.first_name || coalesce(' ' || r.middle_name, '') as "driver",
-	false as "presence",
+	true as "presence",
 	r.repairs,
 	r.fines,
 	r.deposit + r.payments - r.fines - r.repairs - r.active_minutes*(c.rate/24/60) as "balance",
