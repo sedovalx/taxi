@@ -6,3 +6,5 @@ class AccountAlreadyExistsException(login: String) extends AccountManagementExce
 
 class EntityNotFoundException[T](message: String, entity : String)
   extends RuntimeException(s"Entity of type $entity not found: $message")
+
+class RunSqlException(message: String, cause: Throwable) extends RuntimeException(message, cause)

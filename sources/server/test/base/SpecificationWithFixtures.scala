@@ -2,7 +2,7 @@ package base
 
 import com.typesafe.config.ConfigFactory
 import configuration.TestHelperModule
-import configuration.di.{PlayModule, RepoModule, ServicesModule, SilhouetteModule}
+import configuration.di._
 import org.specs2.execute.{AsResult, Result}
 import org.specs2.mutable.Specification
 import play.api.Configuration
@@ -14,10 +14,6 @@ import scaldi.{Module, Injectable, Injector}
 
 import scala.concurrent.Future
 
-
-/**
- * Created by ipopkov on 16/03/15.
- */
 abstract class SpecificationWithFixtures extends Specification  with Injectable {
 
 
@@ -39,6 +35,7 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
         new PlayModule ::
         new SilhouetteModule ::
         new ServicesModule ::
+        new QueryModule ::
         new RepoModule
 
     override def configuration = Configuration(ConfigFactory.load())
