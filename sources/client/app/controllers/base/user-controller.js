@@ -1,20 +1,8 @@
-import Ember from "ember";
-import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
 import roles from "client/models/roles";
+import DS from "ember-data";
+import BaseController from "client/controllers/base/base-controller"
 
-export default Ember.ObjectController.extend(DirtyControllerMixin, {
-  actions: {
-    save: function(){
-      let that = this;
-      let model = this.get("model");
-      model
-        .save()
-        .then(() => that.transitionToRoute("users"));
-    },
-    cancel: function(){
-      this.transitionToRoute("users");
-    }
-  },
+export default BaseController.extend({
   roles: roles,
   selectedRole: function(key, value){
     let model = this.get("model");

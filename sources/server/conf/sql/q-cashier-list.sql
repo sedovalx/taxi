@@ -111,7 +111,7 @@ select
 	c.make || ' ' || c.reg_number || ' (' || c.rate || ')' as "car",
 	r.id as "rent_id",
 	r.last_name || ' ' || r.first_name || coalesce(' ' || r.middle_name, '') as "driver",
-	true as "presence",
+	coalesce(p.presence, false) as "presence",
 	r.repairs,
 	r.fines,
 	r.deposit + r.payments - r.fines - r.repairs - r.active_minutes*(c.rate/24/60) as "balance",
@@ -128,4 +128,5 @@ left join (
 	from car_last_rent clr 
 	join driver d on clr.driver_id = d.id
 ) r on r.car_id = c.id and r.status <> 'Closed'
+left join payment p on p.rent_id = r.id and p.change_time::date = @control_date::date
 order by r.status, r.creation_date, c.reg_number

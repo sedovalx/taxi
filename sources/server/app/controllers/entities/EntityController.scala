@@ -15,6 +15,7 @@ import play.api.mvc.{Result, BodyParsers}
 import repository.GenericCRUD
 import scaldi.Injector
 import service.EntityService
+import utils.extensions.DateUtils
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.concurrent.Future
@@ -28,7 +29,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
 
   override protected def env: Environment[Tables.Account, JWTAuthenticator] = inject [Environment[Tables.Account, JWTAuthenticator]]
 
-  protected val dateIso8601Format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+  protected val dateIso8601Format = DateUtils.iso8601Format
 
   protected implicit val filterReads : Reads[F]
   protected implicit val reads : Reads[E]

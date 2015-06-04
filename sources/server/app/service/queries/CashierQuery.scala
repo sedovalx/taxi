@@ -37,7 +37,7 @@ class CashierQuery(implicit injector: Injector) extends ConfQuery with Injectabl
 
   override def execute(parameters: Map[String, Seq[String]]): JsValue = {
     val filter = parseFilter(parameters)
-    val controlDate = new SimpleDateFormat("YYYY-MM-dd hh:mm:ss").format(filter.date)
+    val controlDate = DateUtils.iso8601Format.format(filter.date)
     val sql = readSql(Map("@control_date" -> s"'$controlDate'::timestamp"))
 
     implicit val getDataResult = GetResult(d => DataItem(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<))

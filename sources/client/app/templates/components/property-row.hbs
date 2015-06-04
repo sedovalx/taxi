@@ -1,12 +1,12 @@
-<div class="form-group">
-    <label class="col-sm-2 control-label">{{title}}</label>
-    <div class="col-sm-10">
+<div class="form-group property-row">
+    <label {{bind-attr class=":control-label labelCssWidth"}}>{{title}}</label>
+    <div {{bind-attr class="inputCssWidth"}}>
       {{#if template}}
         {{yield}}
       {{else}}
         {{input value=value}}
       {{/if}}
-      <div class="error-box col-sm-10">
+      <div {{bind-attr class=":error-box errorCssWidth"}}>
         {{#each error in errors}}
             <div class="error">
               {{error.message}}

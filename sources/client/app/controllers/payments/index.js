@@ -46,13 +46,21 @@ export default Ember.ArrayController.extend({
       headerCellName: "Аренда",
       contentPath: "rent.displayName"
     });
+    let presenceColumn = Ember.Table.ColumnDefinition.create({
+      savedWidth: 200,
+      canAutoResize: true,
+      textAlign: "text-align-center",
+      tableCellViewClass: "check-icon-cell",
+      headerCellName: "Явка",
+      contentPath: "presence"
+    });
     let commentColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
       headerCellName: "Примечания",
       contentPath: "comment"
     });
-    return [payDateColumn, amountColumn, rentColumn, commentColumn];
+    return [payDateColumn, amountColumn, rentColumn, presenceColumn, commentColumn];
   }.property(),
   payments: function(){
     return this;

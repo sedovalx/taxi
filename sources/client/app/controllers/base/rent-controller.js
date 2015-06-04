@@ -1,21 +1,9 @@
 import Ember from "ember";
 import DS from "ember-data";
-import DirtyControllerMixin from "client/controllers/base/dirty-controller-mixin";
+import BaseController from "client/controllers/base/base-controller"
 import statuses from "client/models/rent-statuses";
 
-export default Ember.ObjectController.extend(DirtyControllerMixin, {
-  actions: {
-    save: function(){
-      let that = this;
-      let model = this.get("model");
-      model
-        .save()
-        .then(() => that.transitionToRoute("rents"));
-    },
-    cancel: function(){
-      this.transitionToRoute("rents");
-    }
-  },
+export default BaseController.extend({
   statuses: statuses,
   selectedStatus: function(key, value){
     let model = this.get("model");

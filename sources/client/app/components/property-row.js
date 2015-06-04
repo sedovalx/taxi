@@ -6,6 +6,9 @@ import $ from "jquery";
  */
 export default Ember.Component.extend({
   classNameBindings: ["errors:has-error"],
+  labelCssWidth: "col-sm-2",
+  inputCssWidth: "col-sm-10",
+  errorCssWidth: "col-sm-10",
   didInsertElement: function(){
     let $inputEl = $(this.element).find("input.ember-view, .selectize-input");
     $inputEl.addClass("form-control");
