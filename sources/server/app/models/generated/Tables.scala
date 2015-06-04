@@ -391,6 +391,7 @@ trait Tables {
   /** Entity class storing rows of table PaymentTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param changeTime Database column change_time DBType(timestamp)
+   *  @param presence Database column presence DBType(bool), Default(true)
    *  @param amount Database column amount DBType(numeric)
    *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
    *  @param creatorId Database column creator_id DBType(int4), Default(None)
@@ -398,7 +399,7 @@ trait Tables {
    *  @param editorId Database column editor_id DBType(int4), Default(None)
    *  @param editDate Database column edit_date DBType(timestamp), Default(None)
    *  @param rentId Database column rent_id DBType(int4) */
-  case class Payment(id: Int, changeTime: java.sql.Timestamp, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[Payment] with BalanceChange
+  case class Payment(id: Int, changeTime: java.sql.Timestamp, presence: Boolean = true, amount: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[Payment] with BalanceChange
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -407,18 +408,20 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class PaymentFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, amount: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
+  case class PaymentFilter(id: Option[Int] = None, changeTime: Option[java.sql.Timestamp] = None, presence: Option[Boolean] = None, amount: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Option[Int] = None)
   
   /** Table description of table payment. Objects of this class serve as prototypes for rows in queries. */
   class PaymentTable(_tableTag: Tag) extends Table[Payment](_tableTag, "payment") {
-    def * = (id, changeTime, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
+    def * = (id, changeTime, presence, amount, comment, creatorId, creationDate, editorId, editDate, rentId) <> (Payment.tupled, Payment.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, changeTime.?, amount.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (id.?, changeTime.?, presence.?, amount.?, comment, creatorId, creationDate, editorId, editDate, rentId.?).shaped.<>({r=>import r._; _1.map(_=> Payment.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
     
     /** Database column id DBType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
     /** Database column change_time DBType(timestamp) */
     val changeTime = column[java.sql.Timestamp]("change_time")
+    /** Database column presence DBType(bool), Default(true) */
+    val presence = column[Boolean]("presence", O.Default(true))
     /** Database column amount DBType(numeric) */
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column comment DBType(varchar), Length(5000,true), Default(None) */

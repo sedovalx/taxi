@@ -89,7 +89,7 @@ trait ${container} {
 
           private def entityFilterCode(entityCode: String) = {
             val caseClassPattern = """case class (.*)\((.*)\)""".r.unanchored
-            val argPartsPattern = """(.+): (.+?)(?:( = None)|$)""".r
+            val argPartsPattern = """(.+): (.+?)(?:( = (.+))|$)""".r
             val Some(results) = entityCode match {
               case caseClassPattern(n, a) => Some((n, a))
               case _ => None
@@ -99,7 +99,7 @@ trait ${container} {
 
             args.split(',').map { _.trim }.foldLeft(s"case class ${name}Filter(") ((agg, part) => {
               val parsedArgs = part match {
-                case argPartsPattern(argName, argType, _) => Some((argName, argType))
+                case argPartsPattern(argName, argType, _, _) => Some((argName, argType))
                 case _ => None
               }
               parsedArgs map { results =>

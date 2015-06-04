@@ -76,7 +76,8 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
       rentId = rentId,
       changeTime = creationTime,
       amount = BigDecimal(Random.nextDouble()*4000 + 1000),
-      creationDate = Some(creationTime)
+      creationDate = Some(creationTime),
+      presence = if (Random.nextFloat() < 0.7) true else false
     ))
   }
 
@@ -197,16 +198,18 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
     getDateBetween(startTime, endTime, Random.nextFloat())
 
   def generateDrivers(count: Int, onDate: Timestamp)(implicit session: Session): Unit = {
+    val names = List("Абель", "Абдулла", "Агдалия", "Агзам", "Аглия", "Аглям", "Агиля", "Агния", "Аделина", "Адип", "Азат", "Азалия", "Азаль", "Азамат", "Азхар", "Азиз", "Азим", "Аида", "Айбану", "Айбат", "Айгуль", "Айдар", "Багида", "Багман", "Бадира", "Бакир", "Бакира", "Банат", "Бану", "Барс", "Батулла", "Бахадир", "Бахир", "Бахрам", "Бахтияр", "Баяз", "Баян", "Белла", "Беркут", "Бика", "Бикбай", "Бикбулат", "Бикбай", "Билал", "Болгар", "Булат", "Буранбай", "Бэхет", "Габбас", "Габит", "Габдулла", "Гадел", "Гаден", "Гази", "Газиз", "Газим", "Газия", "Гайша", "Гайфулла", "Гали", "Галим", "Галима", "Галимулла", "Галиулла", "Галия", "Гамил", "Гани", "Гариф", "Гата", "Гафар", "Гафият", "Гаяз", "Гаян", "Гузель", "Гуль", "Гульзар", "Гульназ", "Гульнара", "Гульнур", "Гульчечек", "Гусман", "Гэрэй", "Забир", "Зайд", "Зайнаб", "Зайнулла", "Зайтуна", "Закария", "Закир", "Заки", "Залика", "Залия", "Замам", "Заман", "Замир", "Замира", "Зариф", "Захид", "Захир", "Зиля", "Зиннат", "Зиннур", "Зифа", "Зия", "Зульфат", "Зульфия", "Зуфар", "Зухра", "Зыятдин", "Ильфат", "Ильшат", "Ильяс", "Ильгам", "Иман", "Индира", "Инсаф", "Ирада", "Ирек", "Ирина", "Иса", "Искандер", "Ислам", "Исмаил", "Исмат", "Исфандияр", "Исхак", "Камал", "Камалетдин", "Камария", "Камиль", "Карим", "Касим", "Катиба", "Кафил", "Кашфулла", "Каюм", "Кахир", "Кирам", "Клара", "Кулахмет", "Курбан", "Латифа", "Лениза", "Ленора", "Ленур", "Лея", "Лиана", "Локман", "Луиза")
+    val surnames = List("Абаимов", "Абакумов", "Абакшин", "Абалакин", "Абалаков", "Абалдуев", "Абалкин", "Абатурин", "Абатуров", "Абашев", "Абашин", "Абашкин", "Абаянцев", "Абдула", "Абдулин", "Абдулов", "Абоимов", "Абраменко", "Абрамкин", "Абрамов", "Абрамович", "Абрамцев", "Абрамчук", "Абрамычев", "Абрашин", "Бабаджанов", "Бабаев", "Бабакин", "Бабаков", "Бабанин", "Бабанов", "Бабарыкин", "Бабарыко", "Бабахин", "Бабаченко", "Бабенин", "Бабенко", "Бабёнышев", "Бабий", "Бабиков", "Бабин", "Бабинов", "Бабицын", "Бабич", "Бабичев", "Бабкин", "Баборыко", "Бабулин", "Бабунин", "Бабурин", "Бабухин", "Бабушкин", "Бабыкин", "Бавин", "Бавыкин", "Багаев", "Багин", "Багинин", "Баглаев", "Багреев", "Багримов", "Багров", "Вавилин", "Вавилов", "Вага", "Ваганков", "Ваганов", "Ваганьков", "Вагин", "Вагрин", "Вадбальский", "Вадбольский", "Вадимов", "Вадьяев", "Важенин", "Важин", "Вайванцев", "Вайгачев", "Вайтович", "Вакорев", "Вакорин", "Вакуленко", "Вакулин", "Вакулов", "Валахов", "Валдавин", "Валеев", "Валентинов", "Валенцов", "Валерианов", "Валерьев", "Валерьянов", "Евгеев", "Евгенов", "Евгеньев", "Евгранов", "Евграфов", "Евграшин", "Евдакимов", "Евдаков", "Евдокименко", "Евдокимов", "Евдонин", "Евдохин", "Евдошин", "Евклидов", "Евлампиев", "Евлампьев", "Евланин", "Евланов", "Евлахин", "Евлахов", "Евлашев", "Евлашин", "Евлашкин", "Евлашов", "Евлентьев", "Евлонин", "Евмененко", "Евменов", "Евментьев", "Евменьев", "Евпалов", "Евпатов", "Евпланов", "Евплов", "Евпсихеев", "Евреев", "Евреинов", "Евсеев", "Евсеенко", "Маврин", "Мавринский", "Мавроди", "Мавродиев", "Мавродий", "Мавродин", "Маврыкин", "Маврычев", "Магеркин", "Магеря", "Магницкий", "Магомедбеков", "Магомедов", "Магомедрасулов", "Магоня", "Магура", "Магуренко", "Мадаев", "Мадьяров", "Мажаров", "Мазанов", "Мазаньков", "Мазиков", "Мазилкин", "Мазилов", "Мазин", "Мазицын", "Мазко", "Мазнев", "Мазняк", "Мазовецкий", "Мазунин", "Обабков", "Обакумов", "Обакшин", "Обарин", "Обатуров", "Обаянцев", "Обезьянинов", "Обернибесов", "Оберучев", "Обиняков", "Обичкин", "Облонский", "Обнорский", "Обноскин", "Обносков", "Ободин", "Оболдуев", "Оболенский", "Оболенцев", "Оболонский", "Оборин", "Оботуров", "Обоянцев", "Образков", "Образский", "Образцов", "Обрезков", "Обреимов", "Обросимов", "Обросов", "Обручев", "Табаков", "Табачник", "Табачников", "Табашников", "Таболин", "Таболкин", "Табунщиков", "Таволжанский", "Таганов", "Таганцев", "Тагашов", "Тагильцев", "Тагиров", "Таиров", "Такмаков", "Талабанов", "Талаболин", "Талагаев", "Талалаев", "Талалакин", "Талалахин", "Талалихин", "Талалыкин", "Таланин", "Таланкин", "Таланов", "Талантов", "Талашин", "Талдонин", "Талдыкин", "Талимонов", "Талипов", "Талицкий", "Таловеров", "Талызин")
     val repo = inject [DriverRepo]
     (0 to count).foreach { _ =>
       val driver = Driver(
         id = 0,
-        lastName = UUID.randomUUID().toString.take(200),
-        firstName = UUID.randomUUID().toString.take(200),
-        pass = UUID.randomUUID().toString,
-        license = UUID.randomUUID().toString,
-        phone = UUID.randomUUID().toString.take(11),
-        secPhone = UUID.randomUUID().toString.take(11),
+        lastName = surnames(Random.nextInt(surnames.size)),
+        firstName = names(Random.nextInt(names.size)),
+        pass = s"${randomNumbersString(2)} ${randomNumbersString(2)} ${randomNumbersString(6)}",
+        license = s"${randomNumbersString(2)} ${randomNumbersString(2)} ${randomNumbersString(6)}",
+        phone = s"+7(9${randomNumbersString(2)}) ${randomNumbersString(3)}-${randomNumbersString(2)}-${randomNumbersString(2)}",
+        secPhone = s"(4${randomNumbersString(2)}) ${randomNumbersString(3)}-${randomNumbersString(2)}-${randomNumbersString(2)}",
         address = UUID.randomUUID().toString,
         creationDate = Some(onDate)
       )
@@ -214,16 +217,68 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
     }
   }
 
+  private def randomNumbersString(length: Int): String = {
+    (0 until length).foldLeft("")((agg, _) => agg + Random.nextInt(10).toString)
+  }
+
   def generateCars(count: Int, onDate: Timestamp)(implicit session: Session): Unit = {
+    val numberLetters = List("E", "T", "O", "P", "A", "H", "K", "X", "C", "B", "M")
+    val cars = Map(
+      "Renault" -> List(
+        "Logan",
+        "Megane",
+        "Fluence",
+        "Sandero"
+      ),
+      "Toyota" -> List(
+        "Land Cruiser",
+        "Camry",
+        "Corolla",
+        "RAV4"
+      ),
+      "Hundai" -> List(
+        "Solaris",
+        "Elantra",
+        "ix35",
+        "i35"
+      ),
+      "KIA" -> List(
+        "Cee'd",
+        "Cerato",
+        "Optima",
+        "Rio"
+      ),
+      "Mitsubishi" -> List(
+        "Lancer",
+        "Pajero",
+        "Outlander",
+        "ASX"
+      )
+    )
+
+    def randomMake() = cars.keys.toList(Random.nextInt(cars.size))
+
+    def randomModel(make: String) = cars(make)(Random.nextInt(cars(make).size))
+
+    def randomLetters(length: Int): String = (0 until length).foldLeft("")((agg, _) => agg + numberLetters(Random.nextInt(numberLetters.size)))
+
     val repo = inject [CarRepo]
     (0 to count).foreach { _ =>
+      val make = randomMake()
+      val mileage = Random.nextInt(100000) + 3000
       val car = Car(
         id = 0,
-        regNumber = UUID.randomUUID().toString.take(11),
-        make = UUID.randomUUID().toString,
-        model = UUID.randomUUID().toString,
+        regNumber = s"${randomLetters(1)}${randomNumbersString(3)}${randomLetters(2)}${randomNumbersString(3)}",
+        make = make,
+        model = randomModel(make),
         rate = Random.nextInt(5000) + 1000,
-        mileage = 1000,
+        mileage = mileage,
+        service = if (Random.nextFloat() < 0.7) Some(mileage match {
+          case x if x <= 20000 => 20000
+          case x if x > 20000 && x <= 45000 => 45000
+          case x if x > 45000 && x <= 90000 => 90000
+          case _ => 110000
+        }) else None,
         creationDate = Some(onDate)
       )
       repo.create(car)

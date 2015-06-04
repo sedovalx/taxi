@@ -20,6 +20,7 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
   override protected implicit val reads: Reads[Tables.Payment] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "changeTime").read[Timestamp] and
+      (JsPath \ "presence").readNullable[String].map { case Some(s) => s.toBoolean case None => false } and
       (JsPath \ "amount").read(min[BigDecimal](0)) and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
@@ -32,6 +33,7 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
     override def writes(o: Tables.Payment) = Json.obj(
       "id" -> o.id.toString,
       "rent" -> o.rentId.toString,
+      "presence" -> o.presence.toString,
       "changeTime" -> dateIso8601Format.format(o.changeTime),
       "amount" -> o.amount.toString,
       "creationDate" -> o.creationDate.map { d => dateIso8601Format.format(d)},
@@ -43,7 +45,8 @@ class PaymentController(implicit injector: Injector) extends EntityController[Pa
   }
   override protected implicit val filterReads: Reads[Tables.PaymentFilter] = (
     (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
-      (JsPath \ "payDate").readNullable[Timestamp] and
+      (JsPath \ "changeTime").readNullable[Timestamp] and
+      (JsPath \ "presence").readNullable[String].map { s => s.map(_.toBoolean) } and
       (JsPath \ "amount").readNullable[BigDecimal] and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and

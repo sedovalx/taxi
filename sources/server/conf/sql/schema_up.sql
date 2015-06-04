@@ -85,6 +85,7 @@ CREATE TABLE payment
 (
   id SERIAL PRIMARY KEY NOT NULL,
   change_time TIMESTAMP NOT NULL,
+  presence BOOLEAN NOT NULL DEFAULT TRUE,
   amount NUMERIC(8) NOT NULL,
   comment VARCHAR(5000),
   creator_id INT,
