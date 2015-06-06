@@ -1,5 +1,5 @@
 import DS from "ember-data";
-import BaseController from "client/controllers/base/base-controller"
+import BaseController from "client/controllers/base/base-controller";
 
 export default BaseController.extend({
   rentItems: function() {

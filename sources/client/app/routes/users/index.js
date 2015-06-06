@@ -19,8 +19,9 @@ export default ProtectedRoute.extend({
     }
   },
   model: function(params) {
+    // TODO: это тут что такое делается?
     for(var prop in params){
-      if (params.hasOwnProperty(prop) && !params[prop]){
+      if (!params[prop]){
         delete params[prop];
       }
     }

@@ -1,6 +1,6 @@
 import Ember from "ember";
 import DS from "ember-data";
-import BaseController from "client/controllers/base/base-controller"
+import BaseController from "client/controllers/base/base-controller";
 import statuses from "client/models/rent-statuses";
 
 export default BaseController.extend({

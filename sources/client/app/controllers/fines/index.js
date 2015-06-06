@@ -1,12 +1,8 @@
 import Ember from "ember";
+import ListController from "client/controllers/base/list-controller";
 
-export default Ember.ArrayController.extend({
+export default ListController.extend({
   sortProperties: ["changeTime", "rent.displayName"],
-  selectedRow: null,
-  selectionEmpty: function(){
-    return this.get("selectedRow") == null;
-  }.property("selectedRow"),
-
   actions: {
     edit: function(){
       let row = this.get("selectedRow");

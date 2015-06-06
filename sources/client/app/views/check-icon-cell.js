@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Table.TableCell.extend({
-  templateName: 'icon-cell',
+  templateName: 'views/icon-cell',
   classNames: ['ember-table-cell', 'icon-cell'],
   iconClass: 'fa fa-check',
 

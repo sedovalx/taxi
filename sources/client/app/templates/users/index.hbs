@@ -7,16 +7,16 @@
       <div class="collapse filter-body" id="filter">
           <div class="well">
               <form class="form-horizontal">
-                {{property-row title="Логин" value=filterLogin}}
-                {{property-row title="Фамилия" value=filterLastName}}
-                {{property-row title="Имя" value=filterFirstName}}
-                {{property-row title="Отчество" value=filterMiddleName}}
+                {{property-row title="Логин" value=filter.login}}
+                {{property-row title="Фамилия" value=filter.lastName}}
+                {{property-row title="Имя" value=filter.firstName}}
+                {{property-row title="Отчество" value=filter.middleName}}
                 {{#property-row title="Роль" errors=errors.role}}
                   {{ember-selectize
                   content=allRoles
                   optionValuePath="content.id"
                   optionLabelPath="content.label"
-                  selection=filterRole
+                  selection=filter.role
                   placeholder="Роль"
                   }}
                 {{/property-row}}

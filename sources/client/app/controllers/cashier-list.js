@@ -1,7 +1,12 @@
 import Ember from 'ember';
+import ListController from "client/controllers/base/list-controller";
 
-export default Ember.ArrayController.extend({
-  selectedRow: null,
+export default ListController.extend({
+  actions: {
+    createPayment: function(){
+      let selected = this.get("selectedRow");
+    }
+  },
   columns: function() {
     return [
       Ember.Table.ColumnDefinition.create({

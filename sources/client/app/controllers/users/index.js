@@ -1,10 +1,10 @@
 import Ember from "ember";
 import roles from "client/models/roles";
+import ListController from "client/controllers/base/list-controller";
 
-export default Ember.ArrayController.extend({
+export default ListController.extend({
   queryParams: ['login', 'role','lastName','firstName','middleName'],
   sortProperties: ["lastName", "firstName", "middleName", "login"],
-  selectedRow: null,
 
   //roles model
   roles: roles,
@@ -31,16 +31,15 @@ export default Ember.ArrayController.extend({
   firstName: '',
   middleName: '',
 
-  //variables for filter forms on templates
-  filterLastName: '',
-  filterFirstName: '',
-  filterMiddleName: '',
-  filterRole: '',/*{ id: 0, label: "Все" },*/
-  filterLogin: '',
+  // связанные элементы лучше группировать
+  filter: {
+    lastName: '',
+    firstName: '',
+    middleName: '',
+    login: '',
+    role: ''
+  },
 
-  selectionEmpty: function(){
-    return this.get("selectedRow") == null;
-  }.property("selectedRow"),
   actions: {
     edit: function(){
       let row = this.get("selectedRow");
@@ -52,27 +51,23 @@ export default Ember.ArrayController.extend({
       this.transitionToRoute("users.new");
     },
     remove: function(){
-	  let row = this.get("selectedRow");
-	  if (row && confirm("Вы подтверждаете удаление пользователя?")) {
-		row.deleteRecord();
-		row.save();
-	  }
+      let row = this.get("selectedRow");
+      if (row && confirm("Вы подтверждаете удаление пользователя?")) {
+        row.deleteRecord();
+        row.save();
+      }
     },
     filterTable: function(){
-      let filterLastName = this.get('filterLastName');
-      let filterFirstName = this.get('filterFirstName');
-      let filterMiddleName = this.get('filterMiddleName');
-      let filterRole = this.get('filterRole.id');
-      let filterLogin = this.get('filterLogin');
-      let filter = {};
-      filter.lastName = filterLastName;
-      filter.firstName = filterFirstName;
-      filter.middleName = filterMiddleName;
-      filter.login = filterLogin;
-      filter.role = filterRole;
+      let filter = {
+        lastName: this.get('filter.lastName'),
+        firstName: this.get('filter.firstName'),
+        middleName: this.get('filter.middleName'),
+        login: this.get('filter.login'),
+        role: this.get('filter.role.id')
+      };
 
-      for (var prop in filter){
-        if (!filter[prop]){
+      for (var prop in filter) {
+        if (filter.hasOwnProperty(prop) && !filter[prop]){
           filter[prop] = '';
           this.set(prop, '');
         }
@@ -80,11 +75,11 @@ export default Ember.ArrayController.extend({
       this.transitionToRoute("users", {queryParams: filter});
     },
     clearFilter: function(){
-      this.set('filterLastName','');
-      this.set('filterFirstName','');
-      this.set('filterMiddleName','');
-      this.set('filterRole','');
-      this.set('filterLogin','');
+      this.set('filter.lastName','');
+      this.set('filter.firstName','');
+      this.set('filter.middleName','');
+      this.set('filter.role','');
+      this.set('filter.login','');
       this.set('lastName','');
       this.set('firstName','');
       this.set('middleName','');
