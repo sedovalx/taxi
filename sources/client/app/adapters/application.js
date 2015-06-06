@@ -11,12 +11,12 @@ export default DS.RESTAdapter.extend({
     } else {
       return error;
     }
-  },
-  pathForType: function(modelName) {
-    if (modelName === "cashierList"){
-      return "reports/q-cashier-list";
-    } else {
-      return this._super(modelName);
-    }
   }
+  //pathForType: function(modelName) {
+  //  if (modelName === "cashierList"){
+  //    return "reports/q-cashier-list";
+  //  } else {
+  //    return this._super(modelName);
+  //  }
+  //}
 });
