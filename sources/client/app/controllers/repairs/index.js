@@ -7,7 +7,7 @@ export default ListController.extend({
     edit: function(){
       let row = this.get("selectedRow");
       if (row) {
-        this.transitionToRoute("repair.edit", row.id);
+        this.transitionToRoute("repairs.edit", row.id);
       }
     },
     create: function(){

@@ -44,7 +44,7 @@ export default ListController.extend({
     edit: function(){
       let row = this.get("selectedRow");
       if (row) {
-        this.transitionToRoute("user.edit", row.id);
+        this.transitionToRoute("users.edit", row.id);
       }
     },
     create: function(){

@@ -6,68 +6,40 @@ let Router = Ember.Router.extend({
 });
 
 Router.map(function() {
-  //this.resource("users", function(){
-  //  this.route("new");
-  //  this.route("edit", { path: "/:user_id/edit" })
-  //});
-  this.resource("users", function() {
+  this.resource("users", function(){
     this.route("new");
-  });
-  this.resource("user", { path: "/users/:user_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:user_id/edit" });
   });
   this.resource("drivers", function() {
     this.route("new");
-  });
-  this.resource("driver", { path: "/drivers/:driver_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:driver_id/edit" });
   });
   this.resource("cars", function() {
     this.route("new");
-  });
-  this.resource("car", { path: "/cars/:car_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:car_id/edit" });
   });
   this.resource("rents", function() {
     this.route("new");
+    this.route("edit", { path: "/:rent_id/edit" });
     this.route("newPayment", { path: "/:rent_id/payments/new"});
-  });
-  this.resource("rent", { path: "/rents/:rent_id" }, function() {
-    this.route("edit");
   });
   this.resource("payments", function() {
     this.route("new");
-  });
-  this.resource("payment", { path: "/payments/:payment_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:payment_id/edit" });
   });
   this.resource("fines", function() {
     this.route("new");
-  });
-  this.resource("fine", { path: "/fines/:fine_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:fine_id/edit" });
   });
   this.resource("repairs", function() {
     this.route("new");
-  });
-  this.resource("repair", { path: "/repairs/:repair_id" }, function() {
-    this.route("edit");
+    this.route("edit", { path: "/:repair_id/edit" });
   });
   this.resource("expenses", function() {
     this.route("new");
+    this.route("edit", { path: "/:expense_id/edit" });
   });
-  this.resource("expense", { path: "/expenses/:expense_id" }, function() {
-    this.route("edit");
-  });
-
   this.resource("cashier-list");
-
-  this.resource("cashier", function() {
-    this.route("new");
-  });
-  this.resource("cashier", { path: "/expenses/:expense_id" }, function() {
-    this.route("edit");
-  });
   this.route('login');
 });
 
