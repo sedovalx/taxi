@@ -18,13 +18,13 @@ var RentModel = DS.Model.extend({
   }.property("status"),
   driverDisplayName: function(){
     return this.get("driver").get("displayName");
-  }.property("model","driver"),
+  }.property("model", "driver.displayName"),
   carDisplayName: function(){
     return this.get("car").get("displayName");
-  }.property("model","car"),
+  }.property("model", "car.displayName"),
   displayName: function(){
     return this.get("driverDisplayName") + " - " + this.get("carDisplayName");
-  }.property("driverDisplayName","carDisplayName")
+  }.property("driverDisplayName", "carDisplayName")
 });
 
 export default RentModel;

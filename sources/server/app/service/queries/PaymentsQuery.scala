@@ -3,11 +3,12 @@ package service.queries
 import models.generated.Tables.PaymentFilter
 import play.api.libs.json.{JsValue, _}
 import repository.PaymentRepo
-import scaldi.{Injectable, Injector}
+import scaldi.Injector
 import serialization.PaymentSerializer
+
 import scala.util.Try
 
-class PaymentsQuery(implicit injector: Injector) extends CodeQuery with Injectable {
+class PaymentsQuery(implicit injector: Injector) extends CodeQuery {
   override val name: String = "q-payment-list"
   private val serializer = inject [PaymentSerializer]
   import serializer._

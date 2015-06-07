@@ -9,8 +9,12 @@ var DriversModel = DS.Model.extend({
   firstName: attr("string"),
   middleName: attr("string"),
   fio: function() {
-    return this.get('lastName') + ' ' + this.get('firstName') + ' ' + this.get('middleName');
-  }.property('lastName','firstName', 'middleName'),
+    let fio = this.get('lastName') + ' ' + this.get('firstName');
+    if (this.get('middleName')){
+      fio += ' ' + this.get('middleName');
+    }
+    return fio;
+  }.property('lastName', 'firstName', 'middleName'),
   pass: attr("string"),
   address: attr("string"),
   license: attr("string"),
@@ -23,7 +27,7 @@ var DriversModel = DS.Model.extend({
   editor: DS.belongsTo("user", {inverse: null, async: true}),
   displayName: function(){
     return this.get('fio') + ' ' + this.get('pass');
-  }.property('fio','pass')
+  }.property('fio', 'pass')
 });
 
 export default DriversModel;

@@ -1,5 +1,7 @@
 package service.queries
 
-abstract class CodeQuery extends QueryImpl {
+import scaldi.Injectable
+
+abstract class CodeQuery extends QueryImpl with Injectable {
 
 }
