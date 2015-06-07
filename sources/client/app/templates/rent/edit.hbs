@@ -10,10 +10,10 @@
         }}
       {{/property-row}}
       {{#property-row title="Водитель" errors=errors.driver}}
-        {{input value=driver.displayName readonly="true"}}
+        {{input value=driverDisplayName readonly="true"}}
       {{/property-row}}
       {{#property-row title="Автомобиль" errors=errors.car}}
-        {{input value=car.displayName readonly="true"}}
+        {{input value=carDisplayName readonly="true"}}
       {{/property-row}}
       {{property-row title="Залог" value=deposit errors=errors.deposit}}
       {{property-row title="Примечания" value=comment}}

@@ -44,6 +44,8 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
   protected def afterCreate(json: JsValue, entity: E, identity: Account): E = entity
   protected def afterUpdate(json: JsValue, entity: E, identity: Account): E = entity
 
+  protected def afterSerialization(entity: Option[E], json: JsValue): JsValue = json
+
   private def tryParseFilter(json: JsValue): Option[F] = {
     json.validate[F] match {
       case JsSuccess(f, _) => Some(f)
@@ -64,7 +66,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
   def getById(id: Int) = SecuredAction.async { implicit request =>
     entityService.findById(id) map { entity =>
       val eJson = makeJson[Option[E]](entityName, entity)
-      Ok(eJson)
+      Ok(afterSerialization(entity, eJson))
     }
   }
 

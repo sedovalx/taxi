@@ -15,7 +15,9 @@ var PaymentModel = DS.Model.extend({
   editDate: attr("date"),
   creator: DS.belongsTo("user", {inverse: null, async: true}),
   editor: DS.belongsTo("user", {inverse: null, async: true}),
-  presence: attr("boolean"),
+  presence: attr("boolean", {
+    defaultValue: true
+  }),
 
   displayChangeTime: function(){
     return moment(this.get("changeTime")).format("DD-MM-YYYY");

@@ -16,12 +16,8 @@ var RentModel = DS.Model.extend({
     let status = statuses.filter(r => r.id === this.get("status"))[0];
     return status ? status.label : this.get("status");
   }.property("status"),
-  driverDisplayName: function(){
-    return this.get("driver").get("displayName");
-  }.property("model", "driver.displayName"),
-  carDisplayName: function(){
-    return this.get("car").get("displayName");
-  }.property("model", "car.displayName"),
+  driverDisplayName: attr("string"),
+  carDisplayName: attr("string"),
   displayName: function(){
     return this.get("driverDisplayName") + " - " + this.get("carDisplayName");
   }.property("driverDisplayName", "carDisplayName")

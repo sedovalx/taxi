@@ -1,9 +1,10 @@
 import ProtectedRoute from "client/routes/base/protected";
+import $ from "jquery";
 
 export default ProtectedRoute.extend({
   model: function() {
-    this.store.find("car");
-    this.store.find("driver");
-    return this.store.find("rent");
+    return $.getJSON("/api/reports/q-rent").then(rents => {
+      return rents.map(r => this.store.push("rent", r));
+    });
   }
 });
