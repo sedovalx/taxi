@@ -1,5 +1,8 @@
 import DS from 'ember-data';
 
+/* global moment */
+// No import for moment, it's a global called `moment`
+
 let attr = DS.attr;
 export default DS.Model.extend({
   changeTime: attr("date"),

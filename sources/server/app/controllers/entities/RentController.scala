@@ -4,10 +4,10 @@ import models.entities.RentStatus.RentStatus
 import models.generated.Tables
 import models.generated.Tables.{Account, Rent, RentFilter, RentTable}
 import play.api.libs.json._
-import repository.{DriverRepo, CarRepo, RentRepo}
+import repository.RentRepo
 import scaldi.Injector
 import serialization.RentSerializer
-import service.RentService
+import service.{CarService, DriverService, RentService}
 
 class RentController(implicit injector: Injector) extends EntityController[Rent, RentTable, RentRepo, RentFilter, RentSerializer]()(injector) {
   override protected val entityService = inject [RentService]
@@ -16,6 +16,9 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
 
   override protected val entitiesName: String = "rents"
   override protected val entityName: String = "rent"
+
+  private val driverService = inject[DriverService]
+  private val carService = inject[CarService]
 
   override protected def afterCreate(json: JsValue, entity: Tables.Rent, identity: Account): Tables.Rent = {
     val rent = super.afterCreate(json, entity, identity)
@@ -44,25 +47,9 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
       case None => super.afterSerialization(rent, json)
       case Some(r) =>
         val status = entityService.getCurrentStatus(r)
-        val carName = getCarDisplayName(r)
-        val driverName = getDriverDisplayName(r)
+        val carName = carService.getDisplayName(r.carId)
+        val driverName = driverService.getDisplayName(r.driverId)
         json
     }
-  }
-
-  private def getCarDisplayName(rent: Rent): String = {
-    val carRepo = inject[CarRepo]
-    val Some(car) = carRepo.findById(rent.carId)
-    s"${car.model} ${car.regNumber} (${car.rate}})"
-  }
-
-  private def getDriverDisplayName(rent: Rent): String = {
-    val driverRepo = inject[DriverRepo]
-    val Some(driver) = driverRepo.findById(rent.driverId)
-    s"${driver.lastName} ${driver.firstName}" +
-      (driver.middleName match {
-        case Some(s) => " " + s
-        case None => ""
-      })
   }
 }
