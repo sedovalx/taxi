@@ -1,8 +1,5 @@
 package controllers.entities
 
-import java.sql.Timestamp
-import java.text.SimpleDateFormat
-
 import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -10,31 +7,27 @@ import controllers.BaseController
 import models.entities.Entity
 import models.generated.Tables
 import models.generated.Tables.Account
+import play.api.db.slick.Config.driver.simple._
 import play.api.libs.json._
-import play.api.mvc.{Result, BodyParsers}
+import play.api.mvc.{BodyParsers, Result}
 import repository.GenericCRUD
 import scaldi.Injector
+import serialization.Serializer
 import service.EntityService
-import utils.extensions.DateUtils
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import scala.concurrent.Future
-import play.api.db.slick.Config.driver.simple._
 import utils.serialization.FormatJsError._
 
-abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T, F], F](implicit val injector: Injector)
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+
+abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T, F], F, S <: Serializer[E, F]](implicit val injector: Injector)
   extends BaseController with Silhouette[Account, JWTAuthenticator] {
 
   protected val entityService : EntityService[E, T, G, F]
+  protected val serializer: S
+
+  import serializer._
 
   override protected def env: Environment[Tables.Account, JWTAuthenticator] = inject [Environment[Tables.Account, JWTAuthenticator]]
-
-  protected val dateIso8601Format = DateUtils.iso8601Format
-
-  protected implicit val filterReads : Reads[F]
-  protected implicit val reads : Reads[E]
-  protected implicit val writes : Writes[E]
-  protected implicit val timestampReads: Reads[Timestamp] = JsPath.read[String].map { s => new Timestamp(dateIso8601Format.parse(s).getTime) }
 
   protected val entityName: String //example: "driver"
   protected val entitiesName: String //example: "drivers"

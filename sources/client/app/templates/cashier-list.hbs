@@ -6,4 +6,15 @@
       hasFooter=false
       selection=selectedRow}}
     </div>
+    <div class="commands-panel btn-group pull-right" role="group">
+        <button type="button" class="btn btn-primary" {{action "createPayment"}}  {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-plus"></i> Внести платеж
+        </button>
+        <button type="button" class="btn btn-primary" {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-taxi"></i> Создать штраф
+        </button>
+        <button type="button" class="btn btn-primary" {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-wrench"></i> Создать ремонт
+        </button>
+    </div>
 </div>

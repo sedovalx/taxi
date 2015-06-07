@@ -1,9 +1,11 @@
 import ProtectedRoute from "client/routes/base/protected";
+import $ from "jquery";
 
 export default ProtectedRoute.extend({
-  model: function() {
-    this.store.find("car");
-    this.store.find("driver");
-    return this.store.find("payment");
+  model: function(params, transition) {
+    $.getJSON("/api/reports/q-payment-list", { rent: transition.params.rent.rent_id }).then(function(data){
+      console.log(data);
+    });
+    //return this.store.find("payment", { rent: transition.params.rent.rent_id });
   }
 });

@@ -100,7 +100,7 @@ class RentControllerTest extends BaseControllerSpecification with org.specs2.mat
     // check:
     statusMustBeOK(readResponse)
     contentAsString(readResponse) must /("rents") /# 0 /("status" -> "SettlingUp")
-  }
+  }.pendingUntilFixed("read method doesn't suppose to return status now")
 
   "should remove status history on rent deletion" in new WithFakeDB {
     // setup:

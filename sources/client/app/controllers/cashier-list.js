@@ -5,8 +5,13 @@ export default ListController.extend({
   actions: {
     createPayment: function(){
       let selected = this.get("selectedRow");
+      this.transitionToRoute("payments.new", selected.get("rentId"));
     }
   },
+  selectionRentIsEmpty: function(){
+    let selected = this.get("selectedRow");
+    return selected == null ? true : selected.get("rentId") == null;
+  }.property("selectedRow"),
   columns: function() {
     return [
       Ember.Table.ColumnDefinition.create({

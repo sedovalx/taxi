@@ -36,12 +36,6 @@ export default ListController.extend({
       headerCellName: "Сумма, р",
       contentPath: "amount"
     });
-    let rentColumn = Ember.Table.ColumnDefinition.create({
-      savedWidth: 200,
-      canAutoResize: true,
-      headerCellName: "Аренда",
-      contentPath: "rent.displayName"
-    });
     let presenceColumn = Ember.Table.ColumnDefinition.create({
       savedWidth: 200,
       canAutoResize: true,
@@ -56,7 +50,7 @@ export default ListController.extend({
       headerCellName: "Примечания",
       contentPath: "comment"
     });
-    return [payDateColumn, amountColumn, rentColumn, presenceColumn, commentColumn];
+    return [payDateColumn, amountColumn, presenceColumn, commentColumn];
   }.property(),
   payments: function(){
     return this;

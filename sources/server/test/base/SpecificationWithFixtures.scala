@@ -36,7 +36,8 @@ abstract class SpecificationWithFixtures extends Specification  with Injectable 
         new SilhouetteModule ::
         new ServicesModule ::
         new QueryModule ::
-        new RepoModule
+        new RepoModule ::
+        new SerializationModule
 
     override def configuration = Configuration(ConfigFactory.load())
   }
