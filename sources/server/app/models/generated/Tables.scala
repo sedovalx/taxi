@@ -15,6 +15,7 @@ trait Tables {
   /** DDL for all tables. Call .create to execute. */
   lazy val ddl = CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ ExpenseTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl ++ SystemUserTable.ddl
   
+
   /** Entity class storing rows of table CarTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
    *  @param regNumber Database column reg_number DBType(varchar), Length(12,true)
