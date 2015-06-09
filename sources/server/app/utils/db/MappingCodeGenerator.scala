@@ -1,6 +1,6 @@
-package repository.db
+package utils.db
 
-import java.io.{BufferedWriter, FileWriter, File}
+import java.io.{BufferedWriter, File, FileWriter}
 
 import scala.slick.model.Model
 
@@ -67,7 +67,6 @@ trait ${container} {
           entity =>
           override def parents: Seq[String] = Seq(s"Entity[${entity.name.toString}]") ++ (entity.name.toString match {
             case "SystemUser" => Seq("Identity")
-            case "Payment" | "Fine" | "Repair" => Seq("BalanceChange")
             case _ => Nil
           })
 
@@ -126,6 +125,7 @@ trait ${container} {
             if (table.TableClass.name.toString == "SystemUserTable" && column.name.toString == "role") parseType("Role")
             // аналогично для rent_status.status
             else if (table.TableClass.name.toString == "RentStatusTable" && column.name.toString == "status") parseType("models.entities.RentStatus.RentStatus")
+            else if (table.TableClass.name.toString == "OperationTable" && column.name.toString == "accountType") parseType("models.entities.AccountType.AccountType")
             else super.rawType.toString
           }
         }

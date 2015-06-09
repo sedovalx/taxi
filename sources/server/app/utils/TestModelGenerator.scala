@@ -3,8 +3,10 @@ package utils
 import java.sql.Timestamp
 import java.util.UUID
 
+import models.entities.AccountType.AccountType
+import models.entities.AccountType.AccountType
 import models.generated.Tables._
-import models.entities.{RentStatus => RS}
+import models.entities.{RentStatus => RS, AccountType}
 import repository._
 import repository.db.DbAccessor
 import scaldi.{Injectable, Injector}
@@ -28,9 +30,7 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
   }
 
   def deleteAll(implicit session: Session): Unit = {
-    PaymentTable.delete.run
-    FineTable.delete.run
-    RepairTable.delete.run
+    OperationTable.delete.run
     RentStatusTable.delete.run
     RentTable.delete.run
     DriverTable.delete.run
@@ -68,11 +68,12 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
     }
   }
 
-  private def createPayment(rentId: Int, startTime: Timestamp, endTime: Timestamp)(implicit session: Session): Unit = {
+  private def createOperation(accountType: AccountType, rentId: Int, startTime: Timestamp, endTime: Timestamp)(implicit session: Session): Unit = {
     val creationTime = getRandomDateBetween(startTime, endTime)
-    val repo = inject [PaymentRepo]
-    repo.create(Payment(
+    val repo = inject [OperationRepo]
+    repo.create(Operation(
       id = 0,
+      accountType = accountType,
       rentId = rentId,
       changeTime = creationTime,
       amount = BigDecimal(Random.nextDouble()*4000 + 1000),
@@ -81,28 +82,16 @@ class TestModelGenerator(implicit val injector: Injector) extends Injectable wit
     ))
   }
 
+  private def createPayment(rentId: Int, startTime: Timestamp, endTime: Timestamp)(implicit session: Session): Unit = {
+    createOperation(AccountType.Rent, rentId, startTime, endTime)
+  }
+
   private def createFine(rentId: Int, startTime: Timestamp, endTime: Timestamp)(implicit session: Session): Unit = {
-    val creationTime = getRandomDateBetween(startTime, endTime)
-    val repo = inject [FineRepo]
-    repo.create(Fine(
-      id = 0,
-      rentId = rentId,
-      changeTime = creationTime,
-      amount = BigDecimal(Random.nextDouble()*500 + 100),
-      creationDate = Some(creationTime)
-    ))
+    createOperation(AccountType.Fine, rentId, startTime, endTime)
   }
 
   private def createRepair(rentId: Int, startTime: Timestamp, endTime: Timestamp)(implicit session: Session): Unit = {
-    val creationTime = getRandomDateBetween(startTime, endTime)
-    val repo = inject [RepairRepo]
-    repo.create(Repair(
-      id = 0,
-      rentId = rentId,
-      changeTime = creationTime,
-      amount = BigDecimal(Random.nextDouble()*1500 + 500),
-      creationDate = Some(creationTime)
-    ))
+    createOperation(AccountType.Repair, rentId, startTime, endTime)
   }
 
   def generateRentStates(closedPercent: Int)(implicit session: Session): Unit = {

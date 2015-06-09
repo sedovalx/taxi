@@ -3,6 +3,9 @@ package helpers
 import java.sql.Timestamp
 import java.util.UUID
 
+import models.entities.AccountType
+import models.entities.AccountType.AccountType
+import models.entities.AccountType.AccountType
 import models.entities.RentStatus.{RentStatus => RS}
 import models.generated.Tables._
 import repository._
@@ -69,10 +72,11 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
     obj.copy(id = statusId)
   }
 
-  def payment(amount: BigDecimal, creationTime: String, changeTime: String)(implicit rent: Rent): Payment = {
-    val repo = inject [PaymentRepo]
-    val change = Payment(
+  def operation(accountType: AccountType, amount: BigDecimal, creationTime: String, changeTime: String)(implicit rent: Rent): Operation = {
+    val repo = inject [OperationRepo]
+    val change = Operation(
       id = 0,
+      accountType = accountType,
       changeTime = changeTime,
       amount = amount,
       creationDate = Some(creationTime),
@@ -82,39 +86,29 @@ class DomainDSL(implicit injector: Injector) extends Injectable with DbAccessor 
     change.copy(id = changeId)
   }
 
-  def payment(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Payment =
+  def operation(accountType: AccountType, amount: BigDecimal, creationTime: String)(implicit rent: Rent): Operation = {
+    operation(accountType, amount, creationTime, creationTime)
+  }
+
+  def payment(amount: BigDecimal, creationTime: String, changeTime: String)(implicit rent: Rent): Operation = {
+    operation(AccountType.Rent, amount, creationTime, changeTime)
+  }
+
+  def payment(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Operation =
     payment(amount, creationTime, creationTime)(rent)
 
-  def repair(amount: BigDecimal, creationTime: String, changeTime: String)(implicit rent: Rent): Repair = {
-    val repo = inject [RepairRepo]
-    val change = Repair(
-      id = 0,
-      changeTime = changeTime,
-      amount = amount,
-      creationDate = Some(creationTime),
-      rentId = rent.id
-    )
-    val changeId = withDb { session => repo.create(change)(session) }
-    change.copy(id = changeId)
+  def repair(amount: BigDecimal, creationTime: String, changeTime: String)(implicit rent: Rent): Operation = {
+    operation(AccountType.Repair, amount, creationTime, changeTime)
   }
 
-  def repair(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Repair =
+  def repair(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Operation =
     repair(amount, creationTime, creationTime)(rent)
 
-  def fine(amount: BigDecimal,creationTime: String, changeTime: String)(implicit rent: Rent): Fine = {
-    val repo = inject [FineRepo]
-    val change = Fine(
-      id = 0,
-      changeTime = changeTime,
-      amount = amount,
-      creationDate = Some(creationTime),
-      rentId = rent.id
-    )
-    val changeId = withDb { session => repo.create(change)(session) }
-    change.copy(id = changeId)
+  def fine(amount: BigDecimal,creationTime: String, changeTime: String)(implicit rent: Rent): Operation = {
+    operation(AccountType.Fine, amount, creationTime, changeTime)
   }
 
-  def fine(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Fine =
+  def fine(amount: BigDecimal, creationTime: String)(implicit rent: Rent): Operation =
     fine(amount, creationTime, creationTime)(rent)
 }
 

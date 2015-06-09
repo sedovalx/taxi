@@ -46,24 +46,12 @@ GET           /api/rents/:id              @controllers.entities.RentController.g
 POST          /api/rents                  @controllers.entities.RentController.create
 PUT           /api/rents/:id              @controllers.entities.RentController.update(id: Int)
 DELETE        /api/rents/:id              @controllers.entities.RentController.delete(id: Int)
-# Payment routes
-GET           /api/payments               @controllers.entities.PaymentController.read
-GET           /api/payments/:id           @controllers.entities.PaymentController.getById(id: Int)
-POST          /api/payments               @controllers.entities.PaymentController.create
-PUT           /api/payments/:id           @controllers.entities.PaymentController.update(id: Int)
-DELETE        /api/payments/:id           @controllers.entities.PaymentController.delete(id: Int)
-# Fine routes
-GET           /api/fines                  @controllers.entities.FineController.read
-GET           /api/fines/:id              @controllers.entities.FineController.getById(id: Int)
-POST          /api/fines                  @controllers.entities.FineController.create
-PUT           /api/fines/:id              @controllers.entities.FineController.update(id: Int)
-DELETE        /api/fines/:id              @controllers.entities.FineController.delete(id: Int)
-# Repair routes
-GET           /api/repairs                @controllers.entities.RepairController.read
-GET           /api/repairs/:id            @controllers.entities.RepairController.getById(id: Int)
-POST          /api/repairs                @controllers.entities.RepairController.create
-PUT           /api/repairs/:id            @controllers.entities.RepairController.update(id: Int)
-DELETE        /api/repairs/:id            @controllers.entities.RepairController.delete(id: Int)
+# Operation routes
+GET           /api/operation              @controllers.entities.OperationController.read
+GET           /api/operation/:id          @controllers.entities.OperationController.getById(id: Int)
+POST          /api/operation              @controllers.entities.OperationController.create
+PUT           /api/operation/:id          @controllers.entities.OperationController.update(id: Int)
+DELETE        /api/operation/:id          @controllers.entities.OperationController.delete(id: Int)
 
 # Every other page (should be the last route)
 GET           /*path                      @controllers.IndexController.index(path)

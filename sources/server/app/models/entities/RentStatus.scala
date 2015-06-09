@@ -13,3 +13,5 @@ object RentStatus extends Enumeration {
   // Закрыта
   val Closed = Value("Closed")
 }
+
+
