@@ -1,4 +1,4 @@
-CREATE TABLE account
+CREATE TABLE system_user
 (
   id SERIAL PRIMARY KEY NOT NULL,
   login VARCHAR(254) NOT NULL,
@@ -131,37 +131,37 @@ CREATE TABLE repair
   editor_id INT,
   edit_date TIMESTAMP
 );
-ALTER TABLE account ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE account ADD FOREIGN KEY (editor_id) REFERENCES account (id);
-CREATE UNIQUE INDEX idx_login_uq ON account (login);
-ALTER TABLE car ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE car ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE system_user ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE system_user ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
+CREATE UNIQUE INDEX idx_login_uq ON system_user (login);
+ALTER TABLE car ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE car ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE UNIQUE INDEX unique_reg_number ON car (reg_number);
-ALTER TABLE checkpoint ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE checkpoint ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE checkpoint ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE checkpoint ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE INDEX point_date_index ON checkpoint (point_date);
-ALTER TABLE driver ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE driver ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE driver ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE driver ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE UNIQUE INDEX idx_license_uq ON driver (license);
 CREATE UNIQUE INDEX idx_pass_uq ON driver (pass);
-ALTER TABLE expense ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE expense ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE expense ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE expense ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE UNIQUE INDEX unique_id ON expense (id);
-ALTER TABLE fine ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE fine ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE fine ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE fine ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE fine ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
-ALTER TABLE payment ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE payment ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE payment ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE payment ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE payment ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
-ALTER TABLE rent ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE rent ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE rent ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE rent ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE rent ADD FOREIGN KEY (car_id) REFERENCES car (id);
 ALTER TABLE rent ADD FOREIGN KEY (driver_id) REFERENCES driver (id);
-ALTER TABLE rent_status ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE rent_status ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE rent_status ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE rent_status ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE rent_status ADD FOREIGN KEY (rent_id) REFERENCES rent (id) ON DELETE CASCADE;
 CREATE INDEX change_date_index ON rent_status (change_time);
 CREATE INDEX status_index ON rent_status (status);
-ALTER TABLE repair ADD FOREIGN KEY (creator_id) REFERENCES account (id);
-ALTER TABLE repair ADD FOREIGN KEY (editor_id) REFERENCES account (id);
+ALTER TABLE repair ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE repair ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE repair ADD FOREIGN KEY (rent_id) REFERENCES rent (id);

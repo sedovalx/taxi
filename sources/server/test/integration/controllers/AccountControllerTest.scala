@@ -3,36 +3,36 @@ package integration.controllers
 import base.BaseControllerSpecification
 import models.entities.Role
 import models.entities.Role.Role
-import models.generated.Tables.AccountFilter
+import models.generated.Tables.SystemUserFilter
 import org.specs2.mock.Mockito
 import play.api.db.slick._
 import play.api.libs.json
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.test.Helpers.{defaultAwaitTimeout, _}
-import repository.AccountRepo
+import repository.SystemUserRepo
 import scaldi.Module
-import service.AccountService
+import service.SystemUserService
 
 import scala.concurrent.Future
 
 class AccountControllerTest extends BaseControllerSpecification with org.specs2.matcher.JsonMatchers with Mockito {
 
   "filter test happy path" in new WithFakeDB (new Module {
-    val mockAccountService = mock [AccountService]
-    mockAccountService.read(any[Option[AccountFilter]]) returns Future { Nil }
-    bind [AccountService] to mockAccountService
+    val mockAccountService = mock [SystemUserService]
+    mockAccountService.read(any[Option[SystemUserFilter]]) returns Future { Nil }
+    bind [SystemUserService] to mockAccountService
   }) {
     // setup:
     val url = "/api/users?login=u1&lastName=1&firstName=2&middleName=3&role=Accountant"
-    val expectedFilter = Some(AccountFilter(
+    val expectedFilter = Some(SystemUserFilter(
       login = Some("u1"),
       lastName = Some("1"),
       firstName = Some("2"),
       middleName = Some("3"),
       role = Some(Role.Accountant)
     ))
-    val mockAccountService = inject [AccountService]
+    val mockAccountService = inject [SystemUserService]
     val readRequest = createEmptyAuthenticatedRequest(GET, url)
 
     // when:
@@ -85,7 +85,7 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   }
 
   "should not update password if got null back" in new WithFakeDB {
-    val accounts = inject[AccountRepo]
+    val accounts = inject[SystemUserRepo]
     // setup:
     val login = "user1"
     val createRequest = createCreateRequest(Some(login), Some("password1"), Some(Role.Accountant))
@@ -105,7 +105,7 @@ class AccountControllerTest extends BaseControllerSpecification with org.specs2.
   }
 
   "should do update password if got something" in new WithFakeDB {
-    val accounts = inject[AccountRepo]
+    val accounts = inject[SystemUserRepo]
     // setup:
     val createRequest = createCreateRequest(Some("user1"), Some("password1"), Some(Role.Accountant))
     val Some(createResult) = route(createRequest)

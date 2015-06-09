@@ -5,17 +5,17 @@ import java.sql.Timestamp
 import models.entities.Role
 import models.entities.Role._
 import models.generated.Tables
-import models.generated.Tables.{Account, AccountFilter}
+import models.generated.Tables.{SystemUser, SystemUserFilter}
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import utils.serialization.EnumSerializer
 
-class AccountSerializer extends Serializer[Account, AccountFilter]{
+class SystemUserSerializer extends Serializer[SystemUser, SystemUserFilter]{
   private implicit val enumReads = EnumSerializer.enumReads(Role)
   private implicit val enumWrites = EnumSerializer.enumWrites
 
-  override implicit val filterReads: Reads[Tables.AccountFilter] = (
+  override implicit val filterReads: Reads[Tables.SystemUserFilter] = (
     (JsPath \ "id").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "login").readNullable[String] and
       (JsPath \ "password").readNullable[String] and
@@ -28,9 +28,9 @@ class AccountSerializer extends Serializer[Account, AccountFilter]{
       (JsPath \ "editDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
-    )(AccountFilter.apply _)
+    )(SystemUserFilter.apply _)
 
-  override implicit val reads: Reads[Tables.Account] = (
+  override implicit val reads: Reads[Tables.SystemUser] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "login").read(minLength[String](3)) and
       (JsPath \ "password").readNullable(minLength[String](8)).map(o => o.orNull) and
@@ -43,10 +43,10 @@ class AccountSerializer extends Serializer[Account, AccountFilter]{
       (JsPath \ "editDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
-    )(Account.apply _)
+    )(SystemUser.apply _)
 
-  override implicit val writes: Writes[Tables.Account] = new Writes[Account] {
-    def writes(o: Account) = Json.obj(
+  override implicit val writes: Writes[Tables.SystemUser] = new Writes[SystemUser] {
+    def writes(o: SystemUser) = Json.obj(
       "id" -> o.id.toString,
       "login" -> o.login,
       "password" -> JsNull,

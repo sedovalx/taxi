@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.BaseController
 import models.entities.Entity
 import models.generated.Tables
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.db.slick.Config.driver.simple._
 import play.api.libs.json._
 import play.api.mvc.{BodyParsers, Result}
@@ -20,14 +20,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[Int] }, G <: GenericCRUD[E, T, F], F, S <: Serializer[E, F]](implicit val injector: Injector)
-  extends BaseController with Silhouette[Account, JWTAuthenticator] {
+  extends BaseController with Silhouette[SystemUser, JWTAuthenticator] {
 
   protected val entityService : EntityService[E, T, G, F]
   protected val serializer: S
 
   import serializer._
 
-  override protected def env: Environment[Tables.Account, JWTAuthenticator] = inject [Environment[Tables.Account, JWTAuthenticator]]
+  override protected def env: Environment[Tables.SystemUser, JWTAuthenticator] = inject [Environment[Tables.SystemUser, JWTAuthenticator]]
 
   protected val entityName: String //example: "driver"
   protected val entitiesName: String //example: "drivers"
@@ -39,10 +39,10 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Column[
   protected def onCreateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка создания объекта", err.toString))
   protected def onUpdateError(entity: E, err: Throwable): Result = BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
 
-  protected def beforeCreate(json: JsValue, entity: E, identity: Account): E = entity
-  protected def beforeUpdate(entityId: Int, json: JsValue, entity: E, identity: Account): E = copyEntityWithId(entity, entityId)
-  protected def afterCreate(json: JsValue, entity: E, identity: Account): E = entity
-  protected def afterUpdate(json: JsValue, entity: E, identity: Account): E = entity
+  protected def beforeCreate(json: JsValue, entity: E, identity: SystemUser): E = entity
+  protected def beforeUpdate(entityId: Int, json: JsValue, entity: E, identity: SystemUser): E = copyEntityWithId(entity, entityId)
+  protected def afterCreate(json: JsValue, entity: E, identity: SystemUser): E = entity
+  protected def afterUpdate(json: JsValue, entity: E, identity: SystemUser): E = entity
 
   protected def afterSerialization(entity: Option[E], json: JsValue): JsValue = json
 

@@ -7,5 +7,5 @@ DROP TABLE car;
 DROP TABLE driver;
 DROP TABLE checkpoint;
 DROP TABLE expense;
-DROP TABLE account;
+DROP TABLE system_user;
 DROP TABLE play_evolutions;

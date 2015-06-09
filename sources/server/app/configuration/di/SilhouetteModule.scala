@@ -7,7 +7,7 @@ import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticator, JWTAuth
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import com.mohiva.play.silhouette.impl.util.{BCryptPasswordHasher, SecureRandomIDGenerator}
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.Play
 import play.api.Play.current
 import scaldi.Module
@@ -61,12 +61,12 @@ class SilhouetteModule extends Module {
   bind[DelegableAuthInfoService] toProvider new DelegableAuthInfoService(inject[PasswordInfoService])
 
 
-  binding toProvider Environment[Account, JWTAuthenticator](
+  binding toProvider Environment[SystemUser, JWTAuthenticator](
       inject [LoginInfoService],
       inject [AuthenticatorService[JWTAuthenticator]],
       inject [Map[String, Provider]],
       inject [EventBus]
   )
 
-  bind [IdentityService[Account]] to  injected[LoginInfoServiceImpl]
+  bind [IdentityService[SystemUser]] to  injected[LoginInfoServiceImpl]
 }

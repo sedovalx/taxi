@@ -3,14 +3,14 @@ package base
 import java.util.concurrent.TimeUnit
 
 import models.entities.Role
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.http.HeaderNames
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import play.api.test.{FakeRequest, Helpers, RouteInvokers, Writeables}
 import scaldi.Injector
-import service.AccountService
+import service.SystemUserService
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
@@ -59,8 +59,8 @@ class BaseControllerSpecification extends SpecificationWithFixtures {
   }
 
   private def createAdminAccount(implicit injector: Injector) = {
-    val userService = inject [AccountService] (identified by 'accountService2)
-    val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
+    val userService = inject [SystemUserService] (identified by 'accountService2)
+    val admin = SystemUser(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
     Await.ready(userService.create(admin, None), Duration.create(1, TimeUnit.SECONDS))
   }
 

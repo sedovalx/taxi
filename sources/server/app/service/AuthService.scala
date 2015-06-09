@@ -6,10 +6,10 @@ import com.mohiva.play.silhouette.api.exceptions.NotAuthenticatedException
 import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.Logger
 import play.api.libs.json._
-import repository.AccountRepo
+import repository.SystemUserRepo
 import repository.db.DbAccessor
 import scaldi.Injectable
 
@@ -20,13 +20,13 @@ import scala.concurrent.Future
  * Created by ipopkov on 14/04/15.
  */
 
-  trait LoginInfoService extends IdentityService[Account] with DbAccessor {
-    def retrieve(loginInfo: LoginInfo): Future[Option[Account]]
+  trait LoginInfoService extends IdentityService[SystemUser] with DbAccessor {
+    def retrieve(loginInfo: LoginInfo): Future[Option[SystemUser]]
   }
 
 
-  class LoginInfoServiceImpl(accountRepo: AccountRepo) extends LoginInfoService with Injectable{
-    override def retrieve(loginInfo: LoginInfo): Future[Option[Account]] = Future {
+  class LoginInfoServiceImpl(accountRepo: SystemUserRepo) extends LoginInfoService with Injectable{
+    override def retrieve(loginInfo: LoginInfo): Future[Option[SystemUser]] = Future {
       withDb { session =>
         accountRepo.findByLogin(loginInfo.providerKey)(session)
       }
@@ -38,7 +38,7 @@ import scala.concurrent.Future
     def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]]
   }
 
-  class PasswordInfoServiceImpl(accountRepo: AccountRepo)  extends PasswordInfoService  with Injectable {
+  class PasswordInfoServiceImpl(accountRepo: SystemUserRepo)  extends PasswordInfoService  with Injectable {
     //val accountRepo = inject[AccountRepo]
 
     implicit val passwordFormat = Json.format[PasswordInfo]

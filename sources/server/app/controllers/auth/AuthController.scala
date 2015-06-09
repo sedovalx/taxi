@@ -11,7 +11,7 @@ import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.exceptions.{IdentityNotFoundException, InvalidPasswordException}
 import com.mohiva.play.silhouette.impl.providers.CredentialsProvider
 import controllers.BaseController
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.Logger
 import play.api.libs.json.Json
 import play.api.mvc.Results._
@@ -48,10 +48,10 @@ object Token {
 
 }
 
-class AuthController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator] {
+class AuthController(implicit inj: Injector) extends BaseController with Silhouette[SystemUser, JWTAuthenticator] {
 
-  val env = inject [Environment[Account, JWTAuthenticator]]
-  val accountService = inject[IdentityService[Account]]
+  val env = inject [Environment[SystemUser, JWTAuthenticator]]
+  val accountService = inject[IdentityService[SystemUser]]
 
   private implicit val credentialsFormat = Json.format[Credentials]
 

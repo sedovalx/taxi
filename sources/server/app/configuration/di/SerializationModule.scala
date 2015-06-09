@@ -4,7 +4,7 @@ import scaldi.Module
 import serialization._
 
 class SerializationModule extends Module {
-  binding to new AccountSerializer
+  binding to new SystemUserSerializer
   binding to new PaymentSerializer
   binding to new CarSerializer
   binding to new DriverSerializer

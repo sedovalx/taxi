@@ -6,23 +6,23 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.{PasswordHasher, PasswordInfo}
 import com.mohiva.play.silhouette.impl.services.DelegableAuthInfoService
 import models.generated.Tables
-import models.generated.Tables.{Account, AccountFilter, AccountTable}
+import models.generated.Tables.{SystemUser, SystemUserFilter, SystemUserTable}
 import play.api.libs.json.Json
-import repository.AccountRepo
+import repository.SystemUserRepo
 import repository.db.DbAccessor
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait AccountService extends DbAccessor with EntityService[Account, AccountTable, AccountRepo, AccountFilter] {
+trait SystemUserService extends DbAccessor with EntityService[SystemUser, SystemUserTable, SystemUserRepo, SystemUserFilter] {
   def hasUsers: Future[Boolean]
 }
 
-class AccountServiceImpl(
-                          val repo: AccountRepo,
+class SystemUserServiceImpl(
+                          val repo: SystemUserRepo,
                           passwordHasher: PasswordHasher,
                           authInfoService: DelegableAuthInfoService,
-                          identityService: IdentityService[Account]) extends AccountService {
+                          identityService: IdentityService[SystemUser]) extends SystemUserService {
 
   implicit val passwordFormat = Json.format[PasswordInfo]
 
@@ -30,7 +30,7 @@ class AccountServiceImpl(
     withDb { session => repo.isEmpty(session) }
   }
 
-  override protected def beforeCreate(entity: Tables.Account, creatorId: Option[Int]): Future[Tables.Account] = {
+  override protected def beforeCreate(entity: Tables.SystemUser, creatorId: Option[Int]): Future[Tables.SystemUser] = {
     super.beforeCreate(entity, creatorId) map { toSave =>
       // перед сохранением нужно посчитать хеш пароля
       val authInfo = passwordHasher.hash(toSave.passwordHash)
@@ -39,7 +39,7 @@ class AccountServiceImpl(
     }
   }
 
-  override protected def beforeUpdate(entity: Tables.Account, editorId: Option[Int]): Future[Tables.Account] = {
+  override protected def beforeUpdate(entity: Tables.SystemUser, editorId: Option[Int]): Future[Tables.SystemUser] = {
     super.beforeUpdate(entity, editorId) flatMap { toSave =>
       // если поменялся пароль, то нужно пересчитать хеш
       if (toSave.passwordHash != null) {

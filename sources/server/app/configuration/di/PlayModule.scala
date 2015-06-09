@@ -10,7 +10,7 @@ import scaldi.Module
  */
 class PlayModule extends Module {
   binding to new IndexController
-  binding to new AccountController
+  binding to new SystemUserController
   binding to new DriverController
   binding to new AuthController
   binding to new QueryController

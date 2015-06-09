@@ -2,20 +2,20 @@ package repository
 
 import models.entities.Role
 import models.entities.Role._
-import models.generated.Tables.{Account, AccountTable, AccountFilter}
+import models.generated.Tables.{SystemUser, SystemUserTable, SystemUserFilter}
 import play.api.db.slick.Config.driver.simple._
 
-trait AccountRepo extends GenericCRUD[Account, AccountTable, AccountFilter] {
-  def findByLogin(login: String)(implicit session: Session): Option[Account]
+trait SystemUserRepo extends GenericCRUD[SystemUser, SystemUserTable, SystemUserFilter] {
+  def findByLogin(login: String)(implicit session: Session): Option[SystemUser]
   def isEmpty(implicit session: Session): Boolean
 }
 
-class AccountRepoImpl extends AccountRepo {
-  val tableQuery = AccountTable
+class SystemUserRepoImpl extends SystemUserRepo {
+  val tableQuery = SystemUserTable
 
   implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 
-  def findByLogin(login: String)(implicit session: Session): Option[Account] = {
+  def findByLogin(login: String)(implicit session: Session): Option[SystemUser] = {
     tableQuery.filter(_.login === login).run.headOption
   }
 
@@ -28,7 +28,7 @@ class AccountRepoImpl extends AccountRepo {
    * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  override def read(filter: Option[AccountFilter] = None)(implicit session: Session): List[Account] = {
+  override def read(filter: Option[SystemUserFilter] = None)(implicit session: Session): List[SystemUser] = {
     filter match {
       case None => super.read()
       case Some(f) =>

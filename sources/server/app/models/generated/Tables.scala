@@ -13,73 +13,7 @@ trait Tables {
   import scala.slick.model.ForeignKeyAction
   
   /** DDL for all tables. Call .create to execute. */
-  lazy val ddl = AccountTable.ddl ++ CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ ExpenseTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl
-  
-  /** Entity class storing rows of table AccountTable
-   *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
-   *  @param login Database column login DBType(varchar), Length(254,true)
-   *  @param passwordHash Database column password_hash DBType(varchar), Length(1000,true)
-   *  @param lastName Database column last_name DBType(varchar), Length(254,true), Default(None)
-   *  @param firstName Database column first_name DBType(varchar), Length(254,true), Default(None)
-   *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
-   *  @param role Database column role DBType(varchar), Length(254,true)
-   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
-   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
-   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
-   *  @param creatorId Database column creator_id DBType(int4), Default(None)
-   *  @param editorId Database column editor_id DBType(int4), Default(None) */
-  case class Account(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[Account] with Identity
-  {
-    def copyWithId(id: Int) = this.copy(id = id)
-  
-    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
-    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
-  }
-               
-  case class AccountFilter(id: Option[Int] = None, login: Option[String] = None, passwordHash: Option[String] = None, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Option[Role] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None)
-  
-  /** Table description of table account. Objects of this class serve as prototypes for rows in queries. */
-  class AccountTable(_tableTag: Tag) extends Table[Account](_tableTag, "account") {
-    def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (Account.tupled, Account.unapply)
-    /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (id.?, login.?, passwordHash.?, lastName, firstName, middleName, role.?, comment, creationDate, editDate, creatorId, editorId).shaped.<>({r=>import r._; _1.map(_=> Account.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7.get, _8, _9, _10, _11, _12)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
-    
-    /** Database column id DBType(serial), AutoInc, PrimaryKey */
-    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
-    /** Database column login DBType(varchar), Length(254,true) */
-    val login = column[String]("login", O.Length(254,varying=true))
-    /** Database column password_hash DBType(varchar), Length(1000,true) */
-    val passwordHash = column[String]("password_hash", O.Length(1000,varying=true))
-    /** Database column last_name DBType(varchar), Length(254,true), Default(None) */
-    val lastName = column[Option[String]]("last_name", O.Length(254,varying=true), O.Default(None))
-    /** Database column first_name DBType(varchar), Length(254,true), Default(None) */
-    val firstName = column[Option[String]]("first_name", O.Length(254,varying=true), O.Default(None))
-    /** Database column middle_name DBType(varchar), Length(254,true), Default(None) */
-    val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
-    /** Database column role DBType(varchar), Length(254,true) */
-    val role = column[Role]("role", O.Length(254,varying=true))
-    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
-    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
-    /** Database column creation_date DBType(timestamp), Default(None) */
-    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
-    /** Database column edit_date DBType(timestamp), Default(None) */
-    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
-    /** Database column creator_id DBType(int4), Default(None) */
-    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
-    /** Database column editor_id DBType(int4), Default(None) */
-    val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    
-    /** Foreign key referencing AccountTable (database name account_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("account_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name account_editor_id_fkey) */
-    lazy val editorFk = foreignKey("account_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    
-    /** Uniqueness Index over (login) (database name idx_login_uq) */
-    val index1 = index("idx_login_uq", login, unique=true)
-  }
-  /** Collection-like TableQuery object for table AccountTable */
-  lazy val AccountTable = new TableQuery(tag => new AccountTable(tag))
+  lazy val ddl = CarTable.ddl ++ CheckpointTable.ddl ++ DriverTable.ddl ++ ExpenseTable.ddl ++ FineTable.ddl ++ PaymentTable.ddl ++ RentStatusTable.ddl ++ RentTable.ddl ++ RepairTable.ddl ++ SystemUserTable.ddl
   
   /** Entity class storing rows of table CarTable
    *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
@@ -136,10 +70,10 @@ trait Tables {
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name car_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("car_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name car_editor_id_fkey) */
-    lazy val editorFk = foreignKey("car_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name car_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("car_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name car_editor_id_fkey) */
+    lazy val editorFk = foreignKey("car_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Uniqueness Index over (regNumber) (database name unique_reg_number) */
     val index1 = index("unique_reg_number", regNumber, unique=true)
@@ -187,10 +121,10 @@ trait Tables {
     /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name checkpoint_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("checkpoint_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name checkpoint_editor_id_fkey) */
-    lazy val editorFk = foreignKey("checkpoint_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name checkpoint_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("checkpoint_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name checkpoint_editor_id_fkey) */
+    lazy val editorFk = foreignKey("checkpoint_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Index over (pointDate) (database name point_date_index) */
     val index1 = index("point_date_index", pointDate)
@@ -259,10 +193,10 @@ trait Tables {
     /** Database column editor_id DBType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name driver_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("driver_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name driver_editor_id_fkey) */
-    lazy val editorFk = foreignKey("driver_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name driver_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("driver_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name driver_editor_id_fkey) */
+    lazy val editorFk = foreignKey("driver_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Uniqueness Index over (license) (database name idx_license_uq) */
     val index1 = index("idx_license_uq", license, unique=true)
@@ -321,10 +255,10 @@ trait Tables {
     /** Database column edit_date DBType(timestamp), Default(None) */
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name expense_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("expense_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name expense_editor_id_fkey) */
-    lazy val editorFk = foreignKey("expense_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name expense_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("expense_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name expense_editor_id_fkey) */
+    lazy val editorFk = foreignKey("expense_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table ExpenseTable */
   lazy val ExpenseTable = new TableQuery(tag => new ExpenseTable(tag))
@@ -378,12 +312,12 @@ trait Tables {
     /** Database column edit_date DBType(timestamp), Default(None) */
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name fine_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("fine_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name fine_editor_id_fkey) */
-    lazy val editorFk = foreignKey("fine_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing RentTable (database name fine_rent_id_fkey) */
     lazy val rentFk = foreignKey("fine_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name fine_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("fine_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name fine_editor_id_fkey) */
+    lazy val editorFk = foreignKey("fine_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table FineTable */
   lazy val FineTable = new TableQuery(tag => new FineTable(tag))
@@ -437,12 +371,12 @@ trait Tables {
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
     
-    /** Foreign key referencing AccountTable (database name payment_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("payment_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name payment_editor_id_fkey) */
-    lazy val editorFk = foreignKey("payment_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing RentTable (database name payment_rent_id_fkey) */
     lazy val rentFk = foreignKey("payment_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name payment_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("payment_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name payment_editor_id_fkey) */
+    lazy val editorFk = foreignKey("payment_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table PaymentTable */
   lazy val PaymentTable = new TableQuery(tag => new PaymentTable(tag))
@@ -493,12 +427,12 @@ trait Tables {
     /** Database column rent_id DBType(int4) */
     val rentId = column[Int]("rent_id")
     
-    /** Foreign key referencing AccountTable (database name rent_status_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("rent_status_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name rent_status_editor_id_fkey) */
-    lazy val editorFk = foreignKey("rent_status_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing RentTable (database name rent_status_rent_id_fkey) */
     lazy val rentFk = foreignKey("rent_status_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.Cascade)
+    /** Foreign key referencing SystemUserTable (database name rent_status_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("rent_status_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name rent_status_editor_id_fkey) */
+    lazy val editorFk = foreignKey("rent_status_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     
     /** Index over (changeTime) (database name change_date_index) */
     val index1 = index("change_date_index", changeTime)
@@ -554,14 +488,14 @@ trait Tables {
     /** Database column edit_date DBType(timestamp), Default(None) */
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name rent_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("rent_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name rent_editor_id_fkey) */
-    lazy val editorFk = foreignKey("rent_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing CarTable (database name rent_car_id_fkey) */
     lazy val carFk = foreignKey("rent_car_id_fkey", carId, CarTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing DriverTable (database name rent_driver_id_fkey) */
     lazy val driverFk = foreignKey("rent_driver_id_fkey", driverId, DriverTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name rent_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("rent_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name rent_editor_id_fkey) */
+    lazy val editorFk = foreignKey("rent_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table RentTable */
   lazy val RentTable = new TableQuery(tag => new RentTable(tag))
@@ -615,13 +549,79 @@ trait Tables {
     /** Database column edit_date DBType(timestamp), Default(None) */
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     
-    /** Foreign key referencing AccountTable (database name repair_creator_id_fkey) */
-    lazy val creatorFk = foreignKey("repair_creator_id_fkey", creatorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
-    /** Foreign key referencing AccountTable (database name repair_editor_id_fkey) */
-    lazy val editorFk = foreignKey("repair_editor_id_fkey", editorId, AccountTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
     /** Foreign key referencing RentTable (database name repair_rent_id_fkey) */
     lazy val rentFk = foreignKey("repair_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name repair_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("repair_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name repair_editor_id_fkey) */
+    lazy val editorFk = foreignKey("repair_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
   }
   /** Collection-like TableQuery object for table RepairTable */
   lazy val RepairTable = new TableQuery(tag => new RepairTable(tag))
+  
+  /** Entity class storing rows of table SystemUserTable
+   *  @param id Database column id DBType(serial), AutoInc, PrimaryKey
+   *  @param login Database column login DBType(varchar), Length(254,true)
+   *  @param passwordHash Database column password_hash DBType(varchar), Length(1000,true)
+   *  @param lastName Database column last_name DBType(varchar), Length(254,true), Default(None)
+   *  @param firstName Database column first_name DBType(varchar), Length(254,true), Default(None)
+   *  @param middleName Database column middle_name DBType(varchar), Length(254,true), Default(None)
+   *  @param role Database column role DBType(varchar), Length(254,true)
+   *  @param comment Database column comment DBType(varchar), Length(5000,true), Default(None)
+   *  @param creationDate Database column creation_date DBType(timestamp), Default(None)
+   *  @param editDate Database column edit_date DBType(timestamp), Default(None)
+   *  @param creatorId Database column creator_id DBType(int4), Default(None)
+   *  @param editorId Database column editor_id DBType(int4), Default(None) */
+  case class SystemUser(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[SystemUser] with Identity
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
+  case class SystemUserFilter(id: Option[Int] = None, login: Option[String] = None, passwordHash: Option[String] = None, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Option[Role] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None)
+  
+  /** Table description of table system_user. Objects of this class serve as prototypes for rows in queries. */
+  class SystemUserTable(_tableTag: Tag) extends Table[SystemUser](_tableTag, "system_user") {
+    def * = (id, login, passwordHash, lastName, firstName, middleName, role, comment, creationDate, editDate, creatorId, editorId) <> (SystemUser.tupled, SystemUser.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (id.?, login.?, passwordHash.?, lastName, firstName, middleName, role.?, comment, creationDate, editDate, creatorId, editorId).shaped.<>({r=>import r._; _1.map(_=> SystemUser.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7.get, _8, _9, _10, _11, _12)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column id DBType(serial), AutoInc, PrimaryKey */
+    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column login DBType(varchar), Length(254,true) */
+    val login = column[String]("login", O.Length(254,varying=true))
+    /** Database column password_hash DBType(varchar), Length(1000,true) */
+    val passwordHash = column[String]("password_hash", O.Length(1000,varying=true))
+    /** Database column last_name DBType(varchar), Length(254,true), Default(None) */
+    val lastName = column[Option[String]]("last_name", O.Length(254,varying=true), O.Default(None))
+    /** Database column first_name DBType(varchar), Length(254,true), Default(None) */
+    val firstName = column[Option[String]]("first_name", O.Length(254,varying=true), O.Default(None))
+    /** Database column middle_name DBType(varchar), Length(254,true), Default(None) */
+    val middleName = column[Option[String]]("middle_name", O.Length(254,varying=true), O.Default(None))
+    /** Database column role DBType(varchar), Length(254,true) */
+    val role = column[Role]("role", O.Length(254,varying=true))
+    /** Database column comment DBType(varchar), Length(5000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
+    /** Database column creation_date DBType(timestamp), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
+    /** Database column edit_date DBType(timestamp), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
+    /** Database column creator_id DBType(int4), Default(None) */
+    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
+    /** Database column editor_id DBType(int4), Default(None) */
+    val editorId = column[Option[Int]]("editor_id", O.Default(None))
+    
+    /** Foreign key referencing SystemUserTable (database name system_user_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("system_user_creator_id_fkey", creatorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name system_user_editor_id_fkey) */
+    lazy val editorFk = foreignKey("system_user_editor_id_fkey", editorId, SystemUserTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    
+    /** Uniqueness Index over (login) (database name idx_login_uq) */
+    val index1 = index("idx_login_uq", login, unique=true)
+  }
+  /** Collection-like TableQuery object for table SystemUserTable */
+  lazy val SystemUserTable = new TableQuery(tag => new SystemUserTable(tag))
 }

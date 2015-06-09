@@ -2,7 +2,7 @@ package controllers.entities
 
 import models.entities.RentStatus.RentStatus
 import models.generated.Tables
-import models.generated.Tables.{Account, Rent, RentFilter, RentTable}
+import models.generated.Tables.{SystemUser, Rent, RentFilter, RentTable}
 import play.api.Logger
 import play.api.libs.json._
 import repository.RentRepo
@@ -25,14 +25,14 @@ class RentController(implicit injector: Injector) extends EntityController[Rent,
   private val driverService = inject[DriverService]
   private val carService = inject[CarService]
 
-  override protected def afterCreate(json: JsValue, entity: Tables.Rent, identity: Account): Tables.Rent = {
+  override protected def afterCreate(json: JsValue, entity: Tables.Rent, identity: SystemUser): Tables.Rent = {
     val rent = super.afterCreate(json, entity, identity)
     val status = (json \ "status").as[RentStatus]
     entityService.createNewStatus(rent, status, Some(identity.id))
     rent
   }
 
-  override protected def afterUpdate(json: JsValue, entity: Tables.Rent, identity: Tables.Account): Tables.Rent = {
+  override protected def afterUpdate(json: JsValue, entity: Tables.Rent, identity: Tables.SystemUser): Tables.Rent = {
     val rent = super.afterUpdate(json, entity, identity)
     val status = (json \ "status").as[RentStatus]
     val actual = entityService.getCurrentStatus(rent)

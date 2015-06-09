@@ -6,7 +6,7 @@ import repository._
 import scaldi.Module
 
 class RepoModule extends Module{
-  bind [AccountRepo] to new AccountRepoImpl
+  bind [SystemUserRepo] to new SystemUserRepoImpl
   bind [RentStatusRepo] to new RentStatusRepoImpl
   bind [PaymentRepo] to new PaymentRepoImpl
 

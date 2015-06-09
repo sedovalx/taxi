@@ -3,18 +3,18 @@ package controllers
 import _root_.util.responses.Response
 import com.mohiva.play.silhouette.api.{Environment, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.Logger
 import play.api.mvc.Action
 import service.queries.QueryManager
 import scaldi.Injector
 
-class QueryController(implicit inj: Injector) extends BaseController with Silhouette[Account, JWTAuthenticator]{
+class QueryController(implicit inj: Injector) extends BaseController with Silhouette[SystemUser, JWTAuthenticator]{
 
-  implicit val env = inject [Environment[Account, JWTAuthenticator]]
+  implicit val env = inject [Environment[SystemUser, JWTAuthenticator]]
   val queryManager = inject [QueryManager]
 
-  def run(reportName: String) = Action { implicit request =>
+  def run(reportName: String) = SecuredAction { implicit request =>
     val report = queryManager.getReport(reportName)
     report match {
       case None => NotFound(Response.bad(s"Именованный запрос $reportName не найден."))

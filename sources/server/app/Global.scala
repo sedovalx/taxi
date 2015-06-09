@@ -6,7 +6,7 @@ import com.mohiva.play.silhouette.api.SecuredSettings
 import com.typesafe.config.ConfigFactory
 import configuration.di._
 import models.entities.Role
-import models.generated.Tables.Account
+import models.generated.Tables.SystemUser
 import play.api.i18n.Lang
 import play.api.libs.json.Json
 import play.api.{GlobalSettings, _}
@@ -15,7 +15,7 @@ import play.filters.gzip.GzipFilter
 import scaldi.{Injectable, Injector}
 import scaldi.play.ScaldiSupport
 import play.api.mvc.Results._
-import service.AccountService
+import service.SystemUserService
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -65,10 +65,10 @@ object Global extends WithFilters(new GzipFilter(), RoutesLoggingFilter) with Gl
 
     // создание пользователя, если не найдено
     implicit val injector = applicationModule
-    val userService = inject [AccountService]
+    val userService = inject [SystemUserService]
     val f = userService.hasUsers flatMap { hasUsers =>
       if (!hasUsers) {
-        val admin = Account(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
+        val admin = SystemUser(id = 0, login = "admin", passwordHash = "admin", role = Role.Administrator)
         userService.create(admin, None)
       } else Future.successful(None)
     } recoverWith {
