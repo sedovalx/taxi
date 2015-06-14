@@ -1,4 +1,4 @@
-package controllers
+package controllers.api.tools
 
 import java.nio.file.Paths
 import javax.inject.Inject

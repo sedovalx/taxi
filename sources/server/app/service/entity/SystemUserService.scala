@@ -16,7 +16,10 @@ trait SystemUserService extends EntityService[SystemUser, SystemUserTable, Syste
   def hasUsers: Future[Boolean]
 }
 
-class SystemUserServiceImpl @Inject() (val repo: SystemUserRepo, passwordHasher: PasswordHasher) extends SystemUserService {
+class SystemUserServiceImpl @Inject() (
+  val repo: SystemUserRepo,
+  passwordHasher: PasswordHasher)
+  extends SystemUserService {
 
   implicit val passwordFormat = Json.format[PasswordInfo]
 
