@@ -34,7 +34,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
       encryptSubject = Play.configuration.getBoolean("silhouette.authenticator.encryptSubject").getOrElse { true },
       authenticatorIdleTimeout = Play.configuration.getInt("silhouette.authenticator.authenticatorIdleTimeout"),
       authenticatorExpiry = Play.configuration.getInt("silhouette.authenticator.authenticatorExpiry").getOrElse { 12 * 60 * 60 },
-      sharedSecret = Play.configuration.getString("application.secret").get
+      sharedSecret = Play.configuration.getString("play.crypto.secret").get
     )
   }
 

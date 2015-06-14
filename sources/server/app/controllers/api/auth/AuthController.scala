@@ -17,6 +17,7 @@ import play.api.i18n.MessagesApi
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.json.{Json, _}
 import play.api.mvc.{Action, BodyParsers}
+import service.auth.LoginInfoService
 import utils.responses.Response
 
 import scala.concurrent.Future
@@ -46,7 +47,7 @@ object Token {
 class AuthController @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[SystemUser, JWTAuthenticator],
-  accountService: IdentityService[SystemUser],
+  accountService: LoginInfoService,
   credentialsProvider: CredentialsProvider)
   extends BaseController with Silhouette[SystemUser, JWTAuthenticator] {
 
