@@ -1,8 +1,5 @@
 package utils.slick
 
-import javax.inject.Singleton
-
-import com.google.inject.ImplementedBy
 import play.api.Logger
 import slick.driver.JdbcProfile
 
