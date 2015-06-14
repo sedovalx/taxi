@@ -1,5 +1,7 @@
 package service.entity
 
+import javax.inject.Inject
+
 import models.generated.Tables.{DriverFilter, Driver, DriverTable}
 import repository.DriverRepo
 
@@ -10,7 +12,7 @@ trait DriverService extends EntityService[Driver, DriverTable, DriverRepo, Drive
   def getDisplayName(driverId: Int): Future[String]
 }
 
-class DriverServiceImpl(val repo: DriverRepo) extends DriverService {
+class DriverServiceImpl @Inject() (val repo: DriverRepo) extends DriverService {
   override def getDisplayName(driverId: Int): Future[String] = {
     repo.findById(driverId) map {
       case Some(driver) =>
