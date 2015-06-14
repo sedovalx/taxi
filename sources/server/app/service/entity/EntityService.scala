@@ -1,9 +1,10 @@
-package service
+package service.entity
 
 import models.entities.Entity
 import repository.GenericCRUD
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 

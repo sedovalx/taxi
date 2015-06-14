@@ -1,4 +1,4 @@
-package service
+package service.auth
 
 import javax.inject.Inject
 

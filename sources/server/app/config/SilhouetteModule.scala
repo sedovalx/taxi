@@ -8,7 +8,10 @@ import com.mohiva.play.silhouette.impl.util.SecureRandomIDGenerator
 import models.generated.Tables.SystemUser
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Play
-import service.{LoginInfoService, LoginInfoServiceImpl}
+import service.auth.{LoginInfoServiceImpl, LoginInfoService}
+
+import play.api.Play.current
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
