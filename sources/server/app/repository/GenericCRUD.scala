@@ -62,4 +62,12 @@ trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] {
   def read(filter: Option[F] = None): Future[Seq[E]] = {
     db.run(tableQuery.result)
   }
+
+  /**
+   * Проверяет, есть ли элементы в репозитории
+   * @return true, если репозиторий пуст
+   */
+  def isEmpty: Future[Boolean] = {
+    db.run(tableQuery.length.result).map(_ > 0)
+  }
 }

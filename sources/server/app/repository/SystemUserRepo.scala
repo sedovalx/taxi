@@ -18,10 +18,6 @@ class SystemUserRepo extends GenericCRUD[SystemUser, SystemUserTable, SystemUser
     db.run(tableQuery.filter(_.login === login).result.headOption)
   }
 
-  def isEmpty: Future[Boolean] = {
-    db.run(tableQuery.length.result).map(_ > 0)
-  }
-
   /**
    * Вернуть отфильтрованных пользователей
    * @return список пользователей, попавших под фильтр

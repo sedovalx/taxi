@@ -1,10 +1,10 @@
 package config
 
 import com.google.inject.{AbstractModule, Provides}
-import com.mohiva.play.silhouette.api.util.Clock
+import com.mohiva.play.silhouette.api.util.{PasswordHasher, Clock}
 import com.mohiva.play.silhouette.api.{Environment, EventBus}
 import com.mohiva.play.silhouette.impl.authenticators.{JWTAuthenticator, JWTAuthenticatorService, JWTAuthenticatorSettings}
-import com.mohiva.play.silhouette.impl.util.SecureRandomIDGenerator
+import com.mohiva.play.silhouette.impl.util.{BCryptPasswordHasher, SecureRandomIDGenerator}
 import models.generated.Tables.SystemUser
 import net.codingwell.scalaguice.ScalaModule
 import play.api.Play
@@ -15,6 +15,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
+    bind[PasswordHasher].to[BCryptPasswordHasher].in[Singleton]
     bind[LoginInfoService].to[LoginInfoServiceImpl]
   }
 

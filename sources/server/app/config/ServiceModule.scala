@@ -11,5 +11,8 @@ class ServiceModule extends AbstractModule with ScalaModule {
     bind[CarService].to[CarServiceImpl].in[Singleton]
     bind[DriverService].to[DriverServiceImpl].in[Singleton]
     bind[OperationService].to[OperationServiceImpl].in[Singleton]
+    bind[RentStatusService].to[RentStatusServiceImpl].in[Singleton]
+    bind[RentService].to[RentServiceImpl].in[Singleton]
+    bind[SystemUserService].to[SystemUserServiceImpl].in[Singleton]
   }
 }
