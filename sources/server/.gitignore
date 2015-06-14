@@ -1,33 +1,16 @@
-*.class
-*.log
+logs
+target
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
+/RUNNING_PID
+/public
 
-# sbt specific
-.cache/
-.history/
-.lib/
-dist/*
-target/
-lib_managed/
-src_managed/
-project/plugins/project/
-project/project
-project/target
-
-# Scala-IDE specific
-.scala_dependencies
-.worksheet
-.settings/
-.classpath
-.project
-
-# Idea specific
-**/*.sc
-.idea
-
-# Play! specific
-public
-conf/*.override.conf
-conf/generated.keystore
-/bin/
+/app/models/generated/draft
+activator
+activator.bat
+activator-launch-1.3.4.jar
 
 

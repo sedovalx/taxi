@@ -1,12 +1,21 @@
 package repository
 
+import javax.inject.Inject
+
 import models.entities.Entity
-import play.api.db.slick.Config.driver.simple._
-import utils.db.MaybeFilter
+import play.api.db.slick.DatabaseConfigProvider
+import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.language.{implicitConversions, reflectiveCalls}
 
-trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, F] {
+trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] {
+
+  @Inject val dbConfigProvider: DatabaseConfigProvider = null
+  lazy val db: Database = dbConfigProvider.get[JdbcProfile].db
 
   val tableQuery: TableQuery[T]
 
@@ -15,50 +24,42 @@ trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Column[Int] }, F] {
   /*
     * Find a specific entity by id.
     */
-  def findById(id: Int)(implicit session: Session): Option[E] = {
-    tableQuery.filter(_.id === id).run.headOption
+  def findById(id: Int): Future[Option[E]] = {
+    db.run(tableQuery.filter(_.id === id).result.headOption)
   }
 
   /**
    * Удалить пользователя
    * @param id идентификатор удаляемого пользователя
-   * @param session сессия к БД
    * @return true, если пользователь был найден и удален
    */
-  def delete(id: Int)(implicit session: Session): Boolean = {
-    tableQuery.filter(_.id === id).delete > 0
+  def delete(id: Int): Future[Boolean] = {
+    db.run(tableQuery.filter(_.id === id).delete).map(_ > 0)
   }
 
   /**
    * Обновить данные пользователя
    * @param entity обновленные данные
-   * @param session сессия к БД
    * @return true, если объект был найден, и данные обновлены
    */
-  def update(entity: E) (implicit session: Session): Boolean = {
-    tableQuery.filter(_.id === entity.id).update(entity) > 0
+  def update(entity: E): Future[Boolean] = {
+    db.run(tableQuery.filter(_.id === entity.id).update(entity)).map(_ > 0)
   }
 
   /**
    * Создать новый объект
    * @param entity данные создаваемого объекта
-   * @param session сессия к БД
    * @return id созданного объекта
    */
-  def create(entity: E) (implicit session: Session) : Int = {
-    (tableQuery returning tableQuery.map(_.id)) += entity
+  def create(entity: E): Future[Int] = {
+    db.run((tableQuery returning tableQuery.map(_.id)) += entity)
   }
 
   /**
    * Вернуть отфильтрованных пользователей
-   * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  def read(filter: Option[F] = None)(implicit session: Session): List[E] = {
-    tableQuery.list
+  def read(filter: Option[F] = None): Future[Seq[E]] = {
+    db.run(tableQuery.result)
   }
 }
-
-
-
-

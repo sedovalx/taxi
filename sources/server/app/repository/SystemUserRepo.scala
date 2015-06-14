@@ -2,44 +2,45 @@ package repository
 
 import models.entities.Role
 import models.entities.Role._
+import models.generated.Tables
 import models.generated.Tables.{SystemUser, SystemUserTable, SystemUserFilter}
-import play.api.db.slick.Config.driver.simple._
+import slick.driver.PostgresDriver
+import slick.driver.PostgresDriver.api._
 
-trait SystemUserRepo extends GenericCRUD[SystemUser, SystemUserTable, SystemUserFilter] {
-  def findByLogin(login: String)(implicit session: Session): Option[SystemUser]
-  def isEmpty(implicit session: Session): Boolean
-}
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class SystemUserRepoImpl extends SystemUserRepo {
-  val tableQuery = SystemUserTable
+class SystemUserRepo extends GenericCRUD[SystemUser, SystemUserTable, SystemUserFilter] {
 
   implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 
-  def findByLogin(login: String)(implicit session: Session): Option[SystemUser] = {
-    tableQuery.filter(_.login === login).run.headOption
+  def findByLogin(login: String): Future[Option[SystemUser]] = {
+    db.run(tableQuery.filter(_.login === login).result.headOption)
   }
 
-  def isEmpty(implicit session: Session): Boolean = {
-    tableQuery.length.run > 0
+  def isEmpty: Future[Boolean] = {
+    db.run(tableQuery.length.result).map(_ > 0)
   }
 
   /**
    * Вернуть отфильтрованных пользователей
-   * @param session сессия к БД
    * @return список пользователей, попавших под фильтр
    */
-  override def read(filter: Option[SystemUserFilter] = None)(implicit session: Session): List[SystemUser] = {
+  override def read(filter: Option[Tables.SystemUserFilter]): Future[Seq[Tables.SystemUser]] = {
     filter match {
       case None => super.read()
       case Some(f) =>
-        tableQuery
-          .filteredBy(f.id)           (_.id === f.id.get)
-          .filteredBy(f.login)        (_.login.toLowerCase like f.login.map {s => s"%${s.toLowerCase}%" }.get)
+        val query = tableQuery
+          .filteredBy(f.id)           (_.id.? === f.id)
+          .filteredBy(f.login)        (_.login.toLowerCase.? like f.login.map {s => s"%${s.toLowerCase}%" })
           .filteredBy(f.lastName)     (_.lastName.toLowerCase like f.lastName.map {s => s"%${s.toLowerCase}%" })
           .filteredBy(f.firstName)    (_.firstName.toLowerCase like f.firstName.map {s => s"%${s.toLowerCase}%" })
           .filteredBy(f.middleName)   (_.middleName.toLowerCase like f.middleName.map {s => s"%${s.toLowerCase}%" })
-          .filteredBy(f.role)         (_.role === f.role.get)
-          .query.list
+          .filteredBy(f.role)         (_.role.? === f.role)
+          .query
+        db.run(query.result)
     }
   }
+
+  override val tableQuery: PostgresDriver.api.TableQuery[Tables.SystemUserTable] = SystemUserTable
 }

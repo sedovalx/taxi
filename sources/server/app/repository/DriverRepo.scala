@@ -1,6 +1,11 @@
 package repository
 
-import models.generated.Tables.{DriverFilter, Driver, DriverTable}
+import models.generated.Tables
+import models.generated.Tables.{Driver, DriverFilter, DriverTable}
+import slick.driver.PostgresDriver
 
-trait DriverRepo extends GenericCRUD[Driver, DriverTable, DriverFilter]
+class DriverRepo extends GenericCRUD[Driver, DriverTable, DriverFilter] {
+  override val tableQuery: PostgresDriver.api.TableQuery[Tables.DriverTable] = DriverTable
+}
+
 

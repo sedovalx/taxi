@@ -1,8 +1,0 @@
-validation.error.minLength=Минимально допустимая длина поля: {0}
-validation.String_value_expected=Поле должно быть заполено
-validation.error.expected.jsstring=Поле должно быть заполено
-validation.error.expected.jsnumberorjsstring=Поле должно быть заполено
-validation.error.expected.jsnumber=Поле должно быть заполено
-validation.error.min=Минимально допустимое значение: {0}
-auth.error.credentials_provider.not_found=Credentials provider не найден
-auth.error.wrong_credentials=Пользователь с такой комбинацией логина и пароля не найден
