@@ -30,7 +30,7 @@ Router.map(function() {
         this.route("edit", { path: "/:payment_id/edit" });
       });
       this.resource("operations", function() {
-        this.route("new");
+        this.route("new", { path: "/:accountType"});
         this.route("edit", { path: "/:operation_id/edit" });
       });
       this.resource("repairs", function() {

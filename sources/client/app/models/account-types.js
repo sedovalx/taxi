@@ -4,5 +4,5 @@
 export default [
   { id: "Rent", label: "Арендная плата" },
   { id: "Fine", label: "Штраф" },
-  { id: "Repair", label: "Ресонт" }
+  { id: "Repair", label: "Ремонт" }
 ];

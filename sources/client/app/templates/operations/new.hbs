@@ -3,6 +3,9 @@
       {{#property-row title="Аренда"}}
         {{input value=rent.displayName readonly="true"}}
       {{/property-row}}
+      {{#property-row title="Тип операции"}}
+        {{input value=accountTypeDisplayName readonly="true"}}
+      {{/property-row}}
       {{#property-row title="Дата операции" errors=errors.changeTime}}
         {{bootstrap-datepicker
           class="form-control"
