@@ -20,6 +20,7 @@ export default ProtectedRoute.extend({
   },
   model: function(params) {
     // TODO: это тут что такое делается?
+    // TODO: здесь удалаяются пустые queryParams, чтобы их не было в адресной строке
     for(var prop in params){
       if (!params[prop]){
         delete params[prop];
