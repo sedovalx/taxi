@@ -3,9 +3,17 @@ import ListController from "client/controllers/base/list-controller";
 
 export default ListController.extend({
   actions: {
-    createPayment: function(){
+    createRentOperation: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("payments.new", selected.get("rentId"));
+      this.transitionToRoute("operations.new", selected.get("rentId"),"Rent");
+    },
+    createFineOperation: function(){
+      let selected = this.get("selectedRow");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"Fine");
+    },
+    createRepairOperation: function(){
+      let selected = this.get("selectedRow");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"Repair");
     }
   },
   selectionRentIsEmpty: function(){
