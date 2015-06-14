@@ -10,7 +10,7 @@ import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SystemUserRepo extends GenericCRUD[SystemUser, SystemUserTable, SystemUserFilter] {
+class SystemUserRepo extends GenericCRUDImpl[SystemUser, SystemUserTable, SystemUserFilter] {
 
   implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 

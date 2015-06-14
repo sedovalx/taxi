@@ -3,7 +3,6 @@ package repository
 import javax.inject.Inject
 
 import models.entities.Entity
-import play.api.db.slick.DatabaseConfigProvider
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 
@@ -13,9 +12,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.language.{implicitConversions, reflectiveCalls}
 
 trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] {
-
-  @Inject val dbConfigProvider: DatabaseConfigProvider = null
-  lazy val db: Database = dbConfigProvider.get[JdbcProfile].db
+  protected var db: Database
 
   val tableQuery: TableQuery[T]
 
@@ -70,4 +67,9 @@ trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] {
   def isEmpty: Future[Boolean] = {
     db.run(tableQuery.length.result).map(_ > 0)
   }
+}
+
+abstract class GenericCRUDImpl[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] extends GenericCRUD[E, T, F]{
+  @Inject
+  protected var db: Database = null
 }

@@ -7,7 +7,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-class RentStatusRepo extends GenericCRUD[RentStatus, RentStatusTable, RentStatusFilter] {
+class RentStatusRepo extends GenericCRUDImpl[RentStatus, RentStatusTable, RentStatusFilter] {
   def getBy(rentId: Int): Future[Seq[Tables.RentStatus]] = {
     db.run(tableQuery.filter(_.rentId === rentId).result)
   }

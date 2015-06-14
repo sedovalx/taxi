@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 class SilhouetteModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
-    bind[PasswordHasher].to[BCryptPasswordHasher].in[Singleton]
+    bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
     bind[LoginInfoService].to[LoginInfoServiceImpl].in[Singleton]
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoServiceImpl].in[Singleton]
   }

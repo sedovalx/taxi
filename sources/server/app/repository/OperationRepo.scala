@@ -7,7 +7,7 @@ import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
 
-class OperationRepo extends GenericCRUD[Operation, OperationTable, OperationFilter] {
+class OperationRepo extends GenericCRUDImpl[Operation, OperationTable, OperationFilter] {
   /**
    * Вернуть отфильтрованных пользователей
    * @return список пользователей, попавших под фильтр
