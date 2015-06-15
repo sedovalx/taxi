@@ -15,6 +15,9 @@ POST          /api/auth/login                   controllers.api.auth.AuthControl
 POST          /api/auth/logout                  controllers.api.auth.AuthController.logOut
 POST          /api/auth/renew                   controllers.api.auth.AuthController.renew
 
+############################# Reports #######################################
+GET           /api/reports/:name                controllers.api.QueryController.run(name)
+
 ############################# Entity routes #######################################
 # User routes
 GET           /api/users/me                     controllers.api.entity.SystemUserController.currentUser

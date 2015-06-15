@@ -45,7 +45,7 @@ class AuthController @Inject() (
   val env: Environment[SystemUser, JWTAuthenticator],
   accountService: LoginInfoService,
   credentialsProvider: CredentialsProvider)
-  extends BaseController with Silhouette[SystemUser, JWTAuthenticator] {
+  extends BaseController {
 
   private implicit val credentialsFormat = Json.format[Credentials]
 
