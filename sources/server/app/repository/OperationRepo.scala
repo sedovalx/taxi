@@ -4,6 +4,7 @@ import models.generated.Tables
 import models.generated.Tables.{OperationFilter, Operation, OperationTable}
 import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
+import db.MappedColumnTypes._
 
 import scala.concurrent.Future
 
@@ -17,7 +18,9 @@ class OperationRepo extends GenericCRUDImpl[Operation, OperationTable, Operation
       case None => super.read()
       case Some(f) =>
         db.run(tableQuery
-          .filteredBy(f.rentId)(_.rentId.? === f.rentId).query.result)
+          .filteredBy(f.rentId)(_.rentId.? === f.rentId)
+          .filteredBy(f.accountType)(_.accountType.? === f.accountType)
+          .query.result)
     }
   }
 
