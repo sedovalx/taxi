@@ -28,9 +28,9 @@ class TestModelGenerator @Inject() (
   def generate(): Future[Unit] = {
     for {
       _ <- deleteAll()
-      _ <- generateDrivers(20, Timestamp.valueOf("2015-04-28 00:00:00"))
-      _ <- generateCars(50, Timestamp.valueOf("2015-04-03 00:00:00"))
-      _ <- generateRents(18, 44, Timestamp.valueOf("2015-05-15 00:00:00"))
+      _ <- generateDrivers(20, DateUtils.valueOf("2015-04-28T00:00:00.000+03:00"))
+      _ <- generateCars(50, DateUtils.valueOf("2015-04-03T00:00:00.000+03:00"))
+      _ <- generateRents(18, 44, DateUtils.valueOf("2015-05-15T00:00:00.000+03:00"))
       _ <- generateRentStates(60)
       _ <- generateBalanceChanges()
     } yield {}

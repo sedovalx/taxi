@@ -11,6 +11,11 @@ object DateUtils {
 
   def now = new Timestamp(new java.util.Date().getTime)
 
+  def valueOf(iso8601String: String): Timestamp = {
+    val date = iso8601Format.parse(iso8601String)
+    new Timestamp(date.getTime)
+  }
+
   implicit def stringToDate(str: Option[String]) : Option[Timestamp] = {
     str match {
       case Some(s: String) => Some(new Timestamp(iso8601Format.parse(s).getTime))

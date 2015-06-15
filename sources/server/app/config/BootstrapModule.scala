@@ -6,6 +6,6 @@ import utils.AppBootstrapper
 
 class BootstrapModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
-//    bind[AppBootstrapper].asEagerSingleton()
+    bind[AppBootstrapper].asEagerSingleton()
   }
 }
