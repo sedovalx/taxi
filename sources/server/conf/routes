@@ -3,20 +3,53 @@
 # ~~~~
 
 # Home page
-GET         /                                 controllers.IndexController.index(path = "")
+GET           /                                 controllers.IndexController.index(path = "")
 
 # Map static resources from the /public folder to the /assets URL path
-GET         /favicon.ico                      controllers.Assets.at(path="/public", file = "favicon.ico")
-GET         /assets/*file                     controllers.Assets.versioned(path="/public/assets", file: Asset)
-GET         /fonts/*file                      controllers.Assets.versioned(path="/public/fonts", file: Asset)
+GET           /favicon.ico                      controllers.Assets.at(path="/public", file = "favicon.ico")
+GET           /assets/*file                     controllers.Assets.versioned(path="/public/assets", file: Asset)
+GET           /fonts/*file                      controllers.Assets.versioned(path="/public/fonts", file: Asset)
 
 ############################# Authentication #######################################
-POST        /api/auth/login                   controllers.api.auth.AuthController.authenticate
-POST        /api/auth/logout                  controllers.api.auth.AuthController.logOut
-POST        /api/auth/renew                   controllers.api.auth.AuthController.renew
+POST          /api/auth/login                   controllers.api.auth.AuthController.authenticate
+POST          /api/auth/logout                  controllers.api.auth.AuthController.logOut
+POST          /api/auth/renew                   controllers.api.auth.AuthController.renew
 
-# Home page
-GET         /api/tools/regenerate/code        controllers.api.tools.SchemaController.regenerateTableCode
+############################# Entity routes #######################################
+# User routes
+GET           /api/users/me                     controllers.api.entity.SystemUserController.currentUser
+GET           /api/users                        controllers.api.entity.SystemUserController.read
+GET           /api/users/:id                    controllers.api.entity.SystemUserController.getById(id: Int)
+POST          /api/users                        controllers.api.entity.SystemUserController.create
+PUT           /api/users/:id                    controllers.api.entity.SystemUserController.update(id: Int)
+DELETE        /api/users/:id                    controllers.api.entity.SystemUserController.delete(id: Int)
+# Drivers routes
+GET           /api/drivers                      controllers.api.entity.DriverController.read
+GET           /api/drivers/:id                  controllers.api.entity.DriverController.getById(id: Int)
+POST          /api/drivers                      controllers.api.entity.DriverController.create
+PUT           /api/drivers/:id                  controllers.api.entity.DriverController.update(id: Int)
+DELETE        /api/drivers/:id                  controllers.api.entity.DriverController.delete(id: Int)
+# Car routes
+GET           /api/cars                         controllers.api.entity.CarController.read
+GET           /api/cars/:id                     controllers.api.entity.CarController.getById(id: Int)
+POST          /api/cars                         controllers.api.entity.CarController.create
+PUT           /api/cars/:id                     controllers.api.entity.CarController.update(id: Int)
+DELETE        /api/cars/:id                     controllers.api.entity.CarController.delete(id: Int)
+# Rent routes
+GET           /api/rents                        controllers.api.entity.RentController.read
+GET           /api/rents/:id                    controllers.api.entity.RentController.getById(id: Int)
+POST          /api/rents                        controllers.api.entity.RentController.create
+PUT           /api/rents/:id                    controllers.api.entity.RentController.update(id: Int)
+DELETE        /api/rents/:id                    controllers.api.entity.RentController.delete(id: Int)
+# Operation routes
+GET           /api/operation                    controllers.api.entity.OperationController.read
+GET           /api/operation/:id                controllers.api.entity.OperationController.getById(id: Int)
+POST          /api/operation                    controllers.api.entity.OperationController.create
+PUT           /api/operation/:id                controllers.api.entity.OperationController.update(id: Int)
+DELETE        /api/operation/:id                controllers.api.entity.OperationController.delete(id: Int)
+
+############################# Code generation #######################################
+GET           /api/tools/regenerate/code        controllers.api.tools.SchemaController.regenerateTableCode
 
 # Every other page (should be the last route)
-GET         /*path                            controllers.IndexController.index(path)
+GET           /*path                            controllers.IndexController.index(path)
