@@ -7,8 +7,8 @@ GET           /                                 controllers.IndexController.inde
 
 # Map static resources from the /public folder to the /assets URL path
 GET           /favicon.ico                      controllers.Assets.at(path="/public", file = "favicon.ico")
-GET           /assets/*file                     controllers.Assets.versioned(path="/public/assets", file: Asset)
-GET           /fonts/*file                      controllers.Assets.versioned(path="/public/fonts", file: Asset)
+GET           /assets/*file                     controllers.Assets.at(path="/public/assets", file)
+GET           /fonts/*file                      controllers.Assets.at(path="/public/fonts", file)
 
 ############################# Authentication #######################################
 POST          /api/auth/login                   controllers.api.auth.AuthController.authenticate
