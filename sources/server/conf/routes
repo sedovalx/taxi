@@ -53,6 +53,7 @@ DELETE        /api/operation/:id                controllers.api.entity.Operation
 
 ############################# Code generation #######################################
 GET           /api/tools/regenerate/code        controllers.api.tools.SchemaController.regenerateTableCode
+POST          /api/tools/regenerate/data        controllers.api.tools.TestController.regenerateModel
 
 # Every other page (should be the last route)
 GET           /*path                            controllers.IndexController.index(path)
