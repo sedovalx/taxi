@@ -5,6 +5,7 @@ validation.error.expected.jsnumberorjsstring=Поле должно быть за
 validation.error.expected.jsnumber=Поле должно быть заполено
 validation.error.min=Минимально допустимое значение: {0}
 auth.error.wrong_credentials=Пользователь с такой комбинацией логина и пароля не найден
+auth.error.forbidden=Действие запрещено
 exception.login.already-exists=Пользователь с логином {0} уже существует.
 exception.entity.not-found=Объект с типом {0} не найден: {1}
 exception.entity.json-wrong-format=Json для объекта типа {0} неверно отформатирован: {1}

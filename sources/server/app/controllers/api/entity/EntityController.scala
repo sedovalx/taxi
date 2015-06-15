@@ -7,17 +7,17 @@ import models.entities.Entity
 import models.generated.Tables
 import models.generated.Tables.SystemUser
 import play.api.libs.json._
-import play.api.mvc.{BodyParsers, Result}
+import play.api.mvc.{BodyParsers, RequestHeader, Result}
 import repository.GenericCRUD
+import serialization.FormatJsError._
 import serialization.entity.Serializer
 import service.entity.EntityService
 import slick.driver.PostgresDriver.api._
 import utils.EntityJsonRootMissingException
 import utils.responses.Response
-import serialization.FormatJsError._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int] }, G <: GenericCRUD[E, T, F], F, S <: Serializer[E, F]]
   extends BaseController with Silhouette[SystemUser, JWTAuthenticator] {
@@ -44,6 +44,14 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   protected def afterUpdate(json: JsValue, entity: E, identity: SystemUser): E = entity
 
   protected def afterSerialization(entity: Option[E], json: JsValue): Future[JsValue] = Future.successful(json)
+
+  override protected def onNotAuthenticated(request: RequestHeader): Option[Future[Result]] = {
+    Some(Future { Unauthorized(Json.toJson(Response.bad(play.api.i18n.Messages("auth.error.wrong_credentials")))) })
+  }
+
+  override protected def onNotAuthorized(request: RequestHeader): Option[Future[Result]] = {
+    Some(Future { Forbidden(Json.toJson(Response.bad(play.api.i18n.Messages("auth.error.forbidden")))) })
+  }
 
   private def tryParseFilter(json: JsValue): Option[F] = {
     json.validate[F] match {
