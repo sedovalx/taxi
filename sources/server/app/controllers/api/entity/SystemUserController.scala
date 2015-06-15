@@ -32,6 +32,7 @@ class SystemUserController @Inject() (
 
   def currentUser = SecuredAction { request =>
     val user = request.identity
+    logger.debug(s"Получен запрос на текущего пользователя: ${user.login}")
     Ok(makeJson("user", user))
   }
 }

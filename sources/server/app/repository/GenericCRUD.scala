@@ -3,12 +3,10 @@ package repository
 import javax.inject.Inject
 
 import models.entities.Entity
-import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
+import scala.concurrent.Future
 import scala.language.{implicitConversions, reflectiveCalls}
 
 trait GenericCRUD[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, F] {
