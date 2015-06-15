@@ -3,7 +3,6 @@ package controllers.api.auth
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.exceptions.NotAuthenticatedException
-import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.api.util.Credentials
 import com.mohiva.play.silhouette.api.{Environment, LoginEvent, LogoutEvent, Silhouette}
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -54,6 +53,7 @@ class AuthController @Inject() (
   private implicit val credentialsFormat = Json.format[Credentials]
 
   def authenticate = Action.async(BodyParsers.parse.json) { implicit request =>
+    log.debug(Json.stringify(request.body))
     // извлекаем логин/пароль из тела запроса
     request.body.validate[Credentials] map { credentials =>
       credentialsProvider.authenticate(credentials) flatMap { loginInfo =>

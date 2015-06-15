@@ -9,5 +9,6 @@ import utils.slick.{SourceCodeGenerator, SourceCodeGeneratorImpl}
 class ControllerModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[SourceCodeGenerator].to[SourceCodeGeneratorImpl].in[Singleton]
+
   }
 }
