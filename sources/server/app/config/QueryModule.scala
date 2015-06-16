@@ -3,9 +3,9 @@ package config
 import javax.inject.Singleton
 
 import com.google.inject.AbstractModule
-import net.codingwell.scalaguice.{ScalaMultibinder, ScalaModule}
-import query.{OperationQuery, RentQuery}
-import service.query.{Query, QueryManagerImpl, QueryManager}
+import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
+import query.{CashierQuery, RentQuery}
+import service.query.{Query, QueryManager, QueryManagerImpl}
 
 class QueryModule extends AbstractModule with ScalaModule{
   override def configure(): Unit = {
@@ -13,6 +13,6 @@ class QueryModule extends AbstractModule with ScalaModule{
 
     val queryBinder = ScalaMultibinder.newSetBinder[Query](binder)
     queryBinder.addBinding.to[RentQuery]
-    queryBinder.addBinding.to[OperationQuery]
+    queryBinder.addBinding.to[CashierQuery]
   }
 }

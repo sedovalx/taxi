@@ -3,6 +3,8 @@ package repository
 import javax.inject.Inject
 
 import models.entities.Entity
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.ExecutionContext.Implicits.global

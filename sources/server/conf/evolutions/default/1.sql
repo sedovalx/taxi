@@ -164,7 +164,7 @@ BEGIN
     sum(coalesce(p.amount, 0)) as "payments"
   FROM rent r
   LEFT JOIN payments p ON p.rent_id = r.id AND p.creation_date < control_date
-  GROUP BY r.id;
+  GROUP BY r.id;;
 END
 $$ LANGUAGE plpgsql;
 
@@ -178,7 +178,7 @@ BEGIN
     sum(coalesce(p.amount, 0))
   FROM rent r
   LEFT JOIN fines p ON p.rent_id = r.id AND p.creation_date < control_date
-  GROUP BY r.id;
+  GROUP BY r.id;;
 END
 $$ LANGUAGE plpgsql;
 
@@ -192,7 +192,7 @@ BEGIN
     sum(coalesce(p.amount, 0))
   FROM rent r
   LEFT JOIN repairs p ON p.rent_id = r.id AND p.creation_date < control_date
-  GROUP BY r.id;
+  GROUP BY r.id;;
 END
 $$ LANGUAGE plpgsql;
 
@@ -226,7 +226,7 @@ BEGIN
   JOIN func_payments(control_date) fp ON fp.rent_id = r.id
   JOIN func_fines(control_date) ff ON ff.rent_id = r.id
   JOIN func_repairs(control_date) fr ON fr.rent_id = r.id
-  LEFT JOIN rent_last_status rls ON rls.rent_id = r.id;
+  LEFT JOIN rent_last_status rls ON rls.rent_id = r.id;;
 
 END
 $$ LANGUAGE plpgsql;
@@ -268,7 +268,7 @@ BEGIN
   FROM car_last_rent c
   LEFT JOIN func_rent_balances(control_date) r ON c.rent_id = r.rent_id AND r.status <> 'Closed'
   LEFT JOIN driver d on r.driver_id = d.id
-  LEFT JOIN payments p on p.rent_id = r.rent_id AND p.change_time::DATE = control_date::DATE;
+  LEFT JOIN payments p on p.rent_id = r.rent_id AND p.change_time::DATE = control_date::DATE;;
 END
 $$ LANGUAGE plpgsql;
 

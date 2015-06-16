@@ -6,6 +6,7 @@ import com.google.inject.{Provides, AbstractModule}
 import net.codingwell.scalaguice.ScalaModule
 import play.api.db.slick.DatabaseConfigProvider
 import repository._
+import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 
@@ -20,7 +21,17 @@ class RepositoryModule extends AbstractModule with ScalaModule {
   }
 
   @Provides
-  def provideDatabase(dbConfigProvider: DatabaseConfigProvider): Database = {
-    dbConfigProvider.get[JdbcProfile].db
+  def provideDatabase(dbConfig: DatabaseConfig[JdbcProfile]): Database = {
+    dbConfig.db
+  }
+
+  @Provides
+  def provideDatabaseConfig(dbConfigProvider: DatabaseConfigProvider): DatabaseConfig[JdbcProfile] = {
+    dbConfigProvider.get[JdbcProfile]
+  }
+
+  @Provides
+  def provideDriver(dbConfig: DatabaseConfig[JdbcProfile]): JdbcProfile = {
+    dbConfig.driver
   }
 }

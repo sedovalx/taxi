@@ -1,16 +1,19 @@
 package query
 
 import java.sql.Timestamp
+import javax.inject.Inject
 
 import models.generated.Tables.RentFilter
 import play.api.libs.json.{JsValue, Json}
 import serialization.entity.Serialization
+import slick.backend.DatabaseConfig
+import slick.driver.JdbcProfile
 import slick.jdbc.GetResult
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RentQuery extends SqlQuery with Serialization {
+class RentQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQuery(dbConfig) with Serialization {
   override val name: String = "q-rent"
 
   private implicit val format = Json.format[Result]

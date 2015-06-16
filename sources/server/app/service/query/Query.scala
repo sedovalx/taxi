@@ -1,7 +1,5 @@
 package service.query
 
-import javax.inject.Inject
-import slick.driver.PostgresDriver.api._
 import play.api.Logger
 import play.api.libs.json.JsValue
 
@@ -13,10 +11,6 @@ trait Query {
 }
 
 abstract class QueryImpl extends Query {
-
-  @Inject
-  protected var db: Database = null
-
   protected def doExecute(parameters: Map[String, Seq[String]]): Future[JsValue]
 
   override def execute(parameters: Map[String, Seq[String]]): Future[JsValue] = {
