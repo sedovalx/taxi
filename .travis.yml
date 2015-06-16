@@ -29,8 +29,8 @@ script:
 # Run client tests
  - ember test
 # Run server tests
- - cd ./../server
- - sbt -J-XX:ReservedCodeCacheSize=256M test 
+# - cd ./../server
+# - sbt -J-XX:ReservedCodeCacheSize=256M test 
 # Tricks to avoid unnecessary cache updates
  - find $HOME/.sbt -name "*.lock" | xargs rm
  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
