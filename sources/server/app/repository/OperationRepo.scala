@@ -20,7 +20,7 @@ class OperationRepo extends GenericCRUDImpl[Operation, OperationTable, Operation
         db.run(tableQuery
           .filteredBy(f.rentId)(_.rentId.? === f.rentId)
           .filteredBy(f.accountType)(_.accountType.? === f.accountType)
-          .query.result)
+          .query.sortBy(o => o.changeTime).result)
     }
   }
 
