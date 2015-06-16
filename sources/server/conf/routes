@@ -45,11 +45,11 @@ POST          /api/rents                        controllers.api.entity.RentContr
 PUT           /api/rents/:id                    controllers.api.entity.RentController.update(id: Int)
 DELETE        /api/rents/:id                    controllers.api.entity.RentController.delete(id: Int)
 # Operation routes
-GET           /api/operation                    controllers.api.entity.OperationController.read
-GET           /api/operation/:id                controllers.api.entity.OperationController.getById(id: Int)
-POST          /api/operation                    controllers.api.entity.OperationController.create
-PUT           /api/operation/:id                controllers.api.entity.OperationController.update(id: Int)
-DELETE        /api/operation/:id                controllers.api.entity.OperationController.delete(id: Int)
+GET           /api/operations                   controllers.api.entity.OperationController.read
+GET           /api/operations/:id               controllers.api.entity.OperationController.getById(id: Int)
+POST          /api/operations                   controllers.api.entity.OperationController.create
+PUT           /api/operations/:id               controllers.api.entity.OperationController.update(id: Int)
+DELETE        /api/operations/:id               controllers.api.entity.OperationController.delete(id: Int)
 
 ############################# Code generation #######################################
 GET           /api/tools/regenerate/code        controllers.api.tools.SchemaController.regenerateTableCode

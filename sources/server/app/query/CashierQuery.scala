@@ -54,7 +54,7 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
            from func_cashier(${filter.date})
            order by rent_creation_date, car""".as[DataItem]
     dbConfig.db.run(itemsQuery) map { items =>
-      Json.toJson(items)
+      Json.obj("cashier-lists" -> Json.toJson(items))
     }
   }
 
