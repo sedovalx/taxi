@@ -1,16 +1,16 @@
 package repository
 
+import models.generated.Tables
 import models.generated.Tables.{RentStatusFilter, RentStatus, RentStatusTable}
-import play.api.db.slick.Config.driver.simple._
+import slick.driver.PostgresDriver
+import slick.driver.PostgresDriver.api._
 
-trait RentStatusRepo extends GenericCRUD[RentStatus, RentStatusTable, RentStatusFilter] {
-  def getBy(rentId: Int)(implicit session: Session): Seq[RentStatus]
-}
+import scala.concurrent.Future
 
-class RentStatusRepoImpl extends RentStatusRepo {
-  val tableQuery = RentStatusTable
-
-  override def getBy(rentId: Int)(implicit session: Session): Seq[RentStatus] = {
-    tableQuery.filter(_.rentId === rentId).run
+class RentStatusRepo extends GenericCRUDImpl[RentStatus, RentStatusTable, RentStatusFilter] {
+  def getBy(rentId: Int): Future[Seq[Tables.RentStatus]] = {
+    db.run(tableQuery.filter(_.rentId === rentId).result)
   }
+
+  override val tableQuery: PostgresDriver.api.TableQuery[Tables.RentStatusTable] = RentStatusTable
 }

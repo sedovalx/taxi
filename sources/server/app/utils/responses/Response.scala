@@ -1,4 +1,4 @@
-package util.responses
+package utils.responses
 
 import play.api.libs.json.{JsValue, Json}
 

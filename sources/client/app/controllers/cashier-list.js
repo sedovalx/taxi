@@ -45,8 +45,14 @@ export default ListController.extend({
       Ember.Table.ColumnDefinition.create({
         savedWidth: 200,
         canAutoResize: true,
+        headerCellName: "Итого",
+        contentPath: "total"
+      }),
+      Ember.Table.ColumnDefinition.create({
+        savedWidth: 200,
+        canAutoResize: true,
         headerCellName: "Текущий баланс арендный",
-        contentPath: "balance"
+        contentPath: "payments"
       }),
       Ember.Table.ColumnDefinition.create({
         savedWidth: 200,

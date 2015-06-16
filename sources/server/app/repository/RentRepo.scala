@@ -1,6 +1,10 @@
 package repository
 
-import models.generated.Tables.{RentFilter, Rent, RentTable}
+import models.generated.Tables
+import models.generated.Tables.{Rent, RentFilter, RentTable}
+import slick.driver.PostgresDriver
 
-trait RentRepo extends GenericCRUD[Rent, RentTable, RentFilter]
+class RentRepo extends GenericCRUDImpl[Rent, RentTable, RentFilter] {
+  override val tableQuery: PostgresDriver.api.TableQuery[Tables.RentTable] = RentTable
+}
 

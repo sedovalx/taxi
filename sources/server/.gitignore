@@ -10,8 +10,8 @@ target/
 lib_managed/
 src_managed/
 project/plugins/project/
-project/project
-project/target
+project/project/
+project/target/
 
 # Scala-IDE specific
 .scala_dependencies
@@ -22,12 +22,12 @@ project/target
 
 # Idea specific
 **/*.sc
-.idea
+.idea/
 
 # Play! specific
-public
+public/
 conf/*.override.conf
 conf/generated.keystore
 /bin/
 
-
+/app/models/generated/draft/

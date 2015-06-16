@@ -3,13 +3,16 @@ import statuses from 'client/models/rent-statuses';
 
 let attr = DS.attr;
 var CashierListModel = DS.Model.extend({
-  car: attr('String'),
   rentId: attr('Number'),
+  rentCreationDate: attr('Date'),
+  driverId: attr('Number'),
+  car: attr('String'),
   driver: attr('String'),
   presence: attr('Boolean'),
-  repairs: attr('Number'),
+  payments: attr('Number'),
   fines: attr('Number'),
-  balance: attr('Number'),
+  repairs: attr('Number'),
+  total: attr('Number'),
   mileage: attr('Number'),
   service: attr('Number'),
   status: attr('String'),
