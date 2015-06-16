@@ -4,14 +4,11 @@ import models.entities.Role
 import models.entities.Role._
 import models.generated.Tables
 import models.generated.Tables.{SystemUser, SystemUserTable, SystemUserFilter}
-import slick.driver.PostgresDriver
 import slick.driver.PostgresDriver.api._
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class SystemUserRepo extends GenericCRUDImpl[SystemUser, SystemUserTable, SystemUserFilter] {
-
   implicit val roleColumnType = MappedColumnType.base[Role, String]( { r => r.toString }, { s => Role.withName(s) } )
 
   def findByLogin(login: String): Future[Option[SystemUser]] = {
@@ -38,5 +35,5 @@ class SystemUserRepo extends GenericCRUDImpl[SystemUser, SystemUserTable, System
     }
   }
 
-  override val tableQuery: PostgresDriver.api.TableQuery[Tables.SystemUserTable] = SystemUserTable
+  override val tableQuery = SystemUserTable
 }
