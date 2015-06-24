@@ -1,18 +1,13 @@
-import java.net.InetAddress
 import java.nio.file.{Paths, Files}
 import play.sbt.routes.RoutesKeys._
 import sbt.Keys._
 
 def getConfigName(testMode: Boolean): String = {
-  val host = InetAddress.getLocalHost
-  val hostName = host.getHostName
-  println("Host name is " + hostName)
-
-  val suffix = hostName + ".override.conf"
+  val suffix = "override."
   val mode = if (testMode) "test." else ""
 
   val searchList = Seq(
-    s"application.$mode$suffix",
+    s"application.$mode${suffix}conf",
     s"application.${mode}conf"
   ) map { name => s"conf/$name" }
 
