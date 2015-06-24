@@ -1,30 +1,51 @@
-name := "taxi"
+import java.net.InetAddress
+import java.nio.file.{Paths, Files}
+import play.sbt.routes.RoutesKeys._
+import sbt.Keys._
 
-version := "1.0-SNAPSHOT"
+def getConfigName(testMode: Boolean): String = {
+  val host = InetAddress.getLocalHost
+  val hostName = host.getHostName
+  println("Host name is " + hostName)
 
-lazy val root = (project in file(".")).enablePlugins(PlayScala)
+  val suffix = hostName + ".override.conf"
+  val mode = if (testMode) "test." else ""
 
-scalaVersion := "2.11.6"
+  val searchList = Seq(
+    s"application.$mode$suffix",
+    s"application.${mode}conf"
+  ) map { name => s"conf/$name" }
 
-libraryDependencies ++= Seq(
-  cache,
-  ws,
-  filters,
-  specs2 % Test
-)
+  val confFile = searchList.find(path => Files.exists(Paths.get(path))).getOrElse("conf/application.conf")
+  println("Loading config from " + confFile)
+  confFile
+}
 
-libraryDependencies ++= Seq(
-  "com.typesafe.play"           %% "play-slick"             % "1.0.0",
-  "com.typesafe.play"           %% "play-slick-evolutions"  % "1.0.0",
-  "com.typesafe.slick"          %% "slick-codegen"          % "3.0.0",
-  "org.postgresql"              %  "postgresql"             % "9.4-1201-jdbc41",
-  "com.mohiva"                  %% "play-silhouette"        % "3.0.0-RC1",
-  "net.codingwell"              %% "scala-guice"            % "4.0.0"
-)
+lazy val root = (project in file(".")).
+  enablePlugins(PlayScala).
+  settings(
+    name := "taxi",
+    version := "1.0-SNAPSHOT",
+    scalaVersion := "2.11.6",
+    libraryDependencies ++= Seq(
+      cache,
+      ws,
+      filters,
+      specs2 % Test,
+      "com.typesafe.play"           %% "play-slick"             % "1.0.0",
+      "com.typesafe.play"           %% "play-slick-evolutions"  % "1.0.0",
+      "com.typesafe.slick"          %% "slick-codegen"          % "3.0.0",
+      "org.postgresql"              %  "postgresql"             % "9.4-1201-jdbc41",
+      "com.mohiva"                  %% "play-silhouette"        % "3.0.0-RC1",
+      "net.codingwell"              %% "scala-guice"            % "4.0.0"
+    ),
+    resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/",
+    resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+    routesGenerator := InjectedRoutesGenerator,
 
-resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/"
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+    fork := true,
+    javaOptions += "-Dconfig.file=" + getConfigName(false),
+    javaOptions in Test += "-Dconfig.file=" + getConfigName(true)
+  )
 
-// Play provides two styles of routers, one expects its actions to be injected, the
-// other, legacy style, accesses its actions statically.
-routesGenerator := InjectedRoutesGenerator
+

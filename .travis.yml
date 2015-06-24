@@ -2,6 +2,9 @@ language: scala
 jdk: oraclejdk8
 sudo: false
 
+addons:
+ - postgresql: "9.4"
+
 # These directories are cached to S3 at the end of the build
 cache:
  directories:
@@ -24,6 +27,9 @@ install:
  - npm install -g ember-cli
  - npm install
  - bower install
+ 
+ before_script:
+  - psql -c 'create database taxi-test;' -U postgres
  
 script:
 # Run client tests
