@@ -1,5 +1,6 @@
 package query
 
+import java.io.FileNotFoundException
 import java.nio.charset.Charset
 
 import service.query.QueryImpl
@@ -13,7 +14,10 @@ import scala.concurrent.Future
 abstract class SqlQuery(dbConfig: DatabaseConfig[JdbcProfile]) extends QueryImpl {
   protected def readSql(parameters: Map[String, String]): String = {
     val decoder = Charset.forName("UTF-8").newDecoder()
-    val source = scala.io.Source.fromFile(s"conf/sql/$name.sql")(decoder)
+    val resourceStream = getClass.getResourceAsStream(s"/sql/$name.sql")
+    if (resourceStream == null)
+      throw new FileNotFoundException(s"/sql/$name.sql")
+    val source = scala.io.Source.fromInputStream(resourceStream)(decoder)
     val sql = try source.getLines() mkString "\n" finally source.close()
     if (parameters.isEmpty) sql
     else parameters.foldLeft(sql)((agg, param) => agg.replaceAll(param._1, param._2))

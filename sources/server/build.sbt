@@ -1,20 +1,5 @@
-import java.nio.file.{Paths, Files}
 import play.sbt.routes.RoutesKeys._
 import sbt.Keys._
-
-def getConfigName(testMode: Boolean): String = {
-  val suffix = "override."
-  val mode = if (testMode) "test." else ""
-
-  val searchList = Seq(
-    s"application.$mode${suffix}conf",
-    s"application.${mode}conf"
-  ) map { name => s"conf/$name" }
-
-  val confFile = searchList.find(path => Files.exists(Paths.get(path))).getOrElse("conf/application.conf")
-  println("Loading config from " + confFile)
-  confFile
-}
 
 lazy val root = (project in file(".")).
   enablePlugins(PlayScala).
@@ -36,11 +21,7 @@ lazy val root = (project in file(".")).
     ),
     resolvers += "Atlassian Releases" at "https://maven.atlassian.com/public/",
     resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
-    routesGenerator := InjectedRoutesGenerator,
-
-    fork := true,
-    javaOptions += "-Dconfig.file=" + getConfigName(false),
-    javaOptions in Test += "-Dconfig.file=" + getConfigName(true)
+    routesGenerator := InjectedRoutesGenerator
   )
 
 
