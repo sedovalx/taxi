@@ -11,6 +11,8 @@ trait Query {
 }
 
 abstract class QueryImpl extends Query {
+  protected val logger = Logger("application." + this.getClass.getName)
+
   protected def doExecute(parameters: Map[String, Seq[String]]): Future[JsValue]
 
   override def execute(parameters: Map[String, Seq[String]]): Future[JsValue] = {
