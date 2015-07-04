@@ -12,26 +12,26 @@ import scala.concurrent.Await
 import scala.concurrent.duration._
 
 class DatabaseSpecification extends PlaySpecification {
-  protected val defaultAppBuilder =
+  protected def defaultAppBuilder =
     new GuiceApplicationBuilder()
       .configure(ConfigurationLoader.loadFirst("application.test.override.conf", "application.test.conf"))
 
-  protected def afterEach(app: Application) = {
-    recreateDbSchema(app)
-  }
-
-  private def recreateDbSchema(app: Application) = {
-    val dbConfig = DatabaseConfigProvider.get[JdbcProfile](app)
-    import dbConfig.driver.api._
-
-    val recreateSchema: DBIO[Unit] = DBIO.seq(
-      sqlu"drop schema public cascade",
-      sqlu"create schema public"
-    )
-
-    println("before db clean")
-    Await.ready(dbConfig.db.run(recreateSchema), 5 seconds)
-  }
+//  protected def afterEach(app: Application) = {
+//    recreateDbSchema(app)
+//  }
+//
+//  private def recreateDbSchema(app: Application) = {
+//    val dbConfig = DatabaseConfigProvider.get[JdbcProfile](app)
+//    import dbConfig.driver.api._
+//
+//    val recreateSchema: DBIO[Unit] = DBIO.seq(
+//      sqlu"drop schema public cascade",
+//      sqlu"create schema public"
+//    )
+//
+//    println("before db clean")
+//    Await.ready(dbConfig.db.run(recreateSchema), 5 seconds)
+//  }
 
   abstract class DatabaseContext() extends WithApplication(defaultAppBuilder.build()) {
     protected val injector = implicitApp.injector
@@ -40,7 +40,7 @@ class DatabaseSpecification extends PlaySpecification {
       try {
         t
       } finally {
-        afterEach(implicitApp)
+        //afterEach(implicitApp)
       }
     }
   }
