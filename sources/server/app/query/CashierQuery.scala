@@ -58,7 +58,7 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
            select *
            from func_cashier(${filter.date})
            where #$whereClause
-           order by rent_creation_date, car""".as[DataItem]
+           order by status, driver""".as[DataItem]
     dbConfig.db.run(itemsQuery) map { items =>
       Json.obj("cashier-lists" -> Json.toJson(items))
     }

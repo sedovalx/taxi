@@ -153,7 +153,6 @@ CREATE OR REPLACE VIEW car_last_rent AS
       WHERE t.rk = 1
     ) r on c.id = r.car_id;
 
-
 CREATE OR REPLACE FUNCTION func_payments(control_date TIMESTAMPTZ)
   RETURNS TABLE(rent_id INT, amount NUMERIC(10,2))
 AS $$
@@ -196,6 +195,43 @@ BEGIN
 END
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION func_rental_rate(IN control_time TIMESTAMPTZ)
+  RETURNS TABLE(rent_id INT, minutes INT, rental_rate_sum NUMERIC(10,2)) AS
+  $BODY$
+BEGIN
+	RETURN QUERY
+	WITH statuses_with_end_date AS (
+	    SELECT
+	      *,
+	      COALESCE(LEAD(rs.change_time) OVER (PARTITION BY rs.rent_id ORDER BY rs.creation_date), control_time) AS end_time
+	    FROM rent_status rs
+	)
+	, rent_status_duration AS (
+		SELECT
+			*,
+		FLOOR(EXTRACT(EPOCH FROM AGE(end_time, change_time))/60)::INT AS "minutes"
+		FROM statuses_with_end_date s
+		WHERE s.creation_date < control_time
+	)
+	, rent_active_duration AS (
+		SELECT
+			rsd.rent_id,
+			sum(rsd.minutes)::INT AS "minutes"
+		FROM rent_status_duration rsd
+		WHERE rsd.status = 'Active'
+		GROUP BY rsd.rent_id
+	)
+	SELECT
+		r.id,
+		COALESCE(rad.minutes, 0) AS "minutes",
+    (c.rate / 24 / 60 * COALESCE(rad.minutes, 0))::NUMERIC(10,2) AS "balance"
+	FROM rent r
+	JOIN car c ON r.car_id = c.id
+	LEFT JOIN rent_active_duration rad ON r.id = rad.rent_id;;
+END
+$BODY$
+LANGUAGE plpgsql;
+
 CREATE OR REPLACE FUNCTION func_rent_balances(control_date TIMESTAMPTZ)
   RETURNS TABLE(
   rent_id INT,
@@ -204,7 +240,9 @@ CREATE OR REPLACE FUNCTION func_rent_balances(control_date TIMESTAMPTZ)
   deposit NUMERIC(10,2),
   creation_date TIMESTAMPTZ,
   status VARCHAR(255),
+  rental_rate_sum NUMERIC(10,2),
   payments NUMERIC(10,2),
+  rent_balance NUMERIC(10,2),
   fines NUMERIC(10,2),
   repairs NUMERIC(10,2),
   total NUMERIC(10,2))
@@ -218,15 +256,18 @@ BEGIN
     r.deposit,
     r.creation_date,
     rls.status,
-    coalesce(fp.amount, 0),
-    coalesce(ff.amount, 0),
-    coalesce(fr.amount, 0),
-    coalesce(fp.amount, 0) - coalesce(ff.amount, 0) - coalesce(fr.amount, 0)
+    rr.rental_rate_sum,
+    COALESCE(fp.amount, 0),
+    COALESCE(fp.amount, 0) - rr.rental_rate_sum,
+    COALESCE(ff.amount, 0),
+    COALESCE(fr.amount, 0),
+    COALESCE(fp.amount, 0) - COALESCE(ff.amount, 0) - COALESCE(fr.amount, 0) - rr.rental_rate_sum
   FROM rent r
-  JOIN func_payments(control_date) fp ON fp.rent_id = r.id
-  JOIN func_fines(control_date) ff ON ff.rent_id = r.id
-  JOIN func_repairs(control_date) fr ON fr.rent_id = r.id
-  LEFT JOIN rent_last_status rls ON rls.rent_id = r.id;;
+    JOIN func_payments(control_date) fp ON fp.rent_id = r.id
+    JOIN func_fines(control_date) ff ON ff.rent_id = r.id
+    JOIN func_repairs(control_date) fr ON fr.rent_id = r.id
+    JOIN func_rental_rate(control_date) rr ON rr.rent_id = r.id
+    LEFT JOIN rent_last_status rls ON rls.rent_id = r.id;;
 
 END
 $$ LANGUAGE plpgsql;
@@ -258,7 +299,7 @@ BEGIN
     (c.reg_number || ' ' || c.make || ' (' || c.rate || ')')::VARCHAR(500) as "car",
     (d.last_name || ' ' || d.first_name || coalesce(' ' || d.middle_name, ''))::VARCHAR(500) as "driver",
     coalesce(p.presence, false) as "presence",
-    r.payments,
+    r.rent_balance,
     r.fines,
     r.repairs,
     r.total,
@@ -276,6 +317,7 @@ $$ LANGUAGE plpgsql;
 
 DROP FUNCTION IF EXISTS func_cashier(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_rent_balances(TIMESTAMPTZ);
+DROP FUNCTION IF EXISTS func_rental_rate(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_payments(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_fines(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_repairs(TIMESTAMPTZ);
