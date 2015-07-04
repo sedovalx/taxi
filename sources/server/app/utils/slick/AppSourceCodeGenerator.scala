@@ -5,34 +5,12 @@ class AppSourceCodeGenerator(model: slick.model.Model) extends slick.codegen.Sou
   /** Generates code for the complete model (not wrapped in a package yet)
       @group Basic customization overrides */
   override def code = {
-    val tables = this.tables.filter(t => t.TableClass.name.toString != "PlayEvolutionsTable")
     "import models.entities._" +
       "\n" + "import models.entities.Role.Role" +
       "\n" + "import db.MappedColumnTypes._" +
       "\n" + "import com.mohiva.play.silhouette.api.Identity" +
       "\n" + "import utils.DateUtils" +
-      "\n" + "import slick.model.ForeignKeyAction\n" +
-      ( if(tables.exists(_.hlistEnabled)){
-        "import slick.collection.heterogeneous._\n"+
-          "import slick.collection.heterogeneous.syntax._\n"
-      } else ""
-        ) +
-      ( if(tables.exists(_.PlainSqlMapper.enabled)){
-        "// NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.\n"+
-          "import slick.jdbc.{GetResult => GR}\n"
-      } else ""
-        ) +
-      "\n/** DDL for all tables. Call .create to execute. */" +
-      (
-        if(tables.length > 5)
-          "\nlazy val schema = Array(" + tables.map(_.TableValue.name + ".schema").mkString(", ") + ").reduceLeft(_ ++ _)"
-        else
-          "\nlazy val schema = " + tables.map(_.TableValue.name + ".schema").mkString(" ++ ")
-        ) +
-      "\n@deprecated(\"Use .schema instead of .ddl\", \"3.0\")"+
-      "\ndef ddl = schema" +
-      "\n\n" +
-      tables.map(_.code.mkString("\n")).mkString("\n\n")
+      "\n" + super.code
   }
 
   override def entityName = (dbName: String) => dbName.toCamelCase

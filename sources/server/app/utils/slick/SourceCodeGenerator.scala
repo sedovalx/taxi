@@ -3,7 +3,7 @@ package utils.slick
 import play.api.Logger
 import slick.driver.JdbcProfile
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{Future, ExecutionContext}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
@@ -17,7 +17,12 @@ class SourceCodeGeneratorImpl extends SourceCodeGenerator {
       Class.forName(slickDriver + "$").getField("MODULE$").get(null).asInstanceOf[JdbcProfile]
     val dbFactory = driver.api.Database
     val db = dbFactory.forURL(url, driver = jdbcDriver, user = user, password = password, keepAliveConnection = true)
-    db.run(driver.createModel(None, ignoreInvalidDefaults = false)(ExecutionContext.global).withPinnedSession)
+    val tables = driver.defaultTables map { tables =>
+      tables filter { t =>
+        t.name.name != "play_evolutions"
+      }
+    }
+    db.run(driver.createModel(Some(tables), ignoreInvalidDefaults = false)(ExecutionContext.global).withPinnedSession)
       .map { model => new AppSourceCodeGenerator(model) }
       .onComplete {
       case Success(generator) => generator.writeToFile(slickDriver,outputDir,pkg)

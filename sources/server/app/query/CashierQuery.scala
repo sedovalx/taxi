@@ -3,8 +3,10 @@ package query
 import java.sql.Timestamp
 import javax.inject.Inject
 
+import models.entities.RentStatus
 import models.entities.RentStatus._
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsSuccess, JsError, JsValue, Json}
+import serialization.EnumSerializer
 import serialization.entity.Serialization
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
@@ -21,12 +23,14 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
 
   private implicit val dataFormat = Json.format[DataItem]
   private implicit val getResult = GetResult[DataItem] { d => new DataItem(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<)}
+  private implicit val enumReads = EnumSerializer.enumReads(RentStatus)
+  private implicit val filterReads = Json.reads[Filter]
 
   private case class Filter(
     car: Option[String] = None,
     driver: Option[String] = None,
     status: Option[RentStatus] = None,
-    date: Timestamp
+    date: Option[Timestamp] = Some(DateUtils.now)
   )
 
   private case class DataItem(
@@ -48,17 +52,40 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
 
   override protected def doExecute(parameters: Map[String, Seq[String]]): Future[JsValue] = {
     val filter = parseFilter(parameters)
+    val whereClause = buildWhereClause(filter)
     val itemsQuery: DBIO[Seq[DataItem]] =
       sql"""
            select *
            from func_cashier(${filter.date})
+           where #$whereClause
            order by rent_creation_date, car""".as[DataItem]
     dbConfig.db.run(itemsQuery) map { items =>
       Json.obj("cashier-lists" -> Json.toJson(items))
     }
   }
 
+  private def buildWhereClause(filter: Filter): String = {
+    var whereClause = "1=1"
+    if (filter.car.isDefined){
+      whereClause += s" and car like '%${filter.car.get}%'"
+    }
+    if (filter.driver.isDefined){
+      whereClause += s" and driver like '%${filter.driver.get}%'"
+    }
+    whereClause
+  }
+
   private def parseFilter(parameters: Map[String, Seq[String]]): Filter = {
-    Filter(date = DateUtils.now)
+    val filterJson = Json.toJson(parameters map { i => (i._1, i._2.mkString) })
+    Json.fromJson[Filter](filterJson) match {
+      case e @ JsError(_) =>
+        logger.warn("Filter parsing error: \n" + e.toString)
+        Filter()
+      case JsSuccess(f, _) =>
+        f.date match {
+          case None => f.copy(date = Some(DateUtils.now))
+          case _ => f
+        }
+    }
   }
 }
