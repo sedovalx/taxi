@@ -60,8 +60,8 @@ class RentController @Inject() (
     rent match {
       case None => super.afterSerialization(rent, json)
       case Some(r) =>
-        val status = entityService.getCurrentStatus(r)
         val transformFuture = for {
+          status <- entityService.getCurrentStatus(r)
           carName <- carService.getDisplayName(r.carId)
           driverName <- driverService.getDisplayName(r.driverId)
         // без внешних скобок это шаманство не работает

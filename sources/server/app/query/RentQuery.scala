@@ -20,13 +20,13 @@ class RentQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQue
 
   private case class Result(
     id: Int,
-    driverId: Int,
-    carId: Int,
+    driver: Int,
+    car: Int,
     deposit: BigDecimal,
     comment: Option[String],
-    creatorId: Option[Int],
+    creator: Option[Int],
     creationDate: Option[Timestamp],
-    editorId: Option[Int],
+    editor: Option[Int],
     editDate: Option[Timestamp],
     status: String,
     carDisplayName: String,

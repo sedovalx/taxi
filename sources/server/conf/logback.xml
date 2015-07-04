@@ -3,10 +3,10 @@
   <conversionRule conversionWord="coloredLevel" converterClass="play.api.Logger$ColoredLevel" />
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${application.home}/logs/application.log</file>
+    <file>logs/application.log</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
       <!-- daily rollover -->
-      <fileNamePattern>${application.home}/logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>logs/application.%d{yyyy-MM-dd}.log</fileNamePattern>
       <!-- keep 30 days' worth of history -->
       <maxHistory>30</maxHistory>
     </rollingPolicy>
@@ -41,7 +41,7 @@
   <logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG"/>
 
 
-  <root level="DEBUG">
+  <root level="INFO">
     <appender-ref ref="ASYNCFILE" />
     <appender-ref ref="ASYNCSTDOUT" />
   </root>

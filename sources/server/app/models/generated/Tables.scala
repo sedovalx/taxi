@@ -9,13 +9,13 @@ object Tables extends {
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 trait Tables {
   val profile: slick.driver.JdbcProfile
-  import profile.api._
-  import models.entities._
-  import models.entities.Role.Role
-  import db.MappedColumnTypes._
   import com.mohiva.play.silhouette.api.Identity
-  import utils.DateUtils
+  import db.MappedColumnTypes._
+  import models.entities.Role.Role
+  import models.entities._
+  import profile.api._
   import slick.model.ForeignKeyAction
+  import utils.DateUtils
 
   /** DDL for all tables. Call .create to execute. */
   lazy val schema = Array(CarTable.schema, DriverTable.schema, OperationTable.schema, RentStatusTable.schema, RentTable.schema, SystemUserTable.schema).reduceLeft(_ ++ _)
@@ -38,9 +38,9 @@ trait Tables {
   case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Car]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -106,9 +106,9 @@ trait Tables {
   case class Driver(id: Int, pass: String, license: String, lastName: String, firstName: String, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[Driver]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -177,9 +177,9 @@ trait Tables {
   case class Operation(id: Int, rentId: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, accountType: models.entities.AccountType.AccountType, presence: Boolean = true, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Operation]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -237,9 +237,9 @@ trait Tables {
   case class RentStatus(id: Int, changeTime: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[RentStatus]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -298,9 +298,9 @@ trait Tables {
   case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Rent]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -359,9 +359,9 @@ trait Tables {
   case class SystemUser(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[SystemUser] with Identity
   {
     def copyWithId(id: Int) = this.copy(id = id)
-  
+
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-  
+
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                

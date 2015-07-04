@@ -51,6 +51,8 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
 
   protected def afterSerialization(entity: Option[E], json: JsValue): Future[JsValue] = Future.successful(json)
 
+  protected def deserializeAndValidate(json: JsValue): JsResult[E] = json.validate[E]
+
   private def tryParseFilter(json: JsValue): Option[F] = {
     json.validate[F] match {
       case JsSuccess(f, _) => Some(f)
@@ -82,7 +84,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
     logger.debug(s"Запрос на создание объекта типа $entityName с данными: \n${Json.stringify(request.body)}")
     val json = getEntityJson(request.body)
-    json.validate[E] match {
+    deserializeAndValidate(json) match {
       case err@JsError(_) => Future.successful(onCreateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
         val toSave = beforeCreate(json, entity, request.identity)
@@ -100,7 +102,7 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
     logger.debug(s"Запрос на обновление объекта типа $entityName с идентификатором $id и данными: \n${Json.stringify(request.body)}")
     val json = getEntityJson(request.body)
-    json.validate[E] match {
+    deserializeAndValidate(json) match {
       case err@JsError(_) => Future.successful(onUpdateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
         val toSave = beforeUpdate(id, json, entity, request.identity)
