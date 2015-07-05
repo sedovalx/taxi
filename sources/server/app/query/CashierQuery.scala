@@ -67,10 +67,10 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
   private def buildWhereClause(filter: Filter): String = {
     var whereClause = "1=1"
     if (filter.car.isDefined){
-      whereClause += s" and car like '%${filter.car.get}%'"
+      whereClause += s" and car ilike '%${filter.car.get}%'"
     }
     if (filter.driver.isDefined){
-      whereClause += s" and driver like '%${filter.driver.get}%'"
+      whereClause += s" and driver ilike '%${filter.driver.get}%'"
     }
     whereClause
   }
