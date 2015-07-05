@@ -1,4 +1,24 @@
 <div class="list">
+    <div class="list-filter">
+        <a class="btn btn-primary filter-button" data-toggle="collapse" href="#filter" aria-expanded="false" aria-controls="filter">
+            Фильтр
+        </a>
+        <div class="collapse filter-body" id="filter">
+            <div class="well">
+                <form class="form-horizontal">
+                  {{property-row title="Машина" value=filter.car}}
+                  {{property-row title="Водитель" value=filter.driver}}
+                  {{property-row title="Дата" value=filter.date}}
+                </form>
+                <button type="button" class="btn btn-primary" {{action "filterTable"}}>
+                    <i class="fa fa-user-plus"></i> Фильтровать
+                </button>
+                <button type="button" class="btn btn-primary" {{action "clearFilter"}}>
+                    <i class="fa fa-user-plus"></i> Очистить фильтр
+                </button>
+            </div>
+        </div>
+    </div>
     <div class="table">
       {{table-component
       columns=columns
