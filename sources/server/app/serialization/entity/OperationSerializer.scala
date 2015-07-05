@@ -18,7 +18,7 @@ class OperationSerializer extends Serializer[Operation, OperationFilter] {
   override implicit val reads: Reads[Tables.Operation] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
       (JsPath \ "rent").read[String].map { id => id.toInt } and
-      (JsPath \ "amount").read(min[BigDecimal](0)) and
+      (JsPath \ "amount").read[BigDecimal] and
       (JsPath \ "changeTime").read[Timestamp] and
       (JsPath \ "accountType").read[AccountType] and
       (JsPath \ "presence").readNullable[Boolean].map { case Some(s) => s case None => true } and
