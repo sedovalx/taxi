@@ -4,7 +4,7 @@ import javax.inject.Singleton
 
 import com.google.inject.AbstractModule
 import net.codingwell.scalaguice.{ScalaModule, ScalaMultibinder}
-import query.{CashierQuery, RentQuery}
+import query.{RentHistoryQuery, CashierQuery, RentQuery}
 import service.query.{Query, QueryManager, QueryManagerImpl}
 
 class QueryModule extends AbstractModule with ScalaModule{
@@ -14,5 +14,6 @@ class QueryModule extends AbstractModule with ScalaModule{
     val queryBinder = ScalaMultibinder.newSetBinder[Query](binder)
     queryBinder.addBinding.to[RentQuery]
     queryBinder.addBinding.to[CashierQuery]
+    queryBinder.addBinding.to[RentHistoryQuery]
   }
 }

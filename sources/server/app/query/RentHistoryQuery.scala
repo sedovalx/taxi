@@ -4,6 +4,8 @@ import java.sql.Timestamp
 import javax.inject.Inject
 
 import play.api.libs.json._
+import play.api.libs.functional.syntax._
+import play.api.libs.json.Reads._
 import serialization.entity.Serialization
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
@@ -15,8 +17,7 @@ import scala.concurrent.Future
 
 class RentHistoryQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQuery(dbConfig) with Serialization {
 
-  private implicit val filterReads = Json.reads[Filter]
-  private implicit val getResult = GetResult(d => HistoryRecord(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<))
+  private implicit val getResult = GetResult(d => HistoryRecord(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<))
   private implicit val operationRecordWrites = Json.writes[OperationRecord]
   private implicit val groupedWrites: Writes[Seq[((Int, Timestamp, String), Seq[OperationRecord])]] = new Writes[Seq[((Int, Timestamp, String), Seq[OperationRecord])]] {
     override def writes(o: Seq[((Int, Timestamp, String), Seq[OperationRecord])]): JsValue = {
@@ -33,6 +34,10 @@ class RentHistoryQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends
       })
     }
   }
+  private implicit var filterReads: Reads[Filter] = (
+    (JsPath \ "rent").read[String].map { v => v.toInt } and
+      (JsPath \ "date").readNullable[String].map(_.map(v => DateUtils.valueOf(v)))
+    )(Filter.apply _)
 
   override val name: String = "q-rent-history"
 
@@ -43,14 +48,16 @@ class RentHistoryQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends
     status: String,
     statusId: Int,
     operationTime: Option[Timestamp],
-    operationId: Option[Int],
-    amount: Option[BigDecimal]
+    accountType: Option[String],
+    amount: Option[BigDecimal],
+    operationId: Option[Int]
     )
 
   case class OperationRecord(
     operationTime: Option[Timestamp],
     operationId: Option[Int],
-    amount: Option[BigDecimal]
+    amount: Option[BigDecimal],
+    accountType: Option[String]
     )
 
   override protected def doExecute(parameters: Map[String, Seq[String]]): Future[JsValue] = {
@@ -67,7 +74,7 @@ class RentHistoryQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends
           i._1,
           i._2
             .filter { r => r.operationId.isDefined }
-            .map { r => OperationRecord(r.operationTime, r.operationId, r.amount) }
+            .map { r => OperationRecord(r.operationTime, r.operationId, r.amount, r.accountType) }
             .sortBy { o => o.operationTime.map { t => t.getTime } }
         ) }
     } map { grouped =>
@@ -80,7 +87,7 @@ class RentHistoryQuery @Inject() (dbConfig: DatabaseConfig[JdbcProfile]) extends
     Json.fromJson[Filter](filterJson) match {
       case e @ JsError(_) =>
         logger.error("Filter parsing error: \n" + e.toString)
-        throw new EntityJsonFormatException("[Статус аренды]", "Ожидается поле rentId с идентификатором аренды.")
+        throw new EntityJsonFormatException("[Статус аренды]", "Ожидается поле rent с идентификатором аренды.")
       case JsSuccess(f, _) =>
         f.date match {
           case None => f.copy(date = Some(DateUtils.now))
