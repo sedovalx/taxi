@@ -2,6 +2,12 @@ import Ember from "ember";
 import ListController from "client/controllers/base/list-controller";
 
 export default ListController.extend({
+  queryParams: ['accountType'],
+  //queryParams defaults
+  accountType: '',
+  filter: {
+    accountType: ''
+  },
   sortProperties: ["changeTime", "rent.displayName"],
   actions: {
     edit: function(){
