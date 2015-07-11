@@ -1,22 +1,60 @@
 <div class="editor user-editor">
-    <form class="form-horizontal">
-      {{#property-row title="Статус" errors=errors.status}} 
-        {{ember-selectize
-        content=statuses
-        optionValuePath="content.id"
-        optionLabelPath="content.label"
-        selection=selectedStatus
-        placeholder="Выберите статус"
-        }}
-      {{/property-row}}
-      {{#property-row title="Водитель" errors=errors.driver}}
-        {{input value=driverDisplayName readonly="true"}}
-      {{/property-row}}
-      {{#property-row title="Автомобиль" errors=errors.car}}
-        {{input value=carDisplayName readonly="true"}}
-      {{/property-row}}
-      {{property-row title="Залог" value=deposit errors=errors.deposit}}
-      {{property-row title="Примечания" value=comment}}
-    </form>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active">
+        <a href="#general" aria-controls="general" role="tab" data-toggle="tab">Основное</a>
+    </li>
+    <li role="presentation">
+        <a href="#history" aria-controls="history" role="tab" data-toggle="tab">История</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="general">
+      <form class="form-horizontal">
+        {{#property-row title="Статус" errors=errors.status}}
+          {{ember-selectize
+          content=statuses
+          optionValuePath="content.id"
+          optionLabelPath="content.label"
+          selection=selectedStatus
+          placeholder="Выберите статус"
+          }}
+        {{/property-row}}
+        {{#property-row title="Водитель" errors=errors.driver}}
+          {{input value=driverDisplayName readonly="true"}}
+        {{/property-row}}
+        {{#property-row title="Автомобиль" errors=errors.car}}
+          {{input value=carDisplayName readonly="true"}}
+        {{/property-row}}
+        {{property-row title="Залог" value=deposit errors=errors.deposit}}
+        {{property-row title="Примечания" value=comment}}
+      </form>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="history">
+        <div class="history-container container-fluid">
+          {{#each status in history}}
+              <div class="history-item status row">
+                  <div class="col-md-1 status-icon">
+
+                  </div>
+                  <div class="col-md-4">{{status.changeTime}}</div>
+                  <div class="col-md-2">{{status.status}}</div>
+              </div>
+              <div class="operations-container">
+                  {{#each op in status.operations}}
+                    <div class="history-item operation row">
+                        <div class="col-md-1 operation-icon">
+
+                        </div>
+                        <div class="col-md-4">{{op.operationTime}}</div>
+                        <div class="col-md-2">{{op.accountType}}</div>
+                        <div class="col-md-2">{{op.amount}}</div>
+                    </div>
+                  {{/each}}
+              </div>
+          {{/each}}
+        </div>
+    </div>
+  </div>
+
   {{save-cancel}}
 </div>
