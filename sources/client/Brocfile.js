@@ -52,5 +52,6 @@ app.import(app.bowerDirectory + '/bootstrap-datepicker/dist/locales/bootstrap-da
 
 // MomentJS
 app.import(app.bowerDirectory + '/moment/moment.js');
+app.import(app.bowerDirectory + '/moment/locale/ru.js');
 
 module.exports = app.toTree();

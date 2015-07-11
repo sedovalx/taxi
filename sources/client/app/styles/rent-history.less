@@ -1,0 +1,40 @@
+@status-icon-height: 35px;
+@status-icon-size: 20px;
+
+@operation-icon-height: 28px;
+@operation-icon-size: 15px;
+
+.history-container {
+  .history-item {
+    margin-bottom: 10px;
+    border-radius: 5px;
+
+    &.status {
+      background-color: #5bc0de;
+    }
+
+    & > div {
+      line-height: @status-icon-height;
+    }
+
+    .status-icon > i {
+      font-size: @status-icon-size;
+      background-color: lightblue;
+      height: @status-icon-height;
+      width: @status-icon-height;
+      line-height: @status-icon-height;
+      text-align: center;
+      border-radius: @status-icon-height;
+    }
+
+    .operation-icon > i {
+      font-size: @operation-icon-size;
+      background-color: lightblue;
+      height: @operation-icon-height;
+      width: @operation-icon-height;
+      line-height: @operation-icon-height;
+      text-align: center;
+      border-radius: @operation-icon-height;
+    }
+  }
+}
