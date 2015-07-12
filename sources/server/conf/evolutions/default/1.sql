@@ -153,6 +153,12 @@ CREATE OR REPLACE VIEW car_last_rent AS
       WHERE t.rk = 1
     ) r on c.id = r.car_id;
 
+CREATE OR REPLACE VIEW status_with_bounds AS
+  SELECT
+    *,
+    LEAD(rs.change_time) OVER (PARTITION BY rs.rent_id ORDER BY rs.creation_date) AS end_time
+  FROM rent_status rs;
+
 CREATE OR REPLACE FUNCTION func_payments(control_date TIMESTAMPTZ)
   RETURNS TABLE(rent_id INT, amount NUMERIC(10,2))
 AS $$
@@ -200,16 +206,20 @@ CREATE OR REPLACE FUNCTION func_rental_rate(IN control_time TIMESTAMPTZ)
   $BODY$
 BEGIN
 	RETURN QUERY
-	WITH statuses_with_end_date AS (
-	    SELECT
-	      *,
-	      COALESCE(LEAD(rs.change_time) OVER (PARTITION BY rs.rent_id ORDER BY rs.creation_date), control_time) AS end_time
-	    FROM rent_status rs
-	)
+  WITH statuses_with_end_date AS (
+      SELECT
+        swb.rent_id,
+        swb.status,
+        swb.change_time,
+        swb.creation_date,
+        COALESCE(swb.end_time, control_time) AS end_time
+      FROM status_with_bounds swb
+  )
 	, rent_status_duration AS (
 		SELECT
-			*,
-		FLOOR(EXTRACT(EPOCH FROM AGE(end_time, change_time))/60)::INT AS "minutes"
+			s.rent_id,
+			s.status,
+		  FLOOR(EXTRACT(EPOCH FROM AGE(end_time, change_time))/60)::INT AS "minutes"
 		FROM statuses_with_end_date s
 		WHERE s.creation_date < control_time
 	)
@@ -261,7 +271,14 @@ BEGIN
     COALESCE(fp.amount, 0) - rr.rental_rate_sum,
     COALESCE(ff.amount, 0),
     COALESCE(fr.amount, 0),
-    COALESCE(fp.amount, 0) - COALESCE(ff.amount, 0) - COALESCE(fr.amount, 0) - rr.rental_rate_sum
+    -- сумма отрицательных значений по балансам
+    CASE
+      WHEN COALESCE(fp.amount, 0) - rr.rental_rate_sum < 0 THEN COALESCE(fp.amount, 0) - rr.rental_rate_sum ELSE 0
+    END + CASE
+      WHEN COALESCE(ff.amount, 0) < 0 THEN COALESCE(ff.amount, 0) ELSE 0
+    END + CASE
+      WHEN COALESCE(fr.amount, 0) < 0 THEN COALESCE(fr.amount, 0) ELSE 0
+    END
   FROM rent r
     JOIN func_payments(control_date) fp ON fp.rent_id = r.id
     JOIN func_fines(control_date) ff ON ff.rent_id = r.id
@@ -322,6 +339,7 @@ DROP FUNCTION IF EXISTS func_payments(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_fines(TIMESTAMPTZ);
 DROP FUNCTION IF EXISTS func_repairs(TIMESTAMPTZ);
 
+DROP VIEW IF EXISTS status_with_bounds;
 DROP VIEW IF EXISTS car_last_rent;
 DROP VIEW IF EXISTS rent_last_status;
 DROP VIEW IF EXISTS payments;
