@@ -1,14 +1,14 @@
 <div class="editor user-editor">
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active">
-        <a href="#general" aria-controls="general" role="tab" data-toggle="tab">Основное</a>
+    <li role="presentation" {{bind-attr class="isGeneral:active"}}>
+        <a href="#general" aria-controls="general" role="tab" data-toggle="tab" {{action "changeTab" "general"}}>Основное</a>
     </li>
-    <li role="presentation">
-        <a href="#history" aria-controls="history" role="tab" data-toggle="tab">История</a>
+    <li role="presentation" {{bind-attr class="isGeneral::active"}}>
+        <a href="#history" aria-controls="history" role="tab" data-toggle="tab" {{action "changeTab" "history"}}>История</a>
     </li>
   </ul>
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="general">
+    <div role="tabpanel" id="general" {{bind-attr class=":tab-pane isGeneral:active"}}>
       <form class="form-horizontal">
         {{#property-row title="Статус" errors=errors.status}}
           {{ember-selectize
@@ -29,7 +29,7 @@
         {{property-row title="Примечания" value=comment}}
       </form>
     </div>
-    <div role="tabpanel" class="tab-pane" id="history">
+    <div role="tabpanel" id="history" {{bind-attr class=":tab-pane isGeneral::active"}}>
         <div class="history-container container-fluid">
           {{#each status in history}}
               <div class="history-item status row">

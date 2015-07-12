@@ -17,6 +17,11 @@ function defineAmountSign(history) {
 }
 
 export default ProtectedRoute.extend(DirtyRouteMixin, {
+  queryParams: {
+    tab: {
+      replace: true
+    }
+  },
   model: function(params, transition){
     return Ember.RSVP.all([
       this.store.find("rent", transition.params.rent.rent_id),

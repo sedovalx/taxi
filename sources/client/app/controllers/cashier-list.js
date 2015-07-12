@@ -27,18 +27,6 @@ export default ListController.extend({
       let selected = this.get("selectedRow");
       this.transitionToRoute("operations.new", selected.get("rentId"),"Repair");
     },
-    viewRepairOperations: function(){
-      let selected = this.get("selectedRow");
-      this.transitionToRoute("operations", selected.get("rentId"),{queryParams: { accountType:  'Repair' }});
-    },
-    viewFineOperations: function(){
-      let selected = this.get("selectedRow");
-      this.transitionToRoute("operations", selected.get("rentId"),{queryParams: { accountType:  'Fine' }});
-    },
-    viewRentOperations: function(){
-      let selected = this.get("selectedRow");
-      this.transitionToRoute("operations", selected.get("rentId"),{queryParams: { accountType:  'Rent' }});
-    },
     filterTable: function(){
       let filter = {
         car: this.get('filter.car'),
@@ -62,6 +50,12 @@ export default ListController.extend({
       this.set('driver','');
       this.set('date','');
       this.transitionToRoute("cashier-list", {queryParams: null});
+    },
+    gotoHistory: function(){
+      let selected = this.get("selectedRow");
+      let rentId = selected.get("rentId");
+      if (rentId != null)
+        this.transitionToRoute("rent.edit", rentId, { queryParams: { tab: "history" } })
     }
   },
   selectionRentIsEmpty: function(){

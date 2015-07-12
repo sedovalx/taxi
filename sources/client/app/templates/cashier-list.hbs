@@ -36,14 +36,8 @@
         <button type="button" class="btn btn-primary" {{action "createRepairOperation"}} {{bind-attr disabled=selectionRentIsEmpty}}>
             <i class="fa fa-wrench"></i> Внести платеж за ремонт
         </button>
-        <button type="button" class="btn btn-primary" {{action "viewRentOperations"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-rub"></i> Просмотр платежей по аренде
-        </button>
-        <button type="button" class="btn btn-primary" {{action "viewFineOperations"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-taxi"></i> Просмотр штрафов по аренде
-        </button>
-        <button type="button" class="btn btn-primary" {{action "viewRepairOperations"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-wrench"></i> Просмотр ремонтов по аренде
+        <button type="button" class="btn btn-primary" {{action "gotoHistory"}} {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-rub"></i> Просмотр истории по аренде
         </button>
     </div>
 </div>
