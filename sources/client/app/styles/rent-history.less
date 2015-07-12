@@ -1,9 +1,12 @@
 @status-icon-height: 35px;
 @status-icon-size: 20px;
 @status-item-border: gray 1px dashed;
+@status-item-color: #2e6da4;
 
 @operation-icon-height: 28px;
 @operation-icon-size: 15px;
+@operation-positive-color: lightgreen;
+@operation-negative-color: lightcoral;
 
 .history-container {
   padding-top: 10px;
@@ -23,21 +26,31 @@
     }
 
     &.operation {
+      border-radius: 5px;
+
       &.positive > .operation-icon > i {
-        background-color: lightgreen;
+        background-color: @operation-positive-color;
       }
       &.negative > .operation-icon > i {
-        background-color: lightcoral;
+        background-color: @operation-negative-color;
       }
 
       & > div {
         line-height: @operation-icon-height;
       }
+
+      &.positive:hover {
+        background-color: @operation-positive-color;
+      }
+
+      &.negative:hover {
+        background-color: @operation-negative-color;
+      }
     }
 
     .status-icon > i {
       font-size: @status-icon-size;
-      background-color: #2e6da4;
+      background-color: @status-item-color;
       color: white;
       height: @status-icon-height;
       width: @status-icon-height;

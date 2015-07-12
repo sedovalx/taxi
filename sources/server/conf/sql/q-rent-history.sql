@@ -18,5 +18,5 @@ select
   o.id as operation_id
 from statuses rs
 left join operation o on rs.rent_id = o.rent_id and (o.change_time >= rs.change_time and o.change_time < rs.end_time)
-where rs.rent_id = 184 and rs.creation_date < '@controlTime' and o.creation_date < '@controlTime'
+where rs.rent_id = @rentId and rs.creation_date < '@controlTime' and o.creation_date < '@controlTime'
 order by rs.change_time, o.change_time
