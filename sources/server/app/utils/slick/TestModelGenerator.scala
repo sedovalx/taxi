@@ -88,7 +88,10 @@ class TestModelGenerator @Inject() (
       accountType = accountType,
       rentId = rentId,
       changeTime = creationTime,
-      amount = BigDecimal(Random.nextDouble()*4000 + 1000),
+      amount = accountType match {
+        case AccountType.Rent => BigDecimal(Random.nextDouble()*4000 + 1000)
+        case _ => BigDecimal(Random.nextDouble()*4000 - 2000)
+      },
       creationDate = Some(creationTime),
       presence = if (Random.nextFloat() < 0.7) true else false
     ))

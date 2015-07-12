@@ -4,7 +4,7 @@ import Ember from 'ember';
 
 export default Ember.Handlebars.makeBoundHelper(function(d){
   try{
-    return moment(d).format('DD.MM.YYYY hh:mm');
+    return moment(d).format('DD.MM.YYYY HH:mm');
   } catch (err) {
     return '';
   }

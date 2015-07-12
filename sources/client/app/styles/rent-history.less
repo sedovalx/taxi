@@ -1,25 +1,44 @@
 @status-icon-height: 35px;
 @status-icon-size: 20px;
+@status-item-border: gray 1px dashed;
 
 @operation-icon-height: 28px;
 @operation-icon-size: 15px;
 
 .history-container {
+  padding-top: 10px;
+
   .history-item {
     margin-bottom: 10px;
-    border-radius: 5px;
 
     &.status {
-      background-color: #5bc0de;
+      border-top: @status-item-border;
+      border-bottom: @status-item-border;
+      font-weight: bold;
+      padding-top: 3px;
+      padding-bottom: 3px;
+      & > div {
+        line-height: @status-icon-height;
+      }
     }
 
-    & > div {
-      line-height: @status-icon-height;
+    &.operation {
+      &.positive > .operation-icon > i {
+        background-color: lightgreen;
+      }
+      &.negative > .operation-icon > i {
+        background-color: lightcoral;
+      }
+
+      & > div {
+        line-height: @operation-icon-height;
+      }
     }
 
     .status-icon > i {
       font-size: @status-icon-size;
-      background-color: lightblue;
+      background-color: #2e6da4;
+      color: white;
       height: @status-icon-height;
       width: @status-icon-height;
       line-height: @status-icon-height;
@@ -28,8 +47,8 @@
     }
 
     .operation-icon > i {
+      margin-left: 3px;
       font-size: @operation-icon-size;
-      background-color: lightblue;
       height: @operation-icon-height;
       width: @operation-icon-height;
       line-height: @operation-icon-height;

@@ -34,20 +34,20 @@
           {{#each status in history}}
               <div class="history-item status row">
                   <div class="col-md-1 status-icon">
-                    <i class="fa fa-bell"/>
+                    <i class="fa fa-bell"></i>
                   </div>
-                  <div class="col-md-3">{{format-date status.changeTime}}</div>
-                  <div class="col-md-3">{{rent-status status.status}}</div>
+                  <div class="col-md-4">{{format-date status.changeTime}}</div>
+                  <div class="col-md-5">{{rent-status status.status}}</div>
               </div>
               <div class="operations-container">
                   {{#each op in status.operations}}
-                    <div class="history-item operation row">
+                    <div {{bind-attr class=":history-item :operation :row op.isPositive:positive:negative"}}>
                         <div class="col-md-1 operation-icon">
                             {{account-type-icon op.accountType}}
                         </div>
-                        <div class="col-md-3">{{format-date op.operationTime}}</div>
-                        <div class="col-md-3">{{account-type op.accountType}}</div>
-                        <div class="col-md-2">{{op.amount}}</div>
+                        <div class="col-md-4">{{format-date op.operationTime}}</div>
+                        <div class="col-md-5">{{account-type op.accountType}}</div>
+                        <div class="col-md-2">{{op.amount}} р.</div>
                     </div>
                   {{/each}}
               </div>

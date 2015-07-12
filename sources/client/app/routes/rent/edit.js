@@ -2,6 +2,20 @@ import ProtectedRoute from "client/routes/base/protected";
 import DirtyRouteMixin from "client/routes/base/dirty-route-mixin";
 import Ember from "ember";
 
+function defineAmountSign(history) {
+  if (history && history.length) {
+    for (var i = 0; i < history.length; i++) {
+      let status = history[i];
+      for (var j = 0; j < status.operations.length; j++) {
+        let op = status.operations[j];
+        op.isPositive = op.amount >= 0;
+      }
+    }
+  }
+
+  return history;
+}
+
 export default ProtectedRoute.extend(DirtyRouteMixin, {
   model: function(params, transition){
     return Ember.RSVP.all([
@@ -13,7 +27,7 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
     // see https://babeljs.io/docs/learn-es2015/#destructuring
     let [model, history] = data;
     controller.set('model', model);
-    controller.set('history', history);
+    controller.set('history', defineAmountSign(history));
   },
   actions: {
     invalidateModel: function(){
