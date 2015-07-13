@@ -1,5 +1,6 @@
 import DS from "ember-data";
 import accountTypes from "client/models/account-types";
+import operationTypes from "client/models/operation-types";
 /* global moment */
 // No import for moment, it's a global called `moment`
 
@@ -24,6 +25,11 @@ var OperationModel = DS.Model.extend({
   presence: attr("boolean", {
     defaultValue: true
   }),
+  operationType: attr("string"),
+  operationTypeDisplayName: function(){
+    let operationType = operationTypes.filter(r => r.id === this.get("operationType"))[0];
+    return operationType ? operationType.label : this.get("operationType");
+  }.property("operationType"),
   displayChangeTime: function(){
     return moment(this.get("changeTime")).format("DD-MM-YYYY");
   }.property("changeTime")

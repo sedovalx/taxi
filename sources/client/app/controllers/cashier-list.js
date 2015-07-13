@@ -15,17 +15,18 @@ export default ListController.extend({
     date: ''
   },
   actions: {
-    createRentOperation: function(){
+    createRent: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("operations.new", selected.get("rentId"),"Rent");
+      //let routeString = "cars."+selected.get("driverId")+".rents.new";
+      this.transitionToRoute("rents.new"/*,selected.get("id")*/);
     },
-    createFineOperation: function(){
+    createPaymentOperation: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("operations.new", selected.get("rentId"),"Fine");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"Payment");
     },
-    createRepairOperation: function(){
+    createChargeOperation: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("operations.new", selected.get("rentId"),"Repair");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"Charge");
     },
     filterTable: function(){
       let filter = {

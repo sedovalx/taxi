@@ -5,10 +5,10 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
   model: function(params, transition){
     let operation = this.store.createRecord("operation");
     let rentId = transition.params.rent.rent_id;
-    let accountType = params.accountType;
+    let operationType = params.operationType;
     return this.store.find("rent", rentId).then(rent => {
       operation.set("rent", rent);
-      operation.set("accountType",accountType);
+      operation.set("operationType",operationType);
       return operation;
     });
   }

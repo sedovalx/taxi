@@ -27,14 +27,14 @@
       selection=selectedRow}}
     </div>
     <div class="commands-panel btn-group pull-right" role="group">
-        <button type="button" class="btn btn-primary" {{action "createRentOperation"}}  {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-rub"></i> Внести платеж за аренду
+        <button type="button" class="btn btn-primary" {{action "createRent"}}>
+            <i class="fa fa-user-plus"></i> Создать аренду
         </button>
-        <button type="button" class="btn btn-primary" {{action "createFineOperation"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-taxi"></i> Внести платеж за штраф
+        <button type="button" class="btn btn-primary" {{action "createPaymentOperation"}}  {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-rub"></i> Создать платеж
         </button>
-        <button type="button" class="btn btn-primary" {{action "createRepairOperation"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-            <i class="fa fa-wrench"></i> Внести платеж за ремонт
+        <button type="button" class="btn btn-primary" {{action "createChargeOperation"}} {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-taxi"></i> Создать списание
         </button>
         <button type="button" class="btn btn-primary" {{action "gotoHistory"}} {{bind-attr disabled=selectionRentIsEmpty}}>
             <i class="fa fa-rub"></i> Просмотр истории по аренде
