@@ -326,7 +326,14 @@ BEGIN
   FROM car_last_rent c
   LEFT JOIN func_rent_balances(control_date) r ON c.rent_id = r.rent_id AND r.status <> 'Closed'
   LEFT JOIN driver d on r.driver_id = d.id
-  LEFT JOIN payments p on p.rent_id = r.rent_id AND p.change_time::DATE = control_date::DATE;;
+  LEFT JOIN (
+	select 
+		p.rent_id,
+		coalesce(sum(case when p.presence then 1 else 0 end), 0) > 0 as presence
+	from payments p
+	where p.change_time::DATE = control_date::DATE
+	group by p.rent_id
+) p on p.rent_id = r.rent_id;;
 END
 $$ LANGUAGE plpgsql;
 
