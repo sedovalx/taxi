@@ -34,23 +34,25 @@ trait Tables {
    *  @param creationDate Database column creation_date SqlType(timestamptz), Default(None)
    *  @param creatorId Database column creator_id SqlType(int4), Default(None)
    *  @param editDate Database column edit_date SqlType(timestamptz), Default(None)
-   *  @param editorId Database column editor_id SqlType(int4), Default(None) */
-  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Car]
+   *  @param editorId Database column editor_id SqlType(int4), Default(None)
+   *  @param color Database column color SqlType(varchar), Length(255,true), Default(None)
+   *  @param year Database column year SqlType(int4), Default(None) */
+  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, color: Option[String] = None, year: Option[Int] = None) extends Entity[Car]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class CarFilter(id: Option[Int] = None, regNumber: Option[String] = None, make: Option[String] = None, model: Option[String] = None, rate: Option[scala.math.BigDecimal] = None, mileage: Option[scala.math.BigDecimal] = None, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None)
+  case class CarFilter(id: Option[Int] = None, regNumber: Option[String] = None, make: Option[String] = None, model: Option[String] = None, rate: Option[scala.math.BigDecimal] = None, mileage: Option[scala.math.BigDecimal] = None, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, color: Option[String] = None, year: Option[Int] = None)
 
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
-    def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
+    def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId, color, year) <> (Car.tupled, Car.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(regNumber), Rep.Some(make), Rep.Some(model), Rep.Some(rate), Rep.Some(mileage), service, comment, creationDate, creatorId, editDate, editorId).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7, _8, _9, _10, _11, _12)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(regNumber), Rep.Some(make), Rep.Some(model), Rep.Some(rate), Rep.Some(mileage), service, comment, creationDate, creatorId, editDate, editorId, color, year).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7, _8, _9, _10, _11, _12, _13, _14)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -76,6 +78,10 @@ trait Tables {
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column editor_id SqlType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
+    /** Database column color SqlType(varchar), Length(255,true), Default(None) */
+    val color = column[Option[String]]("color", O.Length(255,varying=true), O.Default(None))
+    /** Database column year SqlType(int4), Default(None) */
+    val year = column[Option[Int]]("year", O.Default(None))
 
     /** Foreign key referencing SystemUserTable (database name car_creator_id_fkey) */
     lazy val creatorFk = foreignKey("car_creator_id_fkey", creatorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -106,9 +112,9 @@ trait Tables {
   case class Driver(id: Int, pass: String, license: String, lastName: String, firstName: String, middleName: Option[String] = None, phone: String, secPhone: String, comment: Option[String] = None, address: String, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[Driver]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -177,9 +183,9 @@ trait Tables {
   case class Operation(id: Int, rentId: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, accountType: models.entities.AccountType.AccountType, presence: Boolean = true, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Operation]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -237,9 +243,9 @@ trait Tables {
   case class RentStatus(id: Int, changeTime: java.sql.Timestamp, status: models.entities.RentStatus.RentStatus, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, rentId: Int) extends Entity[RentStatus]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -298,9 +304,9 @@ trait Tables {
   case class Rent(id: Int, driverId: Int, carId: Int, deposit: scala.math.BigDecimal, comment: Option[String] = None, creatorId: Option[Int] = None, creationDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None) extends Entity[Rent]
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
@@ -359,9 +365,9 @@ trait Tables {
   case class SystemUser(id: Int, login: String, passwordHash: String, lastName: Option[String] = None, firstName: Option[String] = None, middleName: Option[String] = None, role: Role, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, editDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editorId: Option[Int] = None) extends Entity[SystemUser] with Identity
   {
     def copyWithId(id: Int) = this.copy(id = id)
-
+  
     def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
-
+  
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
