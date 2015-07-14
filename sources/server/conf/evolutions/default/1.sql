@@ -23,6 +23,8 @@ CREATE TABLE car
   rate NUMERIC(10,2) NOT NULL,
   mileage NUMERIC(10,2) NOT NULL,
   service NUMERIC(10,2),
+  color VARCHAR(255),
+  year INT,
   comment VARCHAR(5000),
   creation_date TIMESTAMPTZ,
   creator_id INT,
@@ -304,7 +306,8 @@ CREATE OR REPLACE FUNCTION func_cashier(control_date TIMESTAMPTZ)
   total NUMERIC(10,2),
   mileage NUMERIC(10,2),
   service NUMERIC(10,2),
-  status VARCHAR(255))
+  status VARCHAR(255),
+  deposit NUMERIC(10,2))
 AS $$
 BEGIN
   RETURN QUERY
@@ -322,7 +325,8 @@ BEGIN
     r.total,
     c.mileage,
     c.service,
-    r.status
+    r.status,
+    r.deposit
   FROM car_last_rent c
   LEFT JOIN func_rent_balances(control_date) r ON c.rent_id = r.rent_id AND r.status <> 'Closed'
   LEFT JOIN driver d on r.driver_id = d.id
