@@ -20,6 +20,9 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
   queryParams: {
     tab: {
       replace: true
+    },
+    panel: {
+      replace: true
     }
   },
   model: function(params, transition){

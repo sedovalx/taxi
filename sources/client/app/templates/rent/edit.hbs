@@ -1,10 +1,10 @@
 <div class="editor user-editor">
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" {{bind-attr class="isGeneral:active"}}>
-        <a href="#general" aria-controls="general" role="tab" data-toggle="tab" {{action "changeTab" "general"}}>Основное</a>
+        <a href="#general" aria-controls="general" role="tab" {{action "changeTab" "general"}}>Основное</a>
     </li>
     <li role="presentation" {{bind-attr class="isGeneral::active"}}>
-        <a href="#total" aria-controls="total" role="tab" data-toggle="tab" {{action "changeTab" "total"}}>Сводка</a>
+        <a href="#info" aria-controls="info" role="tab" {{action "changeTab" "info"}}>Сводка</a>
     </li>
   </ul>
   <div class="tab-content">
@@ -29,17 +29,20 @@
         {{property-row title="Примечания" value=comment}}
       </form>
     </div>
-    <div role="tabpanel" id="total" {{bind-attr class=":tab-pane isGeneral::active"}}>
+    <div role="tabpanel" id="info" {{bind-attr class=":tab-pane isGeneral::active"}}>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="rentTotalHeading">
                     <h4 class="panel-title">
-                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#rentTotalCollapse" aria-expanded="true" aria-controls="rentTotalCollapse">
+                        <a {{bind-attr class="isTotal::collapsed"}} {{action "switchPanel" "total"}}
+                                role="button"
+                                data-parent="#accordion"
+                                href="#rentTotalCollapse">
                             Итого: {{rentTotal.total}}
                         </a>
                     </h4>
                 </div>
-                <div id="rentTotalCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="rentTotalHeading">
+                <div id="rentTotalCollapse" {{bind-attr class=":panel-collapse :collapse isTotal:in"}} role="tabpanel" aria-labelledby="rentTotalHeading">
                     <div class="panel-body">
                         <div class="rent-total-container">
                             <form class="form-horizontal">
@@ -66,12 +69,15 @@
             <div class="panel panel-default">
                 <div class="panel-heading" role="tab" id="rentHistoryHeading">
                     <h4 class="panel-title">
-                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#rentHistoryCollapse" aria-expanded="false" aria-controls="rentHistoryCollapse">
+                        <a {{bind-attr class="isTotal:collapsed"}} {{action "switchPanel" "history"}}
+                                role="button"
+                                data-parent="#accordion"
+                                href="#rentHistoryCollapse">
                             История
                         </a>
                     </h4>
                 </div>
-                <div id="rentHistoryCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="rentHistoryHeading">
+                <div id="rentHistoryCollapse" {{bind-attr class=":panel-collapse :collapse isTotal::in"}} role="tabpanel" aria-labelledby="rentHistoryHeading">
                     <div class="panel-body">
                         <div class="history-container container-fluid">
                             {{#each status in history}}

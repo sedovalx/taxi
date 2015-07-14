@@ -16,7 +16,7 @@ export default ListController.extend({
   },
   actions: {
     createRent: function(){
-      let selected = this.get("selectedRow");
+      //let selected = this.get("selectedRow");
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
       this.transitionToRoute("rents.new"/*,selected.get("id")*/);
     },
@@ -55,8 +55,9 @@ export default ListController.extend({
     gotoRentInfo: function(){
       let selected = this.get("selectedRow");
       let rentId = selected.get("rentId");
-      if (rentId != null)
-        this.transitionToRoute("rent.edit", rentId, { queryParams: { tab: "total" } })
+      if (rentId != null) {
+        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "info"}});
+      }
     }
   },
   selectionRentIsEmpty: function(){
