@@ -1,10 +1,10 @@
 select
 	rent_id,
 	minutes,
-	payments,
+	rent_balance as "rent",
 	repairs,
 	fines,
 	deposit,
-	payments + repairs + fines + deposit as "total"
+	rent_balance + repairs + fines + deposit as "total"
 from func_rent_balances('@controlTime')
 where rent_id = @rentId

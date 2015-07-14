@@ -8,8 +8,8 @@
 @main-content-side-margin: 50px;
 
 html, body, .application {
-  height: 100%;
-  width: 100%;
+  //height: 100%;
+  //width: 100%;
 }
 
 body > .ember-view {
@@ -18,7 +18,8 @@ body > .ember-view {
 
 .application {
 
-  .app-header.affix {
+  .app-header {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -26,6 +27,7 @@ body > .ember-view {
   }
 
   .app-content {
+    margin-top: 60px;
     margin-left: @main-content-side-margin;
     margin-right: @main-content-side-margin;
     min-width: 869px;

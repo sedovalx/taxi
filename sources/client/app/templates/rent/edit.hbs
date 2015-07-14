@@ -4,7 +4,7 @@
         <a href="#general" aria-controls="general" role="tab" data-toggle="tab" {{action "changeTab" "general"}}>Основное</a>
     </li>
     <li role="presentation" {{bind-attr class="isGeneral::active"}}>
-        <a href="#history" aria-controls="history" role="tab" data-toggle="tab" {{action "changeTab" "history"}}>История</a>
+        <a href="#total" aria-controls="total" role="tab" data-toggle="tab" {{action "changeTab" "total"}}>Сводка</a>
     </li>
   </ul>
   <div class="tab-content">
@@ -29,30 +29,79 @@
         {{property-row title="Примечания" value=comment}}
       </form>
     </div>
-    <div role="tabpanel" id="history" {{bind-attr class=":tab-pane isGeneral::active"}}>
-        <div class="history-container container-fluid">
-          {{#each status in history}}
-              <div class="history-item status row">
-                  <div class="col-md-1 status-icon">
-                    <i class="fa fa-bell"></i>
-                  </div>
-                  <div class="col-md-4">{{format-date status.changeTime}}</div>
-                  <div class="col-md-5">{{rent-status status.status}}</div>
-              </div>
-              <div class="operations-container">
-                  {{#each op in status.operations}}
-                    <div {{bind-attr class=":history-item :operation :row op.isPositive:positive:negative"}} {{action "showOperation" op}}>
-                        <div class="col-md-1 operation-icon">
-                            {{account-type-icon op.accountType}}
+    <div role="tabpanel" id="total" {{bind-attr class=":tab-pane isGeneral::active"}}>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="rentTotalHeading">
+                    <h4 class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#rentTotalCollapse" aria-expanded="true" aria-controls="rentTotalCollapse">
+                            Итого: {{rentTotal.total}}
+                        </a>
+                    </h4>
+                </div>
+                <div id="rentTotalCollapse" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="rentTotalHeading">
+                    <div class="panel-body">
+                        <div class="rent-total-container">
+                            <form class="form-horizontal">
+                                {{#property-row title="Продолжительность" labelCssWidth="col-sm-3" inputCssWidth="col-sm-9"}}
+                                    {{input value=minutesHumanize readonly="true"}}
+                                {{/property-row}}
+                                {{#property-row title="Аренда" labelCssWidth="col-sm-3" inputCssWidth="col-sm-9"}}
+                                    {{input value=rentTotal.rent readonly="true"}}
+                                {{/property-row}}
+                                {{#property-row title="Ремонт" labelCssWidth="col-sm-3" inputCssWidth="col-sm-9"}}
+                                    {{input value=rentTotal.repairs readonly="true"}}
+                                {{/property-row}}
+                                {{#property-row title="Штрафы" labelCssWidth="col-sm-3" inputCssWidth="col-sm-9"}}
+                                    {{input value=rentTotal.fines readonly="true"}}
+                                {{/property-row}}
+                                {{#property-row title="Залог" labelCssWidth="col-sm-3" inputCssWidth="col-sm-9"}}
+                                    {{input value=rentTotal.deposit readonly="true"}}
+                                {{/property-row}}
+                            </form>
                         </div>
-                        <div class="col-md-4">{{format-date op.operationTime}}</div>
-                        <div class="col-md-5">{{account-type op.accountType}}</div>
-                        <div class="col-md-2">{{op.amount}} р.</div>
                     </div>
-                  {{/each}}
-              </div>
-          {{/each}}
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading" role="tab" id="rentHistoryHeading">
+                    <h4 class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#rentHistoryCollapse" aria-expanded="false" aria-controls="rentHistoryCollapse">
+                            История
+                        </a>
+                    </h4>
+                </div>
+                <div id="rentHistoryCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="rentHistoryHeading">
+                    <div class="panel-body">
+                        <div class="history-container container-fluid">
+                            {{#each status in history}}
+                                <div class="history-item status row">
+                                    <div class="col-md-1 status-icon">
+                                        <i class="fa fa-bell"></i>
+                                    </div>
+                                    <div class="col-md-4">{{format-date status.changeTime}}</div>
+                                    <div class="col-md-5">{{rent-status status.status}}</div>
+                                </div>
+                                <div class="operations-container">
+                                    {{#each op in status.operations}}
+                                        <div {{bind-attr class=":history-item :operation :row op.isPositive:positive:negative"}} {{action "showOperation" op}}>
+                                            <div class="col-md-1 operation-icon">
+                                                {{account-type-icon op.accountType}}
+                                            </div>
+                                            <div class="col-md-4">{{format-date op.operationTime}}</div>
+                                            <div class="col-md-5">{{account-type op.accountType}}</div>
+                                            <div class="col-md-2">{{op.amount}} р.</div>
+                                        </div>
+                                    {{/each}}
+                                </div>
+                            {{/each}}
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
     </div>
   </div>
 

@@ -17,7 +17,7 @@ class RentTotalQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends Sq
   private implicit val writes = Json.writes[RentTotal]
   private implicit val getResult = GetResult(r => RentTotal(r.<<, r.<<, r.<<, r.<<, r.<<, r.<<, r.<<))
 
-  case class RentTotal(rentId: Int, minutes: Int, payments: BigDecimal, repairs: BigDecimal, fines: BigDecimal, deposit: BigDecimal, total: BigDecimal)
+  case class RentTotal(rentId: Int, minutes: Int, rent: BigDecimal, repairs: BigDecimal, fines: BigDecimal, deposit: BigDecimal, total: BigDecimal)
 
   override protected def doExecute(parameters: Map[String, Seq[String]]): Future[JsValue] = {
     val filter = parseFilter(parameters)

@@ -25,14 +25,16 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
   model: function(params, transition){
     return Ember.RSVP.all([
       this.store.find("rent", transition.params.rent.rent_id),
-      Ember.$.getJSON('/api/reports/q-rent-history', { rent: transition.params.rent.rent_id })
+      Ember.$.getJSON('/api/reports/q-rent-history', { rent: transition.params.rent.rent_id }),
+      Ember.$.getJSON('/api/reports/q-rent-total', { rent: transition.params.rent.rent_id })
     ]);
   },
   setupController: function(controller, data){
     // see https://babeljs.io/docs/learn-es2015/#destructuring
-    let [model, history] = data;
+    let [model, history, total] = data;
     controller.set('model', model);
     controller.set('history', defineAmountSign(history));
+    controller.set('rentTotal', total);
   },
   actions: {
     invalidateModel: function(){
