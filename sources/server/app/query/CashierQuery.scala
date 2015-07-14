@@ -55,7 +55,21 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
     val whereClause = buildWhereClause(filter)
     val itemsQuery: DBIO[Seq[DataItem]] =
       sql"""
-           select *
+           select
+              car_id,
+              rent_id,
+              rent_creation_date,
+              driver_id,
+              car,
+              driver,
+              presence,
+              payments,
+              fines,
+              repairs,
+              total,
+              mileage,
+              service,
+              status
            from func_cashier(${filter.date})
            where #$whereClause
            order by status, driver""".as[DataItem]
