@@ -6,7 +6,7 @@
         {{#property-row title="Тип операции"}}
             {{input value=operationTypeDisplayName readonly="true"}}
         {{/property-row}}
-        {{#property-row title="Назначение операции" errors=errors.selectedAccountType}}
+        {{#property-row title="Назначение операции" errors=errors.accountType}}
             {{ember-selectize
             content=accountTypesList
             optionValuePath="content.id"
@@ -16,14 +16,7 @@
             }}
         {{/property-row}}
       {{#property-row title="Дата операции" errors=errors.changeTime}}
-          {{datetime-picker
-          value=changeTime
-          pickerOpen=false
-          dateFormat='DD.MM.YYYY hh:mm:ss'
-          useCurrent=true
-          showTodayButton=true
-          locale="ru"
-          }}
+          {{datetime-picker value=changeTime }}
       {{/property-row}}
       {{property-row title="Сумма, р" value=amount errors=errors.amount}}
       {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
