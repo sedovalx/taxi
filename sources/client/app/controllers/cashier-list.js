@@ -16,17 +16,17 @@ export default ListController.extend({
   },
   actions: {
     createRent: function(){
-      let selected = this.get("selectedRow");
+      //let selected = this.get("selectedRow");
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
       this.transitionToRoute("rents.new"/*,selected.get("id")*/);
     },
     createPaymentOperation: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("operations.new", selected.get("rentId"),"Payment");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"payment");
     },
     createChargeOperation: function(){
       let selected = this.get("selectedRow");
-      this.transitionToRoute("operations.new", selected.get("rentId"),"Charge");
+      this.transitionToRoute("operations.new", selected.get("rentId"),"charge");
     },
     filterTable: function(){
       let filter = {
@@ -55,8 +55,9 @@ export default ListController.extend({
     gotoHistory: function(){
       let selected = this.get("selectedRow");
       let rentId = selected.get("rentId");
-      if (rentId != null)
-        this.transitionToRoute("rent.edit", rentId, { queryParams: { tab: "history" } })
+      if (rentId != null) {
+        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "history"}});
+      }
     }
   },
   selectionRentIsEmpty: function(){
