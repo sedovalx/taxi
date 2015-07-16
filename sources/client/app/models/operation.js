@@ -23,12 +23,20 @@ var OperationModel = DS.Model.extend({
   creator: DS.belongsTo("user", {inverse: null, async: true}),
   editor: DS.belongsTo("user", {inverse: null, async: true}),
   presence: attr("boolean", {
-    defaultValue: true
+    defaultValue: false
   }),
   operationType: attr("string"),
   operationTypeDisplayName: function(){
     let operationType = operationTypes.filter(r => r.id === this.get("operationType"))[0];
     return operationType ? operationType.label : this.get("operationType");
+  }.property("operationType"),
+  operationTypeCharge: function(){
+    if(this.get("operationType") === operationTypes[0].id){
+      return 0;
+    }
+    else {
+      return 1;
+    }
   }.property("operationType"),
   displayChangeTime: function(){
     return moment(this.get("changeTime")).format("DD-MM-YYYY");
