@@ -23,6 +23,8 @@ CREATE TABLE car
   rate NUMERIC(10,2) NOT NULL,
   mileage NUMERIC(10,2) NOT NULL,
   service NUMERIC(10,2),
+  color VARCHAR(255),
+  year INT,
   comment VARCHAR(5000),
   creation_date TIMESTAMPTZ,
   creator_id INT,
@@ -250,6 +252,7 @@ CREATE OR REPLACE FUNCTION func_rent_balances(control_date TIMESTAMPTZ)
   deposit NUMERIC(10,2),
   creation_date TIMESTAMPTZ,
   status VARCHAR(255),
+  minutes INT,
   rental_rate_sum NUMERIC(10,2),
   payments NUMERIC(10,2),
   rent_balance NUMERIC(10,2),
@@ -266,6 +269,7 @@ BEGIN
     r.deposit,
     r.creation_date,
     rls.status,
+    rr.minutes,
     rr.rental_rate_sum,
     COALESCE(fp.amount, 0),
     COALESCE(fp.amount, 0) - rr.rental_rate_sum,
@@ -327,13 +331,13 @@ BEGIN
   LEFT JOIN func_rent_balances(control_date) r ON c.rent_id = r.rent_id AND r.status <> 'Closed'
   LEFT JOIN driver d on r.driver_id = d.id
   LEFT JOIN (
-	select 
-		p.rent_id,
-		coalesce(sum(case when p.presence then 1 else 0 end), 0) > 0 as presence
-	from payments p
-	where p.change_time::DATE = control_date::DATE
-	group by p.rent_id
-) p on p.rent_id = r.rent_id;;
+    SELECT
+      p.rent_id,
+      COALESCE(SUM(CASE WHEN p.presence THEN 1 ELSE 0 END), 0) > 0 AS presence
+    FROM payments p
+    WHERE p.change_time::DATE = control_date::DATE
+    GROUP BY p.rent_id
+  ) p ON p.rent_id = r.rent_id;;
 END
 $$ LANGUAGE plpgsql;
 

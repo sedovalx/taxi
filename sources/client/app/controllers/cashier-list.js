@@ -52,11 +52,11 @@ export default ListController.extend({
       this.set('date','');
       this.transitionToRoute("cashier-list", {queryParams: null});
     },
-    gotoHistory: function(){
+    gotoRentInfo: function(){
       let selected = this.get("selectedRow");
       let rentId = selected.get("rentId");
       if (rentId != null) {
-        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "history"}});
+        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "info"}});
       }
     }
   },

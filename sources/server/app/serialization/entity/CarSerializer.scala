@@ -21,7 +21,9 @@ class CarSerializer extends Serializer[Car, CarFilter] {
       (JsPath \ "creationDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editDate").readNullable[Timestamp] and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "color").readNullable[String] and
+      (JsPath \ "year").readNullable[Int]
     )(CarFilter.apply _)
   override implicit val reads: Reads[Tables.Car] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
@@ -35,7 +37,9 @@ class CarSerializer extends Serializer[Car, CarFilter] {
       (JsPath \ "creationDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editDate").readNullable[Timestamp] and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
+      (JsPath \ "color").readNullable[String] and
+      (JsPath \ "year").readNullable[Int]
     )(Car.apply _)
   override implicit val writes: Writes[Tables.Car] = new Writes[Car] {
     override def writes(o: Tables.Car) = Json.obj(
@@ -50,7 +54,9 @@ class CarSerializer extends Serializer[Car, CarFilter] {
       "editDate" -> o.editDate.map { d => dateIso8601Format.format(d)},
       "creator" -> o.creatorId.map { id => id.toString },
       "editor" -> o.editorId.map { id => id.toString },
-      "comment" -> o.comment
+      "comment" -> o.comment,
+      "color" -> o.color,
+      "year" -> o.year
     )
   }
 }

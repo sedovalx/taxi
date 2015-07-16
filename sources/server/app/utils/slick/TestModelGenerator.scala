@@ -265,6 +265,11 @@ class TestModelGenerator @Inject() (
       )
     )
 
+    def randomColor() = {
+      val colors = List("красный", "синий", "белый", "черный", "серый", "коньяк", "бежевый", "желтый", "оранжевый")
+      colors(Random.nextInt(colors.size))
+    }
+
     def randomMake() = cars.keys.toList(Random.nextInt(cars.size))
 
     def randomModel(make: String) = cars(make)(Random.nextInt(cars(make).size))
@@ -287,7 +292,9 @@ class TestModelGenerator @Inject() (
           case x if x > 45000 && x <= 90000 => 90000
           case _ => 110000
         }) else None,
-        creationDate = Some(onDate)
+        creationDate = Some(onDate),
+        color = Some(randomColor()),
+        year = Some(Random.nextInt(50) + 1965)
       )
       carRepo.create(car)
     }
