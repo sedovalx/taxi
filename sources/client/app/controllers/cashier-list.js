@@ -20,6 +20,20 @@ export default ListController.extend({
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
       this.transitionToRoute("rents.new"/*,selected.get("id")*/);
     },
+    suspendRent:function(){
+      let selected = this.get("selectedRow");
+      selected.set("status", "Suspended");
+      //let selected = this.get("selectedRow");
+      //let routeString = "cars."+selected.get("driverId")+".rents.new";
+      //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+    },
+    resumeRent:function(){
+      let selected = this.get("selectedRow");
+      selected.set("status", "Active");
+      //let selected = this.get("selectedRow");
+      //let routeString = "cars."+selected.get("driverId")+".rents.new";
+      //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+    },
     createPaymentOperation: function(){
       let selected = this.get("selectedRow");
       this.transitionToRoute("operations.new", selected.get("rentId"),"payment");
@@ -63,6 +77,24 @@ export default ListController.extend({
   selectionRentIsEmpty: function(){
     let selected = this.get("selectedRow");
     return selected == null ? true : selected.get("rentId") == null;
+  }.property("selectedRow"),
+  selectionRentIsSuspended: function(){
+    let selected = this.get("selectedRow");
+    if(selected){
+      if(selected.get("status") === "Suspended"){
+        return 1;
+      }
+    }
+      return 0;
+  }.property("selectedRow"),
+  selectionRentIsNotActive: function(){
+    let selected = this.get("selectedRow");
+    if(selected) {
+      if (selected.get("status") === "Active") {
+        return 0;
+      }
+    }
+      return 1;
   }.property("selectedRow"),
   columns: function() {
     return [
