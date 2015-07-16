@@ -25,7 +25,9 @@
         {{#property-row title="Автомобиль" errors=errors.car}}
           {{input value=carDisplayName readonly="true"}}
         {{/property-row}}
-        {{property-row title="Залог" value=deposit errors=errors.deposit}}
+          {{#property-row title="Залог" errors=errors.deposit}}
+              {{input value=deposit readonly="true"}}
+          {{/property-row}}
         {{property-row title="Примечания" value=comment}}
       </form>
     </div>
