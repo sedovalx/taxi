@@ -27,7 +27,8 @@ export default ListController.extend({
         rent.set("status", "Suspended");
         rent.save();
         selected.set("status", "Suspended");
-        this.send('invalidateModel');
+        this.set("selectedRow",null);
+        this.set("selectedRow",selected);
       });
     },
     resumeRent:function(){
@@ -37,7 +38,8 @@ export default ListController.extend({
         rent.set("status", "Active");
         rent.save();
         selected.set("status", "Active");
-        this.send('invalidateModel');
+        this.set("selectedRow",null);
+        this.set("selectedRow",selected);
       });
     },
     createPaymentOperation: function(){
