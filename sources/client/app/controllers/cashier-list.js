@@ -22,17 +22,33 @@ export default ListController.extend({
     },
     suspendRent:function(){
       let selected = this.get("selectedRow");
+      let rentId = selected.get("rentId");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "Suspended");
+        rent.save();
+      });
       selected.set("status", "Suspended");
+      //rent.set("status", "Suspended");
       //let selected = this.get("selectedRow");
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
       //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+      //this.get("selectionRentIsSuspended");
+      //this.get("selectionRentIsEmpty");
+
     },
     resumeRent:function(){
       let selected = this.get("selectedRow");
+      let rentId = selected.get("rentId");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "Active");
+        rent.save();
+      });
       selected.set("status", "Active");
       //let selected = this.get("selectedRow");
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
       //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+      //this.get("selectionRentIsSuspended");
+      //this.get("selectionRentIsEmpty");
     },
     createPaymentOperation: function(){
       let selected = this.get("selectedRow");
