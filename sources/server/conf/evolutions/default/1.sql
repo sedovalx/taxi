@@ -48,6 +48,18 @@ CREATE TABLE driver
   creator_id INT,
   editor_id INT
 );
+CREATE TABLE refund
+(
+  id SERIAL PRIMARY KEY NOT NULL,
+  amount NUMERIC(10) NOT NULL,
+  change_time TIMESTAMPTZ NOT NULL,
+  creation_date TIMESTAMPTZ NOT NULL,
+  creator_id INT,
+  edit_date TIMESTAMPTZ,
+  editor_id INT,
+  comment VARCHAR(1000),
+  rent_id INT NOT NULL
+);
 CREATE TABLE rent
 (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -87,9 +99,6 @@ CREATE TABLE system_user
   creator_id INT,
   editor_id INT
 );
-ALTER TABLE operation ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
-ALTER TABLE operation ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
-ALTER TABLE operation ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE car ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
 ALTER TABLE car ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE UNIQUE INDEX unique_reg_number ON car (reg_number);
@@ -97,6 +106,12 @@ ALTER TABLE driver ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
 ALTER TABLE driver ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 CREATE UNIQUE INDEX idx_license_uq ON driver (license);
 CREATE UNIQUE INDEX idx_pass_uq ON driver (pass);
+ALTER TABLE operation ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
+ALTER TABLE operation ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE operation ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
+ALTER TABLE refund ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
+ALTER TABLE refund ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE refund ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE rent ADD FOREIGN KEY (car_id) REFERENCES car (id);
 ALTER TABLE rent ADD FOREIGN KEY (driver_id) REFERENCES driver (id);
 ALTER TABLE rent ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
@@ -358,6 +373,7 @@ DROP VIEW IF EXISTS repairs;
 DROP VIEW IF EXISTS fines;
 
 DROP TABLE IF EXISTS operation;
+DROP TABLE IF EXISTS refund;
 DROP TABLE IF EXISTS rent_status;
 DROP TABLE IF EXISTS rent;
 DROP TABLE IF EXISTS car;

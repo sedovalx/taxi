@@ -1,5 +1,4 @@
-package models.generated
-
+package models.generated.draft
 // AUTO-GENERATED Slick data model
 /** Stand-alone Slick data model for immediate use */
 object Tables extends {
@@ -9,16 +8,16 @@ object Tables extends {
 /** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
 trait Tables {
   val profile: slick.driver.JdbcProfile
-  import com.mohiva.play.silhouette.api.Identity
-  import db.MappedColumnTypes._
-  import models.entities.Role.Role
-  import models.entities._
   import profile.api._
-  import slick.model.ForeignKeyAction
+  import models.entities._
+  import models.entities.Role.Role
+  import db.MappedColumnTypes._
+  import com.mohiva.play.silhouette.api.Identity
   import utils.DateUtils
+  import slick.model.ForeignKeyAction
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema = Array(CarTable.schema, DriverTable.schema, OperationTable.schema, RentStatusTable.schema, RentTable.schema, SystemUserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema = Array(CarTable.schema, DriverTable.schema, OperationTable.schema, RefundTable.schema, RentStatusTable.schema, RentTable.schema, SystemUserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -30,14 +29,14 @@ trait Tables {
    *  @param rate Database column rate SqlType(numeric)
    *  @param mileage Database column mileage SqlType(numeric)
    *  @param service Database column service SqlType(numeric), Default(None)
+   *  @param color Database column color SqlType(varchar), Length(255,true), Default(None)
+   *  @param year Database column year SqlType(int4), Default(None)
    *  @param comment Database column comment SqlType(varchar), Length(5000,true), Default(None)
    *  @param creationDate Database column creation_date SqlType(timestamptz), Default(None)
    *  @param creatorId Database column creator_id SqlType(int4), Default(None)
    *  @param editDate Database column edit_date SqlType(timestamptz), Default(None)
-   *  @param editorId Database column editor_id SqlType(int4), Default(None)
-   *  @param color Database column color SqlType(varchar), Length(255,true), Default(None)
-   *  @param year Database column year SqlType(int4), Default(None) */
-  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, color: Option[String] = None, year: Option[Int] = None) extends Entity[Car]
+   *  @param editorId Database column editor_id SqlType(int4), Default(None) */
+  case class Car(id: Int, regNumber: String, make: String, model: String, rate: scala.math.BigDecimal, mileage: scala.math.BigDecimal, service: Option[scala.math.BigDecimal] = None, color: Option[String] = None, year: Option[Int] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None) extends Entity[Car]
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -46,13 +45,13 @@ trait Tables {
     def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
   }
                
-  case class CarFilter(id: Option[Int] = None, regNumber: Option[String] = None, make: Option[String] = None, model: Option[String] = None, rate: Option[scala.math.BigDecimal] = None, mileage: Option[scala.math.BigDecimal] = None, service: Option[scala.math.BigDecimal] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, color: Option[String] = None, year: Option[Int] = None)
+  case class CarFilter(id: Option[Int] = None, regNumber: Option[String] = None, make: Option[String] = None, model: Option[String] = None, rate: Option[scala.math.BigDecimal] = None, mileage: Option[scala.math.BigDecimal] = None, service: Option[scala.math.BigDecimal] = None, color: Option[String] = None, year: Option[Int] = None, comment: Option[String] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None)
 
   /** Table description of table car. Objects of this class serve as prototypes for rows in queries. */
   class CarTable(_tableTag: Tag) extends Table[Car](_tableTag, "car") {
-    def * = (id, regNumber, make, model, rate, mileage, service, comment, creationDate, creatorId, editDate, editorId, color, year) <> (Car.tupled, Car.unapply)
+    def * = (id, regNumber, make, model, rate, mileage, service, color, year, comment, creationDate, creatorId, editDate, editorId) <> (Car.tupled, Car.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(regNumber), Rep.Some(make), Rep.Some(model), Rep.Some(rate), Rep.Some(mileage), service, comment, creationDate, creatorId, editDate, editorId, color, year).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7, _8, _9, _10, _11, _12, _13, _14)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(regNumber), Rep.Some(make), Rep.Some(model), Rep.Some(rate), Rep.Some(mileage), service, color, year, comment, creationDate, creatorId, editDate, editorId).shaped.<>({r=>import r._; _1.map(_=> Car.tupled((_1.get, _2.get, _3.get, _4.get, _5.get, _6.get, _7, _8, _9, _10, _11, _12, _13, _14)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -68,6 +67,10 @@ trait Tables {
     val mileage = column[scala.math.BigDecimal]("mileage")
     /** Database column service SqlType(numeric), Default(None) */
     val service = column[Option[scala.math.BigDecimal]]("service", O.Default(None))
+    /** Database column color SqlType(varchar), Length(255,true), Default(None) */
+    val color = column[Option[String]]("color", O.Length(255,varying=true), O.Default(None))
+    /** Database column year SqlType(int4), Default(None) */
+    val year = column[Option[Int]]("year", O.Default(None))
     /** Database column comment SqlType(varchar), Length(5000,true), Default(None) */
     val comment = column[Option[String]]("comment", O.Length(5000,varying=true), O.Default(None))
     /** Database column creation_date SqlType(timestamptz), Default(None) */
@@ -78,10 +81,6 @@ trait Tables {
     val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
     /** Database column editor_id SqlType(int4), Default(None) */
     val editorId = column[Option[Int]]("editor_id", O.Default(None))
-    /** Database column color SqlType(varchar), Length(255,true), Default(None) */
-    val color = column[Option[String]]("color", O.Length(255,varying=true), O.Default(None))
-    /** Database column year SqlType(int4), Default(None) */
-    val year = column[Option[Int]]("year", O.Default(None))
 
     /** Foreign key referencing SystemUserTable (database name car_creator_id_fkey) */
     lazy val creatorFk = foreignKey("car_creator_id_fkey", creatorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
@@ -229,6 +228,62 @@ trait Tables {
   }
   /** Collection-like TableQuery object for table OperationTable */
   lazy val OperationTable = new TableQuery(tag => new OperationTable(tag))
+
+  /** Entity class storing rows of table RefundTable
+   *  @param id Database column id SqlType(serial), AutoInc, PrimaryKey
+   *  @param amount Database column amount SqlType(numeric)
+   *  @param changeTime Database column change_time SqlType(timestamptz)
+   *  @param creationDate Database column creation_date SqlType(timestamptz)
+   *  @param creatorId Database column creator_id SqlType(int4), Default(None)
+   *  @param editDate Database column edit_date SqlType(timestamptz), Default(None)
+   *  @param editorId Database column editor_id SqlType(int4), Default(None)
+   *  @param comment Database column comment SqlType(varchar), Length(1000,true), Default(None)
+   *  @param rentId Database column rent_id SqlType(int4) */
+  case class Refund(id: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, creationDate: java.sql.Timestamp, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Int) extends Entity[Refund]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
+  case class RefundFilter(id: Option[Int] = None, amount: Option[scala.math.BigDecimal] = None, changeTime: Option[java.sql.Timestamp] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Option[Int] = None)
+
+  /** Table description of table refund. Objects of this class serve as prototypes for rows in queries. */
+  class RefundTable(_tableTag: Tag) extends Table[Refund](_tableTag, "refund") {
+    def * = (id, amount, changeTime, creationDate, creatorId, editDate, editorId, comment, rentId) <> (Refund.tupled, Refund.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), Rep.Some(amount), Rep.Some(changeTime), Rep.Some(creationDate), creatorId, editDate, editorId, comment, Rep.Some(rentId)).shaped.<>({r=>import r._; _1.map(_=> Refund.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(serial), AutoInc, PrimaryKey */
+    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column amount SqlType(numeric) */
+    val amount = column[scala.math.BigDecimal]("amount")
+    /** Database column change_time SqlType(timestamptz) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
+    /** Database column creation_date SqlType(timestamptz) */
+    val creationDate = column[java.sql.Timestamp]("creation_date")
+    /** Database column creator_id SqlType(int4), Default(None) */
+    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
+    /** Database column edit_date SqlType(timestamptz), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
+    /** Database column editor_id SqlType(int4), Default(None) */
+    val editorId = column[Option[Int]]("editor_id", O.Default(None))
+    /** Database column comment SqlType(varchar), Length(1000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+    /** Database column rent_id SqlType(int4) */
+    val rentId = column[Int]("rent_id")
+
+    /** Foreign key referencing RentTable (database name refund_rent_id_fkey) */
+    lazy val rentFk = foreignKey("refund_rent_id_fkey", rentId, RentTable)(r => r.id, onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name refund_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("refund_creator_id_fkey", creatorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name refund_editor_id_fkey) */
+    lazy val editorFk = foreignKey("refund_editor_id_fkey", editorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table RefundTable */
+  lazy val RefundTable = new TableQuery(tag => new RefundTable(tag))
 
   /** Entity class storing rows of table RentStatusTable
    *  @param id Database column id SqlType(serial), AutoInc, PrimaryKey
