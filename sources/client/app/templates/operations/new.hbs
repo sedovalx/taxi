@@ -6,7 +6,7 @@
         {{#property-row title="Тип операции"}}
             {{input value=operationTypeDisplayName readonly="true"}}
         {{/property-row}}
-        {{#property-row title="Назначение операции" errors=errors.selectedAccountType}}
+        {{#property-row title="Назначение операции" errors=errors.accountType}}
             {{ember-selectize
             content=accountTypesList
             optionValuePath="content.id"
@@ -15,25 +15,14 @@
             placeholder="Выберите назначение операции"
             }}
         {{/property-row}}
-        {{#property-row title="Дата операции" errors=errors.changeTime}}
-            {{bootstrap-datepicker
-            class="form-control"
-            value=changeTime
-            autoclose=true
-            clearBtn=true
-            format="dd-mm-yyyy"
-            language="ru"
-            weekStart=1
-            }}
-        {{/property-row}}
-        {{property-row title="Сумма, р" value=amount errors=errors.amount}}
-        {{#if operationTypeCharge}}
-            {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
-                {{input type="checkbox" checked=presence class="app-check-box"}}
-            {{/property-row}}
-        {{/if}}
-
-        {{property-row title="Примечания" value=comment}}
+      {{#property-row title="Дата операции" errors=errors.changeTime}}
+          {{datetime-picker value=changeTime }}
+      {{/property-row}}
+      {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+      {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
+        {{input type="checkbox" checked=presence class="app-check-box"}}
+      {{/property-row}}
+      {{property-row title="Примечания" value=comment}}
     </form>
     {{save-cancel}}
 </div>

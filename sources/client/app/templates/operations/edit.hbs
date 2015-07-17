@@ -4,15 +4,7 @@
           {{input value=rent.displayName readonly="true"}}
         {{/property-row}}
       {{#property-row title="Дата операции" errors=errors.changeTime}}
-        {{bootstrap-datepicker
-        class="form-control"
-        value=changeTime
-        autoclose=true
-        clearBtn=true
-        format="dd-mm-yyyy"
-        language="ru"
-        weekStart=1
-        }}
+          {{datetime-picker value=changeTime }}
       {{/property-row}}
       {{property-row title="Сумма, р" value=amount errors=errors.amount}}
       {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
