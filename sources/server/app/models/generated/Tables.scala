@@ -1,4 +1,4 @@
-package models.generated.draft
+package models.generated
 // AUTO-GENERATED Slick data model
 /** Stand-alone Slick data model for immediate use */
 object Tables extends {
@@ -239,7 +239,7 @@ trait Tables {
    *  @param editorId Database column editor_id SqlType(int4), Default(None)
    *  @param comment Database column comment SqlType(varchar), Length(1000,true), Default(None)
    *  @param rentId Database column rent_id SqlType(int4) */
-  case class Refund(id: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, creationDate: java.sql.Timestamp, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Int) extends Entity[Refund]
+  case class Refund(id: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp], creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Int) extends Entity[Refund]
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -263,7 +263,7 @@ trait Tables {
     /** Database column change_time SqlType(timestamptz) */
     val changeTime = column[java.sql.Timestamp]("change_time")
     /** Database column creation_date SqlType(timestamptz) */
-    val creationDate = column[java.sql.Timestamp]("creation_date")
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date")
     /** Database column creator_id SqlType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column edit_date SqlType(timestamptz), Default(None) */

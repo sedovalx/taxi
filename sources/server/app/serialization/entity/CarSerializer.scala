@@ -17,13 +17,13 @@ class CarSerializer extends Serializer[Car, CarFilter] {
       (JsPath \ "rate").readNullable[BigDecimal] and
       (JsPath \ "mileage").readNullable[BigDecimal] and
       (JsPath \ "service").readNullable[BigDecimal] and
+      (JsPath \ "color").readNullable[String] and
+      (JsPath \ "year").readNullable[Int] and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creationDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editDate").readNullable[Timestamp] and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
-      (JsPath \ "color").readNullable[String] and
-      (JsPath \ "year").readNullable[Int]
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(CarFilter.apply _)
   override implicit val reads: Reads[Tables.Car] = (
     (JsPath \ "id").readNullable[String].map { case Some(s) => s.toInt case None => 0 } and
@@ -33,13 +33,13 @@ class CarSerializer extends Serializer[Car, CarFilter] {
       (JsPath \ "rate").read(min[BigDecimal](0)) and
       (JsPath \ "mileage").read(min[BigDecimal](0)) and
       (JsPath \ "service").readNullable(min[BigDecimal](0)) and
+      (JsPath \ "color").readNullable[String] and
+      (JsPath \ "year").readNullable[Int] and
       (JsPath \ "comment").readNullable[String] and
       (JsPath \ "creationDate").readNullable[Timestamp] and
       (JsPath \ "creator").readNullable[String].map { s => s.map(_.toInt) } and
       (JsPath \ "editDate").readNullable[Timestamp] and
-      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) } and
-      (JsPath \ "color").readNullable[String] and
-      (JsPath \ "year").readNullable[Int]
+      (JsPath \ "editor").readNullable[String].map { s => s.map(_.toInt) }
     )(Car.apply _)
   override implicit val writes: Writes[Tables.Car] = new Writes[Car] {
     override def writes(o: Tables.Car) = Json.obj(

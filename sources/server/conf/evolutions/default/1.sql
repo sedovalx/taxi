@@ -51,9 +51,9 @@ CREATE TABLE driver
 CREATE TABLE refund
 (
   id SERIAL PRIMARY KEY NOT NULL,
-  amount NUMERIC(10) NOT NULL,
+  amount NUMERIC(10,2) NOT NULL,
   change_time TIMESTAMPTZ NOT NULL,
-  creation_date TIMESTAMPTZ NOT NULL,
+  creation_date TIMESTAMPTZ,
   creator_id INT,
   edit_date TIMESTAMPTZ,
   editor_id INT,
