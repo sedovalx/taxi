@@ -19,9 +19,11 @@
           {{datetime-picker value=changeTime }}
       {{/property-row}}
       {{property-row title="Сумма, р" value=amount errors=errors.amount}}
-      {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
-        {{input type="checkbox" checked=presence class="app-check-box"}}
-      {{/property-row}}
+        {{#if operationTypeCharge}}
+            {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
+                {{input type="checkbox" checked=presence class="app-check-box"}}
+            {{/property-row}}
+        {{/if}}
       {{property-row title="Примечания" value=comment}}
     </form>
     {{save-cancel}}
