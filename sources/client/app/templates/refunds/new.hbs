@@ -1,0 +1,13 @@
+<div class="editor user-editor">
+    <form class="form-horizontal">
+        {{#property-row title="Аренда"}}
+            {{input value=rent.displayName readonly="true"}}
+        {{/property-row}}
+      {{#property-row title="Дата операции" errors=errors.changeTime}}
+          {{datetime-picker value=changeTime }}
+      {{/property-row}}
+      {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+      {{property-row title="Примечания" value=comment}}
+    </form>
+    {{save-cancel}}
+</div>

@@ -50,6 +50,10 @@ export default ListController.extend({
       let selected = this.get("selectedRow");
       this.transitionToRoute("operations.new", selected.get("rentId"),"charge");
     },
+    createRefund: function(){
+      let selected = this.get("selectedRow");
+      this.transitionToRoute("refunds.new", selected.get("rentId"));
+    },
     filterTable: function(){
       let filter = {
         car: this.get('filter.car'),

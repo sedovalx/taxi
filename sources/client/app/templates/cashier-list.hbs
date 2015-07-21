@@ -36,6 +36,9 @@
         <button type="button" class="btn btn-primary" {{action "createChargeOperation"}} {{bind-attr disabled=selectionRentIsEmpty}}>
             <i class="fa fa-taxi"></i> Создать списание
         </button>
+        <button type="button" class="btn btn-primary" {{action "createRefund"}} {{bind-attr disabled=selectionRentIsEmpty}}>
+            <i class="fa fa-taxi"></i> Возврат денег
+        </button>
         {{#if selectionRentIsSuspended}}
         <button type="button" class="btn btn-primary" {{action "resumeRent"}}>
             <i class="fa fa-taxi"></i> Возобновить аренду
