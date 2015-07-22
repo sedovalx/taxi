@@ -12,7 +12,8 @@ export default ListController.extend({
   filter: {
     car: '',
     driver: '',
-    date: ''
+    date: '',
+    dateInput: ''
   },
   actions: {
     createRent: function(){
@@ -55,10 +56,12 @@ export default ListController.extend({
       this.transitionToRoute("refunds.new", selected.get("rentId"));
     },
     filterTable: function(){
+      let dateInput = this.get('filter.dateInput');
+      let dateFormatted = moment(dateInput).toISOString();
       let filter = {
         car: this.get('filter.car'),
         driver: this.get('filter.driver'),
-        date: this.get('filter.date')
+        date: dateFormatted
       };
 
       for (var prop in filter) {
@@ -72,10 +75,8 @@ export default ListController.extend({
     clearFilter: function(){
       this.set('filter.car','');
       this.set('filter.driver','');
-      this.set('filter.date','');
       this.set('car','');
       this.set('driver','');
-      this.set('date','');
       this.transitionToRoute("cashier-list", {queryParams: null});
     },
     gotoRentInfo: function(){

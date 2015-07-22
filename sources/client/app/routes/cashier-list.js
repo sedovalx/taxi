@@ -37,7 +37,13 @@ export default ProtectedRoute.extend({
         }
       }
     }
-  }
+  }/*,
+  actions: {
+    invalidateModel: function() {
+      Ember.Logger.log('Route is now refreshing...');
+      this.refresh();
+    }
+  }*/
   /*model: function(){
     return this.store.find("cashier-list");
   }*/
