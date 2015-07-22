@@ -6,7 +6,9 @@ var RentModel = DS.Model.extend({
   driver: DS.belongsTo("driver", {inverse: null, async: true}),
   car: DS.belongsTo("car", {inverse: null, async: true}),
   deposit: attr("number"),
-  status: attr("string"),
+  status: attr("string", {
+    defaultValue: statuses[0].id
+  }),
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
