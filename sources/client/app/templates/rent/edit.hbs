@@ -10,15 +10,9 @@
   <div class="tab-content">
     <div role="tabpanel" id="general" {{bind-attr class=":tab-pane isGeneral:active"}}>
       <form class="form-horizontal">
-        {{#property-row title="Статус" errors=errors.status}}
-          {{ember-selectize
-          content=statuses
-          optionValuePath="content.id"
-          optionLabelPath="content.label"
-          selection=selectedStatus
-          placeholder="Выберите статус"
-          }}
-        {{/property-row}}
+          {{#property-row title="Статус" errors=errors.status}}
+              {{input value=displayStatus readonly="true"}}
+          {{/property-row}}
         {{#property-row title="Водитель" errors=errors.driver}}
           {{input value=driverDisplayName readonly="true"}}
         {{/property-row}}
@@ -112,6 +106,71 @@
 
     </div>
   </div>
+    <div class="command-panel clearfix">
+        <div class="buttons btn-group pull-right" role="group">
+            {{#if rentIsActive}}
+                <button type="button" class="btn btn-primary" {{action "suspendRent"}} >
+                    <i class="fa fa-taxi"></i> Приостановить
+                </button>
+                <button type="button" class="btn btn-primary" {{action "settleUpRent"}}>
+                    <i class="fa fa-taxi"></i> Под расчет
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createPaymentOperation"}} >
+                    <i class="fa fa-rub"></i> Создать платеж
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createChargeOperation"}}>
+                    <i class="fa fa-taxi"></i> Создать списание
+                </button>
+                <button type="button" class="btn btn-primary" {{action "save"}} >
+                    <i class="fa fa-floppy-o"></i> Сохранить
+                </button>
+            {{/if}}
+            {{#if rentIsSuspended}}
+                <button type="button" class="btn btn-primary" {{action "resumeRent"}}>
+                    <i class="fa fa-taxi"></i> Возобновить
+                </button>
+                <button type="button" class="btn btn-primary" {{action "settleUpRent"}}>
+                    <i class="fa fa-taxi"></i> Под расчет
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createPaymentOperation"}} >
+                    <i class="fa fa-rub"></i> Создать платеж
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createChargeOperation"}}>
+                    <i class="fa fa-taxi"></i> Создать списание
+                </button>
+                <button type="button" class="btn btn-primary" {{action "save"}} >
+                    <i class="fa fa-floppy-o"></i> Сохранить
+                </button>
+            {{/if}}
+            {{#if rentIsSettlingUp}}
+                <button type="button" class="btn btn-primary" {{action "closeRent"}}>
+                    <i class="fa fa-taxi"></i> Расчет
+                </button>
+                <button type="button" class="btn btn-primary" {{action "resumeRent"}}>
+                    <i class="fa fa-taxi"></i> Возобновить
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createRefund"}}>
+                    <i class="fa fa-taxi"></i> Возврат денег
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createPaymentOperation"}}  >
+                    <i class="fa fa-rub"></i> Создать платеж
+                </button>
+                <button type="button" class="btn btn-primary" {{action "createChargeOperation"}} >
+                    <i class="fa fa-taxi"></i> Создать списание
+                </button>
+                <button type="button" class="btn btn-primary" {{action "save"}} >
+                    <i class="fa fa-floppy-o"></i> Сохранить
+                </button>
+            {{/if}}
+            {{#if rentIsClosed}}
+                <button type="button" class="btn btn-primary" {{action "settleUpRent"}}>
+                    <i class="fa fa-taxi"></i> Под расчет
+                </button>
+            {{/if}}
+            <button type="button" class="btn btn-default" {{action "cancel"}}>
+                <i class="fa fa-times"></i> Отмена
+            </button>
+        </div>
+    </div>
 
-  {{save-cancel}}
 </div>

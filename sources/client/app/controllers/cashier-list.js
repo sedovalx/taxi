@@ -86,6 +86,13 @@ export default ListController.extend({
         this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "info"}});
       }
     },
+    gotoRentEdit: function(){
+      let selected = this.get("selectedRow");
+      let rentId = selected.get("rentId");
+      if (rentId != null) {
+        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "general"}});
+      }
+    },
     gotoCash: function(){
       this.transitionToRoute("cash");
       }

@@ -17,6 +17,30 @@ export default RentController.extend({
     let a = moment.duration(minutes, 'minutes');
     return Math.floor(a.asDays()) + ' дней ' + a.hours() + ' часов ' + a.minutes() + ' минут';
   }.property('rentTotal.minutes'),
+  rentIsActive: function(){
+    if(this.get("status") === "Active"){
+      return 1;
+    }
+    return 0;
+  }.property("status"),
+  rentIsSuspended: function(){
+    if(this.get("status") === "Suspended"){
+      return 1;
+    }
+    return 0;
+  }.property("status"),
+  rentIsSettlingUp: function(){
+    if(this.get("status") === "SettlingUp"){
+      return 1;
+    }
+    return 0;
+  }.property("status"),
+  rentIsClosed: function(){
+    if(this.get("status") === "Closed"){
+      return 1;
+    }
+    return 0;
+  }.property("status"),
   actions: {
     showOperation: function(operation){
       this.transitionToRoute('operations.edit', operation.operationId);
@@ -26,6 +50,47 @@ export default RentController.extend({
     },
     switchPanel: function(panel) {
       this.set('panel', panel);
+    },
+    createRefund: function(){
+      this.transitionToRoute("refunds.new", this.get("id"));
+    },
+    createPaymentOperation: function(){
+      this.transitionToRoute("operations.new", this.get("rentId"),"payment");
+    },
+    createChargeOperation: function(){
+      this.transitionToRoute("operations.new", this.get("rentId"),"charge");
+    },
+    suspendRent:function(){
+      let rentId = this.get("id");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "Suspended");
+        rent.save();
+        this.set("status", "Suspended");
+      });
+    },
+    settleUpRent:function(){
+      let rentId = this.get("id");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "SettlingUp");
+        rent.save();
+        this.set("status", "SettlingUp");
+      });
+    },
+    closeRent:function(){
+      let rentId = this.get("id");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "Closed");
+        rent.save();
+        this.set("status", "Closed");
+      });
+    },
+    resumeRent:function(){
+      let rentId = this.get("id");
+      this.store.find("rent",rentId).then(rent => {
+        rent.set("status", "Active");
+        rent.save();
+        this.set("status", "Active");
+      });
     }
   }
 });
