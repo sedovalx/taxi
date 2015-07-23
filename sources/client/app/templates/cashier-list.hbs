@@ -28,7 +28,7 @@
       selection=selectedRow}}
     </div>
     <div class="commands-panel btn-group pull-right" role="group">
-        <button type="button" class="btn btn-primary" {{action "createRent"}}>
+        <button type="button" class="btn btn-primary" {{action "createRent"}} {{bind-attr disabled=selectionRentIsNotEmpty}}>
             <i class="fa fa-user-plus"></i> Создать аренду
         </button>
         <button type="button" class="btn btn-primary" {{action "createPaymentOperation"}}  {{bind-attr disabled=selectionRentIsEmpty}}>

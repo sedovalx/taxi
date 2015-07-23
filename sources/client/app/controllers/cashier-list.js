@@ -17,9 +17,11 @@ export default ListController.extend({
   },
   actions: {
     createRent: function(){
-      //let selected = this.get("selectedRow");
+      let selected = this.get("selectedRow");
+      this.transitionToRoute("cars-rents.new",selected.get("id"));
       //let routeString = "cars."+selected.get("driverId")+".rents.new";
-      this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+      //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
+
     },
     suspendRent:function(){
       let selected = this.get("selectedRow");
@@ -101,6 +103,9 @@ export default ListController.extend({
     let selected = this.get("selectedRow");
     return selected == null ? true : selected.get("rentId") == null;
   }.property("selectedRow"),
+  selectionRentIsNotEmpty: function(){
+    return !this.get("selectionRentIsEmpty");
+  }.property("selectionRentIsEmpty"),
   selectionRentIsSuspended: function(){
     let selected = this.get("selectedRow");
     if(selected){

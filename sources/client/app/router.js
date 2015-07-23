@@ -17,6 +17,9 @@ Router.map(function() {
   this.resource("cars", function() {
     this.route("new");
     this.route("edit", { path: "/:car_id/edit" });
+    this.resource("cars-rents",{ path: "/:car_id/rents" }, function(){
+      this.route("new");
+    });
   });
   this.resource("rents", function() {
     this.resource("rent", { path: "/:rent_id" }, function(){
@@ -32,11 +35,7 @@ Router.map(function() {
     this.route("new");
   });
   this.resource("cash");
-  this.resource("cashier-list", function() {
-    this.resource("test.rents",{ path: "cars/:car_id/rents" }, function(){
-      this.route("new");
-    });
-  });
+  this.resource("cashier-list");
   this.route('login');
 });
 
