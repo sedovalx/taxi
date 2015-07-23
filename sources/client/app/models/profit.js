@@ -3,12 +3,11 @@ import DS from "ember-data";
 // No import for moment, it's a global called `moment`
 
 let attr = DS.attr;
-var RefundModel = DS.Model.extend({
+var ProfitModel = DS.Model.extend({
   changeTime: attr("date", {
     defaultValue: () => new Date()
   }),
   amount: attr("number"),
-  rent: DS.belongsTo("rent", {inverse: null, async: true}),
   comment: attr("string"),
   creationDate: attr("date"),
   editDate: attr("date"),
@@ -19,4 +18,4 @@ var RefundModel = DS.Model.extend({
   }.property("changeTime")
 });
 
-export default RefundModel;
+export default ProfitModel;

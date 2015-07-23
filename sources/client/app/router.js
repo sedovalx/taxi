@@ -31,7 +31,7 @@ Router.map(function() {
     });
     this.route("new");
   });
-
+  this.resource("cash");
   this.resource("cashier-list", function() {
     this.resource("test.rents",{ path: "cars/:car_id/rents" }, function(){
       this.route("new");

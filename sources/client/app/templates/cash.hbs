@@ -1,0 +1,23 @@
+<div class="editor user-editor">
+    <form class="form-horizontal">
+        {{property-row title="Сумма в кассе" value=cashAmount errors=errors.amount}}
+        {{#property-row title="Время расчета" errors=errors.changeTime}}
+            {{datetime-picker value=changeTime }}
+        {{/property-row}}
+        {{property-row title="Примечания" value=comment}}
+        {{property-row title="Время прошлого снятия" value=lastChangeTime}}
+        {{property-row title="Сумма прошлого снятия" value=lastAmount}}
+        {{property-row title="Примечания к прошлому снятию" value=lastComment}}
+    </form>
+    <div class="command-panel clearfix">
+        <div class="buttons btn-group pull-right" role="group">
+            <button type="button" class="btn btn-primary" {{action "save"}} {{bind-attr disabled=isSaveDisabled}}>
+                <i class="fa fa-rub"></i> Снять кассу
+            </button>
+            <button type="button" class="btn btn-default" {{action "cancel"}}>
+                <i class="fa fa-times"></i> Отмена
+            </button>
+        </div>
+    </div>
+
+</div>
