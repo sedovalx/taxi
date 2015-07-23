@@ -55,10 +55,10 @@ export default RentController.extend({
       this.transitionToRoute("refunds.new", this.get("id"));
     },
     createPaymentOperation: function(){
-      this.transitionToRoute("operations.new", this.get("rentId"),"payment");
+      this.transitionToRoute("operations.new", this.get("id"),"payment");
     },
     createChargeOperation: function(){
-      this.transitionToRoute("operations.new", this.get("rentId"),"charge");
+      this.transitionToRoute("operations.new", this.get("id"),"charge");
     },
     suspendRent:function(){
       let rentId = this.get("id");
