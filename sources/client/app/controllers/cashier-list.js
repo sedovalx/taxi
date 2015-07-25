@@ -2,21 +2,60 @@ import Ember from 'ember';
 import ListController from "client/controllers/base/list-controller";
 
 /* global moment */
-// No import for history, it's a global called `moment`
+// No import for moment, it's a global called `moment`
 
 export default ListController.extend({
   queryParams: ['car', 'driver','date'],
   //queryParams defaults
   car: '',
   driver: '',
-  date: '',
+  date: function(){
+    let currentTime = new Date();
+    let currentWeekDay = moment(currentTime).format('d');
+    let daysToNextCashDay = 0;
+    switch(currentWeekDay){
+      case "0"://Sunday
+        daysToNextCashDay = 1;
+        break;
+      case "1"://Monday
+        daysToNextCashDay = 2;
+        break;
+      case "2"://Tuesday
+        daysToNextCashDay = 1;
+        break;
+      case "3"://Wednesday
+        daysToNextCashDay = 2;
+        break;
+      case "4"://Thursday
+        daysToNextCashDay = 1;
+        break;
+      case "5"://Friday
+        daysToNextCashDay = 3;
+        break;
+      case "6"://Saturday
+        daysToNextCashDay = 2;
+        break;
+    }
+    let nextCashDayTime = moment(currentTime).add(daysToNextCashDay,'days');
+    nextCashDayTime = moment(nextCashDayTime).milliseconds(0);
+    nextCashDayTime = moment(nextCashDayTime).seconds(0);
+    nextCashDayTime = moment(nextCashDayTime).minutes(0);
+    nextCashDayTime = moment(nextCashDayTime).hour(7);
+    let test = moment(nextCashDayTime).toISOString();
+    return test;
+  },
+  //date: '',
 
   // связанные элементы лучше группировать
   filter: {
     car: '',
     driver: '',
-    date: '',
-    dateInput: ''
+    date: function() {
+      return this.get("date");
+    }.property('date'),
+    dateInput: function() {
+      return this.get("date");
+    }.property('date')
   },
   actions: {
     createRent: function(){
