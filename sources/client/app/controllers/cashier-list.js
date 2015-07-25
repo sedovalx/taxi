@@ -12,7 +12,7 @@ export default ListController.extend({
   date: function(){
     let currentTime = new Date();
     let currentWeekDay = moment(currentTime).format('d');
-    let daysToNextCashDay = 0;
+    let daysToNextCashDay = 0;//cash days are Mon, Wen and Fri
     switch(currentWeekDay){
       case "0"://Sunday
         daysToNextCashDay = 1;
@@ -40,7 +40,7 @@ export default ListController.extend({
     nextCashDayTime = moment(nextCashDayTime).milliseconds(0);
     nextCashDayTime = moment(nextCashDayTime).seconds(0);
     nextCashDayTime = moment(nextCashDayTime).minutes(0);
-    nextCashDayTime = moment(nextCashDayTime).hour(7);
+    nextCashDayTime = moment(nextCashDayTime).hour(7);// GMT +3 = 10 am
     let test = moment(nextCashDayTime).toISOString();
     return test;
   },
