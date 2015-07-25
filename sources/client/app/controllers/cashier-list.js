@@ -1,6 +1,9 @@
 import Ember from 'ember';
 import ListController from "client/controllers/base/list-controller";
 
+/* global moment */
+// No import for history, it's a global called `moment`
+
 export default ListController.extend({
   queryParams: ['car', 'driver','date'],
   //queryParams defaults
