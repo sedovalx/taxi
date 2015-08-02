@@ -7,6 +7,8 @@ import models.generated.Tables.SystemUser
 import org.specs2.execute.{AsResult, Result}
 
 import org.specs2.mutable.{BeforeAfter, Specification}
+import org.specs2.specification.BeforeAfterEach
+import play.api.db.DBApi
 import play.api.{Play, Application}
 import play.api.db.evolutions.Evolutions
 import play.api.db.slick.DatabaseConfigProvider
@@ -25,7 +27,7 @@ import scala.concurrent.duration._
 /**
  * Created by ipopkov on 02/08/15.
  */
-class BaseDatabaseSpecification extends PlaySpecification with BeforeAfter {
+class BaseDatabaseSpecification extends PlaySpecification with BeforeAfterEach {
 
   def builder = new GuiceApplicationBuilder()
     .configure(ConfigurationLoader.loadFirst("application.test.override.conf", "application.test.conf"))
@@ -50,10 +52,15 @@ class BaseDatabaseSpecification extends PlaySpecification with BeforeAfter {
       Await.ready(dbConfig.db.run(recreateSchema), 5 seconds)
     }
 
-  override def before: Any = {}
+  override def before: Any = {
+    val dbapi = application.injector.instanceOf[DBApi]
+    Evolutions.applyEvolutions(dbapi.database("default"))
+  }
 
   override def after: Any = {
     //FIXME: Type error here. Think about obatining a correct Database instance.
     //Evolutions.cleanupEvolutions(db)
+    val dbapi = application.injector.instanceOf[DBApi]
+    Evolutions.cleanupEvolutions(dbapi.database("default"))
   }
 }

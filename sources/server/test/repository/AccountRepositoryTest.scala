@@ -14,7 +14,8 @@ class AccountRepositoryTest extends BaseDatabaseSpecification {
   override def application = builder.build()
   override def injector = application.injector
 
-  "UserRepository" should { sequential
+  "UserRepository" should {
+
     "save and query" in running(application) {
 
       val accountRepo = injector.instanceOf[SystemUserRepo]
@@ -31,8 +32,6 @@ class AccountRepositoryTest extends BaseDatabaseSpecification {
 
 
     "filter test" in running(application) {
-      // setup:
-
       val accountRepo = injector.instanceOf[SystemUserRepo]
         Seq(
           SystemUser(id = 0, login = "u1", passwordHash = "pass", lastName = Some("Иванов"), firstName = Some("Сидор"), middleName = Some("Петрович"),role = Role.Accountant),
@@ -41,8 +40,8 @@ class AccountRepositoryTest extends BaseDatabaseSpecification {
         ) foreach { a => accountRepo.create(a) }
 
         // expect:
-        //await(accountRepo.read()) must have size 3
-      //await(accountRepo.read(Some(SystemUserFilter()))) must have size(3)
+        await(accountRepo.read()) must have size 4
+        await(accountRepo.read(Some(SystemUserFilter()))) must have size(4)
         await(accountRepo.read(Some(SystemUserFilter(login = Some("u1")))))  must have size 1
         await(accountRepo.read(Some(SystemUserFilter(lastName = Some("иВа"))))) must have size 2
         await(accountRepo.read(Some(SystemUserFilter(lastName = Some("ива"), firstName = Some("пет"))))) must have size 1
