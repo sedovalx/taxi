@@ -20,7 +20,7 @@ class AccountRepositoryTest extends BaseDatabaseSpecification {
 
       val accountRepo = injector.instanceOf[SystemUserRepo]
       val user = new SystemUser(id = 0, login = "admin" + Random.alphanumeric.take(5).mkString, passwordHash = "", role = Role.Administrator)
-      var futureUserId = accountRepo.create(user)
+      val futureUserId = accountRepo.create(user)
 
       // check if user id is greater then zero
       val userId = await(futureUserId)
@@ -41,7 +41,7 @@ class AccountRepositoryTest extends BaseDatabaseSpecification {
 
         // expect:
         await(accountRepo.read()) must have size 4
-        await(accountRepo.read(Some(SystemUserFilter()))) must have size(4)
+        await(accountRepo.read(Some(SystemUserFilter()))) must have size 4
         await(accountRepo.read(Some(SystemUserFilter(login = Some("u1")))))  must have size 1
         await(accountRepo.read(Some(SystemUserFilter(lastName = Some("иВа"))))) must have size 2
         await(accountRepo.read(Some(SystemUserFilter(lastName = Some("ива"), firstName = Some("пет"))))) must have size 1

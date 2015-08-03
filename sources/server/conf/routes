@@ -56,6 +56,12 @@ GET           /api/refunds/:id                  controllers.api.entity.RefundCon
 POST          /api/refunds                      controllers.api.entity.RefundController.create
 PUT           /api/refunds/:id                  controllers.api.entity.RefundController.update(id: Int)
 DELETE        /api/refunds/:id                  controllers.api.entity.RefundController.delete(id: Int)
+# Profit routes
+GET           /api/profits                      controllers.api.entity.ProfitController.read
+GET           /api/profits/:id                  controllers.api.entity.ProfitController.getById(id: Int)
+POST          /api/profits                      controllers.api.entity.ProfitController.create
+PUT           /api/profits/:id                  controllers.api.entity.ProfitController.update(id: Int)
+DELETE        /api/profits/:id                  controllers.api.entity.ProfitController.delete(id: Int)
 
 ############################# Code generation #######################################
 GET           /api/tools/regenerate/code        controllers.api.tools.SchemaController.regenerateTableCode

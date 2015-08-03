@@ -19,6 +19,7 @@ class RepositoryModule extends AbstractModule with ScalaModule {
     bind[OperationRepo].in[Singleton]
     bind[SystemUserRepo].in[Singleton]
     bind[RefundRepo].in[Singleton]
+    bind[ProfitRepo].in[Singleton]
   }
 
   @Provides

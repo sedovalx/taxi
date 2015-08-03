@@ -48,6 +48,17 @@ CREATE TABLE driver
   creator_id INT,
   editor_id INT
 );
+CREATE TABLE profit
+(
+  id SERIAL PRIMARY KEY NOT NULL,
+  amount NUMERIC(10,2),
+  change_time TIMESTAMPTZ NOT NULL,
+  creation_date TIMESTAMPTZ,
+  creator_id INT,
+  edit_date TIMESTAMPTZ,
+  editor_id INT,
+  comment VARCHAR(1000)
+);
 CREATE TABLE refund
 (
   id SERIAL PRIMARY KEY NOT NULL,
@@ -109,6 +120,8 @@ CREATE UNIQUE INDEX idx_pass_uq ON driver (pass);
 ALTER TABLE operation ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
 ALTER TABLE operation ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
 ALTER TABLE operation ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
+ALTER TABLE profit ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
+ALTER TABLE profit ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
 ALTER TABLE refund ADD FOREIGN KEY (rent_id) REFERENCES rent (id);
 ALTER TABLE refund ADD FOREIGN KEY (creator_id) REFERENCES system_user (id);
 ALTER TABLE refund ADD FOREIGN KEY (editor_id) REFERENCES system_user (id);
@@ -372,6 +385,7 @@ DROP VIEW IF EXISTS payments;
 DROP VIEW IF EXISTS repairs;
 DROP VIEW IF EXISTS fines;
 
+DROP TABLE IF EXISTS profit;
 DROP TABLE IF EXISTS operation;
 DROP TABLE IF EXISTS refund;
 DROP TABLE IF EXISTS rent_status;

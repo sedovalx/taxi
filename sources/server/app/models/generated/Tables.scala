@@ -17,7 +17,7 @@ trait Tables {
   import slick.model.ForeignKeyAction
 
   /** DDL for all tables. Call .create to execute. */
-  lazy val schema = Array(CarTable.schema, DriverTable.schema, OperationTable.schema, RefundTable.schema, RentStatusTable.schema, RentTable.schema, SystemUserTable.schema).reduceLeft(_ ++ _)
+  lazy val schema = Array(CarTable.schema, DriverTable.schema, OperationTable.schema, ProfitTable.schema, RefundTable.schema, RentStatusTable.schema, RentTable.schema, SystemUserTable.schema).reduceLeft(_ ++ _)
   @deprecated("Use .schema instead of .ddl", "3.0")
   def ddl = schema
 
@@ -229,17 +229,68 @@ trait Tables {
   /** Collection-like TableQuery object for table OperationTable */
   lazy val OperationTable = new TableQuery(tag => new OperationTable(tag))
 
+  /** Entity class storing rows of table ProfitTable
+   *  @param id Database column id SqlType(serial), AutoInc, PrimaryKey
+   *  @param amount Database column amount SqlType(numeric), Default(None)
+   *  @param changeTime Database column change_time SqlType(timestamptz)
+   *  @param creationDate Database column creation_date SqlType(timestamptz), Default(None)
+   *  @param creatorId Database column creator_id SqlType(int4), Default(None)
+   *  @param editDate Database column edit_date SqlType(timestamptz), Default(None)
+   *  @param editorId Database column editor_id SqlType(int4), Default(None)
+   *  @param comment Database column comment SqlType(varchar), Length(1000,true), Default(None) */
+  case class Profit(id: Int, amount: Option[scala.math.BigDecimal] = None, changeTime: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None) extends Entity[Profit]
+  {
+    def copyWithId(id: Int) = this.copy(id = id)
+  
+    def copyWithCreator(creatorId: Option[Int]) = this.copy(creatorId = creatorId, creationDate = Some(DateUtils.now))
+  
+    def copyWithEditor(editorId: Option[Int]) = this.copy(editorId = editorId, editDate = Some(DateUtils.now))
+  }
+               
+  case class ProfitFilter(id: Option[Int] = None, amount: Option[scala.math.BigDecimal] = None, changeTime: Option[java.sql.Timestamp] = None, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None)
+
+  /** Table description of table profit. Objects of this class serve as prototypes for rows in queries. */
+  class ProfitTable(_tableTag: Tag) extends Table[Profit](_tableTag, "profit") {
+    def * = (id, amount, changeTime, creationDate, creatorId, editDate, editorId, comment) <> (Profit.tupled, Profit.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (Rep.Some(id), amount, Rep.Some(changeTime), creationDate, creatorId, editDate, editorId, comment).shaped.<>({r=>import r._; _1.map(_=> Profit.tupled((_1.get, _2, _3.get, _4, _5, _6, _7, _8)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+
+    /** Database column id SqlType(serial), AutoInc, PrimaryKey */
+    val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column amount SqlType(numeric), Default(None) */
+    val amount = column[Option[scala.math.BigDecimal]]("amount", O.Default(None))
+    /** Database column change_time SqlType(timestamptz) */
+    val changeTime = column[java.sql.Timestamp]("change_time")
+    /** Database column creation_date SqlType(timestamptz), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
+    /** Database column creator_id SqlType(int4), Default(None) */
+    val creatorId = column[Option[Int]]("creator_id", O.Default(None))
+    /** Database column edit_date SqlType(timestamptz), Default(None) */
+    val editDate = column[Option[java.sql.Timestamp]]("edit_date", O.Default(None))
+    /** Database column editor_id SqlType(int4), Default(None) */
+    val editorId = column[Option[Int]]("editor_id", O.Default(None))
+    /** Database column comment SqlType(varchar), Length(1000,true), Default(None) */
+    val comment = column[Option[String]]("comment", O.Length(1000,varying=true), O.Default(None))
+
+    /** Foreign key referencing SystemUserTable (database name profit_creator_id_fkey) */
+    lazy val creatorFk = foreignKey("profit_creator_id_fkey", creatorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+    /** Foreign key referencing SystemUserTable (database name profit_editor_id_fkey) */
+    lazy val editorFk = foreignKey("profit_editor_id_fkey", editorId, SystemUserTable)(r => Rep.Some(r.id), onUpdate=ForeignKeyAction.NoAction, onDelete=ForeignKeyAction.NoAction)
+  }
+  /** Collection-like TableQuery object for table ProfitTable */
+  lazy val ProfitTable = new TableQuery(tag => new ProfitTable(tag))
+
   /** Entity class storing rows of table RefundTable
    *  @param id Database column id SqlType(serial), AutoInc, PrimaryKey
    *  @param amount Database column amount SqlType(numeric)
    *  @param changeTime Database column change_time SqlType(timestamptz)
-   *  @param creationDate Database column creation_date SqlType(timestamptz)
+   *  @param creationDate Database column creation_date SqlType(timestamptz), Default(None)
    *  @param creatorId Database column creator_id SqlType(int4), Default(None)
    *  @param editDate Database column edit_date SqlType(timestamptz), Default(None)
    *  @param editorId Database column editor_id SqlType(int4), Default(None)
    *  @param comment Database column comment SqlType(varchar), Length(1000,true), Default(None)
    *  @param rentId Database column rent_id SqlType(int4) */
-  case class Refund(id: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp], creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Int) extends Entity[Refund]
+  case class Refund(id: Int, amount: scala.math.BigDecimal, changeTime: java.sql.Timestamp, creationDate: Option[java.sql.Timestamp] = None, creatorId: Option[Int] = None, editDate: Option[java.sql.Timestamp] = None, editorId: Option[Int] = None, comment: Option[String] = None, rentId: Int) extends Entity[Refund]
   {
     def copyWithId(id: Int) = this.copy(id = id)
   
@@ -254,7 +305,7 @@ trait Tables {
   class RefundTable(_tableTag: Tag) extends Table[Refund](_tableTag, "refund") {
     def * = (id, amount, changeTime, creationDate, creatorId, editDate, editorId, comment, rentId) <> (Refund.tupled, Refund.unapply)
     /** Maps whole row to an option. Useful for outer joins. */
-    def ? = (Rep.Some(id), Rep.Some(amount), Rep.Some(changeTime), Rep.Some(creationDate), creatorId, editDate, editorId, comment, Rep.Some(rentId)).shaped.<>({r=>import r._; _1.map(_=> Refund.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    def ? = (Rep.Some(id), Rep.Some(amount), Rep.Some(changeTime), creationDate, creatorId, editDate, editorId, comment, Rep.Some(rentId)).shaped.<>({r=>import r._; _1.map(_=> Refund.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9.get)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
 
     /** Database column id SqlType(serial), AutoInc, PrimaryKey */
     val id = column[Int]("id", O.AutoInc, O.PrimaryKey)
@@ -262,8 +313,8 @@ trait Tables {
     val amount = column[scala.math.BigDecimal]("amount")
     /** Database column change_time SqlType(timestamptz) */
     val changeTime = column[java.sql.Timestamp]("change_time")
-    /** Database column creation_date SqlType(timestamptz) */
-    val creationDate = column[Option[java.sql.Timestamp]]("creation_date")
+    /** Database column creation_date SqlType(timestamptz), Default(None) */
+    val creationDate = column[Option[java.sql.Timestamp]]("creation_date", O.Default(None))
     /** Database column creator_id SqlType(int4), Default(None) */
     val creatorId = column[Option[Int]]("creator_id", O.Default(None))
     /** Database column edit_date SqlType(timestamptz), Default(None) */
