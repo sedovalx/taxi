@@ -16,5 +16,12 @@ export default DS.Model.extend({
   displayRole: function(){
     let role = roles.filter(r => r.id === this.get("role"))[0];
     return role ? role.label : "";
-  }.property("role")
+  }.property("role"),
+  fullName: function(){
+    var name = `${this.get("lastName")} ${this.get("firstName")}`;
+    if (this.get("middleName")){
+      name += " " + this.get("middleName");
+    }
+    return name;
+  }.property("firstName", "lastName", "middleName")
 });
