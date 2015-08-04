@@ -17,30 +17,37 @@ export default RentController.extend({
     let a = moment.duration(minutes, 'minutes');
     return Math.floor(a.asDays()) + ' дней ' + a.hours() + ' часов ' + a.minutes() + ' минут';
   }.property('rentTotal.minutes'),
+
+  disabledSetActive: function(){
+    // активизировать нельзя, если уже активна
+    return this.get("rentIsActive");
+  }.property("status"),
+  disabledSetSuspended: function(){
+    // приостановить нельзя, если неактивна
+    return !this.get("rentIsActive");
+  }.property("status"),
+  disabledSetSettlingUp: function(){
+    // нельзя отправить под расчет, если уже под расчтом или закрыта
+    return this.get("rentIsSettlingUp") || this.get("rentIsClosed");
+  }.property("status"),
+  disabledSetClosed: function(){
+    // нельзя закрыть, если не под расчетом
+    return !this.get("rentIsSettlingUp");
+  }.property("status"),
+
   rentIsActive: function(){
-    if(this.get("status") === "Active"){
-      return 1;
-    }
-    return 0;
+    return this.get("status") === "Active";
   }.property("status"),
   rentIsSuspended: function(){
-    if(this.get("status") === "Suspended"){
-      return 1;
-    }
-    return 0;
+    return this.get("status") === "Suspended";
   }.property("status"),
   rentIsSettlingUp: function(){
-    if(this.get("status") === "SettlingUp"){
-      return 1;
-    }
-    return 0;
+    return this.get("status") === "SettlingUp";
   }.property("status"),
   rentIsClosed: function(){
-    if(this.get("status") === "Closed"){
-      return 1;
-    }
-    return 0;
+    return this.get("status") === "Closed";
   }.property("status"),
+
   actions: {
     showOperation: function(operation){
       this.transitionToRoute('operations.edit', operation.operationId);
