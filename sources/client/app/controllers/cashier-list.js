@@ -95,10 +95,6 @@ export default ListController.extend({
       let selected = this.get("selectedRow");
       this.transitionToRoute("operations.new", selected.get("rentId"),"charge");
     },
-    createRefund: function(){
-      let selected = this.get("selectedRow");
-      this.transitionToRoute("refunds.new", selected.get("rentId"));
-    },
     filterTable: function(){
       let dateInput = this.get('filter.dateInput');
       let dateFormatted = moment(dateInput).toISOString();
@@ -122,13 +118,6 @@ export default ListController.extend({
       this.set('car','');
       this.set('driver','');
       this.transitionToRoute("cashier-list", {queryParams: null});
-    },
-    gotoRentInfo: function(){
-      let selected = this.get("selectedRow");
-      let rentId = selected.get("rentId");
-      if (rentId != null) {
-        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "info"}});
-      }
     },
     gotoRentEdit: function(){
       let selected = this.get("selectedRow");

@@ -11,7 +11,7 @@ export default RentController.extend({
   }.property('tab'),
   isTotal: function(){
     return !this.get('isGeneral') && this.get('panel') === 'total';
-  }.property('panel'),
+  }.property('panel', 'tab'),
   minutesHumanize: function(){
     let minutes = this.get('rentTotal.minutes');
     let a = moment.duration(minutes, 'minutes');
