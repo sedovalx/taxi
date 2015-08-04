@@ -17,23 +17,6 @@ class BaseDatabaseSpecification extends PlaySpecification with BeforeAfterEach {
 
   def application = builder.build()
   def injector = application.injector
-//
-//    protected def afterEach(app: Application) = {
-//      recreateDbSchema(app)
-//    }
-//
-//    private def recreateDbSchema(app: Application) = {
-//      val dbConfig = DatabaseConfigProvider.get[JdbcProfile](app)
-//      import dbConfig.driver.api._
-//
-//      val recreateSchema: DBIO[Unit] = DBIO.seq(
-//        sqlu"drop schema public cascade",
-//        sqlu"create schema public"
-//      )
-//
-//      println("before db clean")
-//      Await.ready(dbConfig.db.run(recreateSchema), 5 seconds)
-//    }
 
   override def before: Any = {
     val dbapi = application.injector.instanceOf[DBApi]
