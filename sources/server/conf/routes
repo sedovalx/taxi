@@ -58,6 +58,7 @@ PUT           /api/refunds/:id                  controllers.api.entity.RefundCon
 DELETE        /api/refunds/:id                  controllers.api.entity.RefundController.delete(id: Int)
 # Profit routes
 GET           /api/profits                      controllers.api.entity.ProfitController.read
+GET           /api/profits/current              controllers.api.entity.ProfitController.currentState
 GET           /api/profits/:id                  controllers.api.entity.ProfitController.getById(id: Int)
 POST          /api/profits                      controllers.api.entity.ProfitController.create
 PUT           /api/profits/:id                  controllers.api.entity.ProfitController.update(id: Int)
