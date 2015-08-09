@@ -20,3 +20,6 @@ class EntityJsonFormatException(entityType: String, message: String)
 
 class EntityJsonRootMissingException(entityType: String)
   extends EntityJsonFormatException(entityType, play.api.i18n.Messages("exception.entity.json-root-missing"))
+
+class EntityValidationException(val entityType: String, val errors: Map[String, Seq[String]])
+  extends RuntimeException(play.api.i18n.Messages("exception.entity.validation", entityType, errors))

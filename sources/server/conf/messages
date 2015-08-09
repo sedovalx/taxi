@@ -10,3 +10,4 @@ exception.login.already-exists=Пользователь с логином {0} у
 exception.entity.not-found=Объект с типом {0} не найден: {1}
 exception.entity.json-wrong-format=Json для объекта типа {0} неверно отформатирован: {1}
 exception.entity.json-root-missing=Отсутствует элемент верхнего уровня
+exception.entity.validation=Ошибки валидации объекта типа {0}: {1}

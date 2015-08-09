@@ -1,19 +1,19 @@
 package controllers.api.entity
 
-import com.mohiva.play.silhouette.api.{Environment, Silhouette}
+import com.mohiva.play.silhouette.api.Environment
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import controllers.api.BaseController
 import models.entities.Entity
 import models.generated.Tables
 import models.generated.Tables.SystemUser
 import play.api.libs.json._
-import play.api.mvc.{BodyParsers, RequestHeader, Result}
+import play.api.mvc.{BodyParsers, Result}
 import repository.GenericCRUD
 import serialization.FormatJsError._
 import serialization.entity.Serializer
 import service.entity.EntityService
 import slick.driver.PostgresDriver.api._
-import utils.EntityJsonRootMissingException
+import utils.{EntityValidationException, EntityJsonRootMissingException}
 import utils.responses.Response
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -37,11 +37,17 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   protected def onUpdateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
   protected def onCreateError(entity: E, err: Throwable): Result = {
     logger.error(s"Ошибка при создании объекта типа $entityName", err)
-    BadRequest(Response.bad("Ошибка создания объекта", err.toString))
+    err match {
+      case e: EntityValidationException => UnprocessableEntity(Json.toJson(e.errors))
+      case _ => BadRequest(Response.bad("Ошибка создания объекта", err.toString))
+    }
   }
   protected def onUpdateError(entity: E, err: Throwable): Result = {
     logger.error(s"Ошибка при обновлении объекта типа $entityName с идентификатором ${entity.id}", err)
-    BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
+    err match {
+      case e: EntityValidationException => UnprocessableEntity(Json.toJson(e.errors))
+      case _ => BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
+    }
   }
 
   protected def beforeCreate(json: JsValue, entity: E, identity: SystemUser): E = entity

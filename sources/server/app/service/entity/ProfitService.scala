@@ -5,6 +5,7 @@ import models.generated.Tables.{Profit, ProfitFilter, ProfitTable}
 import repository._
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
+import utils.EntityValidationException
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,15 +65,16 @@ class ProfitServiceImpl @Inject() (
       for {
         operations <- dbConfig.db.run(operationQuery.result) map { v => v.getOrElse(BigDecimal(0)) }
         refunds <- dbConfig.db.run(refundQuery.result) map { v => v.getOrElse(BigDecimal(0))}
-        deposites <- dbConfig.db.run(depositQuery.result) map { v => v.getOrElse(BigDecimal(0)) }
-      } yield CashState(operations - refunds + deposites)
+        deposits <- dbConfig.db.run(depositQuery.result) map { v => v.getOrElse(BigDecimal(0)) }
+      } yield CashState(operations - refunds + deposits)
     }
   }
 
   private def checkAmount(entity: Profit): Future[Profit] = {
     getCurrentState map { state =>
       entity.amount match {
-        case Some(x) if x > state.amount => throw new RuntimeException(s"Невозможно изъять из кассы более ${state.amount}")
+        case Some(x) if x > state.amount =>
+          throw new EntityValidationException("profit", Map("amount" -> Seq("Нельзя снять больше, чем находится в кассе.")))
         case None => entity.copy(amount = Some(state.amount))
         case _ => entity
       }

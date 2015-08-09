@@ -3,7 +3,7 @@
         {{#property-row title="Расчетная сумма в кассе"}}
             {{input value=currentAmount readonly="true"}}
         {{/property-row}}
-        {{#property-row title="Снять"}}
+        {{#property-row title="Снять" errors=errors.amount}}
             {{input value=amount type="number" min="0" max=currentAmount}}
         {{/property-row}}
     </form>
