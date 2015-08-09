@@ -25,9 +25,9 @@ class ProfitController @Inject()(
 
   def currentState = SecuredAction.async { implicit request =>
     logger.debug(s"Запрос на получение суммы в кассе: $request")
-    entityService.getCurrentState map { amount =>
-      logger.debug(s"Ответ на запрос суммы в кассе: $amount")
-      Ok(Json.obj("amount" -> amount))
+    entityService.getCurrentState map { state =>
+      logger.debug(s"Ответ на запрос суммы в кассе: $state")
+      Ok(Json.obj("amount" -> state.amount))
     }
   }
 }

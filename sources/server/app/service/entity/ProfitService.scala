@@ -2,21 +2,24 @@ package service.entity
 
 import com.google.inject.Inject
 import models.generated.Tables.{Profit, ProfitFilter, ProfitTable}
-import repository.{RefundRepo, OperationRepo, ProfitRepo}
+import repository._
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
+case class CashState(amount: BigDecimal)
+
 trait ProfitService extends EntityService[Profit, ProfitTable, ProfitRepo, ProfitFilter]{
-  def getCurrentState: Future[BigDecimal]
+  def getCurrentState: Future[CashState]
 }
 
 class ProfitServiceImpl @Inject() (
   val repo: ProfitRepo,
   operationRepo: OperationRepo,
   refundRepo: RefundRepo,
+  rentRepo: RentRepo,
   dbConfig: DatabaseConfig[JdbcProfile]) extends ProfitService {
 
   import dbConfig.driver.api._
@@ -33,7 +36,7 @@ class ProfitServiceImpl @Inject() (
     }
   }
 
-  def getCurrentState: Future[BigDecimal] = {
+  def getCurrentState: Future[CashState] = {
     val zero = BigDecimal(0)
     // дата последнего снятия кассы
     val lastProfitQuery = repo.tableQuery.sortBy(p => p.changeTime.desc).take(1).map(p => p.changeTime)
@@ -50,19 +53,27 @@ class ProfitServiceImpl @Inject() (
         case None => refundRepo.tableQuery
       }).map(r => r.amount).sum
 
+      // сумма залогов после последнего снятия кассы
+
+      val depositQuery = (dates.headOption match {
+        case Some(lastProfitTime) => rentRepo.tableQuery filter(_.creationDate > lastProfitTime)
+        case None => rentRepo.tableQuery
+      }).map(_.deposit).sum
+
       // расчетная сумма в кассе
       for {
         operations <- dbConfig.db.run(operationQuery.result) map { v => v.getOrElse(BigDecimal(0)) }
         refunds <- dbConfig.db.run(refundQuery.result) map { v => v.getOrElse(BigDecimal(0))}
-      } yield operations - refunds
+        deposites <- dbConfig.db.run(depositQuery.result) map { v => v.getOrElse(BigDecimal(0)) }
+      } yield CashState(operations - refunds + deposites)
     }
   }
 
   private def checkAmount(entity: Profit): Future[Profit] = {
-    getCurrentState map { amount =>
+    getCurrentState map { state =>
       entity.amount match {
-        case Some(x) if x > amount => throw new RuntimeException(s"Невозможно изъять из кассы более $amount")
-        case None => entity.copy(amount = Some(amount))
+        case Some(x) if x > state.amount => throw new RuntimeException(s"Невозможно изъять из кассы более ${state.amount}")
+        case None => entity.copy(amount = Some(state.amount))
         case _ => entity
       }
     }
