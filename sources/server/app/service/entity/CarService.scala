@@ -15,7 +15,7 @@ trait CarService extends EntityService[Car, CarTable, CarRepo, CarFilter] {
 class CarServiceImpl @Inject() (val repo: CarRepo) extends CarService {
   override def getDisplayName(carId: Int): Future[String] = {
     repo.findById(carId) map {
-      case Some(car) => s"${car.model} ${car.regNumber} (${car.rate}})"
+      case Some(car) => s"${car.regNumber} ${car.make} (${car.rate})"
       case None => "None"
     }
   }

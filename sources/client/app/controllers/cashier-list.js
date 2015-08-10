@@ -170,7 +170,7 @@ export default ListController.extend({
         contentPath: "driver"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         textAlign: "text-align-center",
         tableCellViewClass: "check-icon-cell",
@@ -178,43 +178,43 @@ export default ListController.extend({
         contentPath: "presence"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "Итого",
         contentPath: "total"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "Текущий баланс арендный",
         contentPath: "payments"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "Текущий баланс ремонтный",
         contentPath: "repairs"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "Текущий баланс штрафной",
         contentPath: "fines"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "Пробег",
         contentPath: "mileage"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 80,
         canAutoResize: true,
         headerCellName: "ТО",
         contentPath: "service"
       }),
       Ember.Table.ColumnDefinition.create({
-        savedWidth: 200,
+        savedWidth: 100,
         canAutoResize: true,
         headerCellName: "Статус",
         contentPath: "displayStatus"
