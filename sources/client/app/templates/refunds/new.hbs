@@ -6,6 +6,9 @@
       {{#property-row title="Дата операции" errors=errors.changeTime}}
           {{datetime-picker value=changeTime }}
       {{/property-row}}
+      {{#property-row title="Баланс аренды"}}
+          {{input value=rentTotal.total readonly="true"}}
+      {{/property-row}}
       {{property-row title="Сумма, р" value=amount errors=errors.amount}}
       {{property-row title="Примечания" value=comment}}
     </form>

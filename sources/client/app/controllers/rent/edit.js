@@ -18,6 +18,10 @@ export default RentController.extend({
     return Math.floor(a.asDays()) + ' дней ' + a.hours() + ' часов ' + a.minutes() + ' минут';
   }.property('rentTotal.minutes'),
 
+  isTotalPositive: function(){
+    return this.get('rentTotal.total') >= 0;
+  }.property('rentTotal.total'),
+
   disabledSetActive: function(){
     // активизировать нельзя, если уже активна
     return this.get("rentIsActive");

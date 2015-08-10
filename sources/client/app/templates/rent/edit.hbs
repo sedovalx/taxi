@@ -1,10 +1,12 @@
-<div class="editor user-editor">
+<div class="editor rent-editor">
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" {{bind-attr class="isGeneral:active"}}>
+    <li role="presentation" {{bind-attr class=":tab-header :general isGeneral:active"}}>
         <a href="#general" aria-controls="general" role="tab" {{action "changeTab" "general"}}>Основное</a>
     </li>
-    <li role="presentation" {{bind-attr class="isGeneral::active"}}>
-        <a href="#info" aria-controls="info" role="tab" {{action "changeTab" "info"}}>Сводка</a>
+    <li role="presentation" {{bind-attr class=":tab-header :info isGeneral::active"}}>
+        <a href="#info" aria-controls="info" role="tab" {{action "changeTab" "info"}}>Сводка
+            (<span {{bind-attr class="isTotalPositive:positive:negative"}}>{{rentTotal.total}}</span>)
+        </a>
     </li>
   </ul>
   <div class="tab-content">
@@ -72,10 +74,10 @@
       </div>
       <div role="tabpanel" id="info" {{bind-attr class=":tab-pane isGeneral::active"}}>
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-            <div class="panel panel-default">
+            <div class="panel panel-default total">
                 <div class="panel-heading" role="tab" id="rentTotalHeading">
                     <h4 class="panel-title">
-                        <a {{bind-attr class="isTotal::collapsed"}} {{action "switchPanel" "total"}}
+                        <a {{bind-attr class=":total isTotal::collapsed isTotalPositive:positive:negative"}} {{action "switchPanel" "total"}}
                                 role="button"
                                 data-parent="#accordion"
                                 href="#rentTotalCollapse">
@@ -107,7 +109,7 @@
                     </div>
                 </div>
             </div>
-            <div class="panel panel-default">
+            <div class="panel panel-default history">
                 <div class="panel-heading" role="tab" id="rentHistoryHeading">
                     <h4 class="panel-title">
                         <a {{bind-attr class="isTotal:collapsed"}} {{action "switchPanel" "history"}}

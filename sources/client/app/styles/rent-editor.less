@@ -1,0 +1,33 @@
+@balance-positive-color: darkgreen;
+@balance-negative-color: darkred;
+
+.editor.rent-editor {
+  #info {
+    .panel.panel-default.total {
+      .panel-title {
+        a {
+          font-weight: bold;
+
+          &.negative {
+            color: @balance-negative-color;
+          }
+
+          &.positive {
+            color: @balance-positive-color;
+          }
+        }
+      }
+    }
+  }
+
+  .nav.nav-tabs {
+    .tab-header.info > a > span {
+      &.positive {
+        color: @balance-positive-color;
+      }
+      &.negative {
+        color: @balance-negative-color;
+      }
+    }
+  }
+}
