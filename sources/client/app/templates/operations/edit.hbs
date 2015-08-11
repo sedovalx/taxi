@@ -1,19 +1,19 @@
 <div class="editor user-editor">
     <form class="form-horizontal">
         {{#property-row title="Аренда"}}
-          {{input value=rent.displayName readonly="true"}}
+            {{input value=rent.displayName readonly="true"}}
         {{/property-row}}
         {{#property-row title="Дата операции"}}
-          {{input value=operationTime readonly="true"}}
+            {{input value=operationTime readonly="true"}}
         {{/property-row}}
         {{#property-row title="Внес"}}
-          {{input value=creator.fullName readonly="true"}}
+            {{input value=creator.fullName readonly="true"}}
         {{/property-row}}
-        {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+        {{property-row title="Сумма, р" value=amount errors=errors.amount readOnly=readOnlyMode}}
         {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
-        {{input type="checkbox" checked=presence class="app-check-box"}}
+            {{input type="checkbox" checked=presence class="app-check-box" disabled=readOnlyMode}}
         {{/property-row}}
-{{property-row title="Примечания" value=comment}}
+        {{property-row title="Примечания" value=comment readOnly=readOnlyMode}}
     </form>
-  {{save-cancel}}
+    {{save-cancel readOnly=readOnlyMode}}
 </div>

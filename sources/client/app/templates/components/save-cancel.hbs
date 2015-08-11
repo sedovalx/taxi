@@ -1,10 +1,17 @@
 <div class="command-panel clearfix">
     <div class="buttons btn-group pull-right" role="group">
-        <button type="button" class="btn btn-primary" {{action "save"}} {{bind-attr disabled=isSaveDisabled}}>
-            <i class="fa fa-floppy-o"></i> Сохранить
-        </button>
-        <button type="button" class="btn btn-default" {{action "cancel"}}>
-            <i class="fa fa-times"></i> Отмена
-        </button>
+        {{#if readOnly}}
+            <button type="button" class="btn btn-default" {{action "cancel"}}>
+                <i class="fa fa-sign-out"></i> Назад
+            </button>
+        {{else}}
+            <button type="button" class="btn btn-primary" {{action "save"}} {{bind-attr disabled=isSaveDisabled}}>
+                <i class="fa fa-floppy-o"></i> Сохранить
+            </button>
+            <button type="button" class="btn btn-default" {{action "cancel"}}>
+                <i class="fa fa-times"></i> Отмена
+            </button>
+        {{/if}}
+
     </div>
 </div>

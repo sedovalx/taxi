@@ -10,7 +10,7 @@ export default Ember.Mixin.create({
   }.property('session.currentUser'),
 
   isAdmin: function(){
-    return this.hasRole('admin');
+    return this.hasRole('Administrator');
   }.property('session.currentUser'),
 
   hasRole: function(role){

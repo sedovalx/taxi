@@ -4,7 +4,7 @@
       {{#if template}}
         {{yield}}
       {{else}}
-        {{input value=value}}
+        {{input value=value readonly=readOnly}}
       {{/if}}
       <div {{bind-attr class=":error-box errorCssWidth"}}>
         {{#each error in errors}}
