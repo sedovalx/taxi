@@ -7,7 +7,7 @@ import models.entities.Entity
 import models.generated.Tables
 import models.generated.Tables.SystemUser
 import play.api.libs.json._
-import play.api.mvc.{BodyParsers, Result}
+import play.api.mvc.{AnyContent, BodyParsers, Result}
 import repository.GenericCRUD
 import serialization.FormatJsError._
 import serialization.entity.Serializer
@@ -66,7 +66,11 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
     }
   }
 
-  def read = SecuredAction.async { implicit request =>
+  def read = SecuredAction.async { request =>
+    doRead(request)
+  }
+
+  protected def doRead(request: SecuredRequest[AnyContent]): Future[Result] = {
     val filterParams = request.queryString.map { case (k, v) => k -> v.mkString }
     logger.debug(s"Запрос на чтение списка данных типа $entityName с параметрами $filterParams")
     val filterJson = Json.toJson(filterParams)
@@ -78,7 +82,11 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
     }
   }
 
-  def getById(id: Int) = SecuredAction.async { implicit request =>
+  def getById(id: Int) = SecuredAction.async { request =>
+    doGetById(id)
+  }
+
+  protected def doGetById(id: Int): Future[Result] = {
     logger.debug(s"Запрос на получение объекта типа $entityName по идентификатору $id")
     entityService.findById(id) flatMap { entity =>
       val eJson = makeJson[Option[E]](entityName, entity)
@@ -88,6 +96,10 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   }
 
   def create = SecuredAction.async(BodyParsers.parse.json) { request =>
+    doCreate(request)
+  }
+
+  protected def doCreate(request: SecuredRequest[JsValue]): Future[Result] = {
     logger.debug(s"Запрос на создание объекта типа $entityName с данными: \n${Json.stringify(request.body)}")
     val json = getEntityJson(request.body)
     deserializeAndValidate(json) match {
@@ -106,17 +118,21 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   }
 
   def update(id: Int) = SecuredAction.async(BodyParsers.parse.json) { request =>
+    doUpdate(id, request)
+  }
+
+  protected def doUpdate(id: Int, request: SecuredRequest[JsValue]): Future[Result] = {
     logger.debug(s"Запрос на обновление объекта типа $entityName с идентификатором $id и данными: \n${Json.stringify(request.body)}")
     val json = getEntityJson(request.body)
     deserializeAndValidate(json) match {
       case err@JsError(_) => Future.successful(onUpdateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
         val toSave = beforeUpdate(id, json, entity, request.identity)
-        entityService.update (toSave, Some (request.identity.id) ) map { saved =>
+        entityService.update(toSave, Some(request.identity.id)) map { saved =>
           val toSend = afterUpdate(json, saved, request.identity)
-          val eJson = makeJson (entityName, toSend)
+          val eJson = makeJson(entityName, toSend)
           logger.debug(s"Объект типа $entityName с идентификатором $id был успешно обновлен")
-          Ok (eJson)
+          Ok(eJson)
         } recover {
           case e: Throwable => onUpdateError(toSave, e)
         }
@@ -124,6 +140,10 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
   }
 
   def delete(id: Int) = SecuredAction.async { request =>
+    doDelete(id)
+  }
+
+  protected def doDelete(id: Int): Future[Result] = {
     logger.debug(s"Запрос на удаление объекта типа $entityName с идентификатором $id")
     entityService.delete(id) map { wasDeleted =>
       if (wasDeleted) {
