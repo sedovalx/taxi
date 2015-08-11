@@ -1,8 +1,9 @@
 import RentController from "client/controllers/base/rent-controller";
+import TimeFormatMixin from 'client/mixins/time-format';
 /* global moment */
 // No import for moment, it's a global called `moment`
 
-export default RentController.extend({
+export default RentController.extend(TimeFormatMixin, {
   queryParams: ['tab', 'panel'],
   tab: "general",
   panel: "total",
@@ -17,6 +18,9 @@ export default RentController.extend({
     let a = moment.duration(minutes, 'minutes');
     return Math.floor(a.asDays()) + ' дней ' + a.hours() + ' часов ' + a.minutes() + ' минут';
   }.property('rentTotal.minutes'),
+  creationDateFormatted: function(){
+    return this.formatDateTime(this.get('creationDate'));
+  }.property('creationDate'),
 
   isTotalPositive: function(){
     return this.get('rentTotal.total') >= 0;

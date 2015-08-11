@@ -12,6 +12,9 @@
   <div class="tab-content">
       <div role="tabpanel" id="general" {{bind-attr class=":tab-pane isGeneral:active"}}>
           <form class="form-horizontal">
+              {{#property-row title="Дата создания"}}
+                  {{input value=creationDateFormatted readonly="true"}}
+              {{/property-row}}
               <div class="form-group">
                   <label class="control-label col-sm-2">Статус</label>
                   <div class="col-sm-10">

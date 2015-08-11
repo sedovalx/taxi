@@ -3,17 +3,17 @@
         {{#property-row title="Аренда"}}
           {{input value=rent.displayName readonly="true"}}
         {{/property-row}}
-      {{#property-row title="Дата операции" errors=errors.changeTime}}
-          {{datetime-picker value=changeTime }}
-      {{/property-row}}
-      {{#property-row title="Внес"}}
+        {{#property-row title="Дата операции"}}
+          {{input value=operationTime readonly="true"}}
+        {{/property-row}}
+        {{#property-row title="Внес"}}
           {{input value=creator.fullName readonly="true"}}
-      {{/property-row}}
-      {{property-row title="Сумма, р" value=amount errors=errors.amount}}
-      {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
+        {{/property-row}}
+        {{property-row title="Сумма, р" value=amount errors=errors.amount}}
+        {{#property-row title="Явка" errors=errors.presence inputCssWidth="col-sm-1"}}
         {{input type="checkbox" checked=presence class="app-check-box"}}
-      {{/property-row}}
-      {{property-row title="Примечания" value=comment}}
+        {{/property-row}}
+{{property-row title="Примечания" value=comment}}
     </form>
   {{save-cancel}}
 </div>

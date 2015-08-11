@@ -22,6 +22,6 @@ export default DS.Model.extend({
     if (this.get("middleName")){
       name += " " + this.get("middleName");
     }
-    return name;
+    return name.trim() || this.get('login');
   }.property("firstName", "lastName", "middleName")
 });
