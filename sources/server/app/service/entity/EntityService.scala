@@ -4,22 +4,33 @@ import models.entities.Entity
 import repository.GenericCRUD
 import slick.driver.PostgresDriver.api._
 import utils.EntityNotFoundException
+import utils.validation.{ValidationError, Validation}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait EntityService[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, G <: GenericCRUD[E, T, F], F] {
+trait EntityService[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, G <: GenericCRUD[E, T, F], F] extends Validation[E] {
   val repo: G
 
-  protected def beforeCreate(entity: E, creatorId: Option[Int]) = Future.successful(entity.copyWithCreator(creatorId))
-  protected def afterCreate(entity: E) = Future.successful(entity)
-  protected def beforeUpdate(entity: E, editorId: Option[Int]) = Future.successful(entity.copyWithEditor(editorId))
-  protected def afterUpdate(entity: E) = Future.successful(entity)
+  protected def beforeCreate(entity: E, creatorId: Option[Int]): Future[E] = {
+    throwIfInInvalidState(entity, creatorId) map { _ =>
+      entity.copyWithCreator(creatorId)
+    }
+  }
+
+  protected def beforeUpdate(entity: E, editorId: Option[Int]): Future[E] = {
+    throwIfInInvalidState(entity, editorId) map { _ =>
+      entity.copyWithEditor(editorId)
+    }
+  }
+
+  protected def afterCreate(entity: E): Future[E] = Future.successful(entity)
+  protected def afterUpdate(entity: E): Future[E] = Future.successful(entity)
 
   def create(entity: E, creatorId: Option[Int]): Future[E] = {
     beforeCreate(entity, creatorId)
       .flatMap { entity => repo.create(entity).map(id => entity.copyWithId(id)) }
-      .flatMap { entity => afterCreate(entity) }
+      .flatMap { afterCreate }
   }
 
   def read(filter: Option[F]): Future[Seq[E]] = {
