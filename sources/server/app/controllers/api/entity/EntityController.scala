@@ -12,8 +12,9 @@ import repository.GenericCRUD
 import serialization.FormatJsError._
 import serialization.entity.Serializer
 import service.entity.EntityService
+import service.validation.{NotAcceptableActionException, ValidationErrorsException}
+import service.validation.Validation._
 import slick.driver.PostgresDriver.api._
-import utils.validation.EntityValidationException
 import utils.EntityJsonRootMissingException
 import utils.responses.Response
 
@@ -36,18 +37,28 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
 
   protected def onCreateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
   protected def onUpdateInvalidJson(json: JsValue, err: JsError): Result = UnprocessableEntity(Json.toJson(err))
-  protected def onCreateError(entity: E, err: Throwable): Result = {
+
+  protected def onCreateError(entityName: String, err: Throwable): Result = {
     logger.error(s"Ошибка при создании объекта типа $entityName", err)
-    err match {
-      case e: EntityValidationException => UnprocessableEntity(Json.toJson(e.error.errorsToMap()))
-      case _ => BadRequest(Response.bad("Ошибка создания объекта", err.toString))
-    }
+    onError(err)
   }
-  protected def onUpdateError(entity: E, err: Throwable): Result = {
-    logger.error(s"Ошибка при обновлении объекта типа $entityName с идентификатором ${entity.id}", err)
+  protected def onUpdateError(entityId: Int, err: Throwable): Result = {
+    logger.error(s"Ошибка при обновлении объекта типа $entityName с идентификатором $entityId", err)
+    onError(err)
+  }
+
+  protected def onDeleteError(entityId: Int, err: Throwable): Result = {
+    logger.error(s"Ошибка при удалении объекта типа $entityName с идентификатором $entityId", err)
+    onError(err)
+  }
+
+  protected def onError(err: Throwable): Result = {
     err match {
-      case e: EntityValidationException => UnprocessableEntity(Json.toJson(e.error.errorsToMap()))
-      case _ => BadRequest(Response.bad("Ошибка обновления объекта", err.toString))
+      case e: ValidationErrorsException =>
+        UnprocessableEntity(Json.toJson(e.errors))
+      case e: NotAcceptableActionException =>
+        NotAcceptable(Json.obj("reason" -> e.reason))
+      case e => BadRequest(Response.bad("Ошибка обработки объекта", e.toString))
     }
   }
 
@@ -107,13 +118,13 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
       case err@JsError(_) => Future.successful(onCreateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
         val toSave = beforeCreate(json, entity, request.identity)
-        entityService.create(toSave, Some(request.identity.id)) map { saved =>
+        entityService.create(toSave, request.identity.id) map { saved =>
           val toSend = afterCreate(json, saved, request.identity)
           val eJson = makeJson(entityName, toSend)
           logger.debug(s"Был создан новый объект типа $entityName с идентификатором ${toSend.id}")
           Ok(eJson)
         } recover {
-          case e: Throwable => onCreateError(toSave, e)
+          case e: Throwable => onCreateError(toSave.getClass.getName, e)
         }
     }
   }
@@ -129,24 +140,26 @@ abstract class EntityController[E <: Entity[E], T <: Table[E]  { val id: Rep[Int
       case err@JsError(_) => Future.successful(onUpdateInvalidJson(json, err))
       case JsSuccess(entity, _) =>
         val toSave = beforeUpdate(id, json, entity, request.identity)
-        entityService.update(toSave, Some(request.identity.id)) map { saved =>
+        entityService.update(toSave, request.identity.id) map { saved =>
           val toSend = afterUpdate(json, saved, request.identity)
           val eJson = makeJson(entityName, toSend)
           logger.debug(s"Объект типа $entityName с идентификатором $id был успешно обновлен")
           Ok(eJson)
         } recover {
-          case e: Throwable => onUpdateError(toSave, e)
+          case e: Throwable => onUpdateError(toSave.id, e)
         }
     }
   }
 
   def delete(id: Int) = SecuredAction.async { request =>
-    doDelete(id)
+    doDelete(id, request) recover {
+      case e: Throwable => onDeleteError(id, e)
+    }
   }
 
-  protected def doDelete(id: Int): Future[Result] = {
+  protected def doDelete(id: Int, request: SecuredRequest[AnyContent]): Future[Result] = {
     logger.debug(s"Запрос на удаление объекта типа $entityName с идентификатором $id")
-    entityService.delete(id) map { wasDeleted =>
+    entityService.delete(id, request.identity.id) map { wasDeleted =>
       if (wasDeleted) {
         logger.debug(s"Объекта типа $entityName с идентификатором $id был удален")
         Ok(Json.obj())

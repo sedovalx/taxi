@@ -1,14 +1,16 @@
 package service.entity
 
-import repository.{OperationRepo, ProfitRepo, RefundRepo, RentRepo}
+import models.entities.Entity
+import repository._
 import slick.backend.DatabaseConfig
 import slick.driver.JdbcProfile
-import utils.validation.PropertyValidationError
+import slick.driver.PostgresDriver.api._
+import service.validation.{SuccessfulResult, ValidationResult, PropertyValidationError}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait CashService {
+trait CashService[E <: Entity[E], T <: Table[E] { val id: Rep[Int] }, G <: GenericCRUD[E, T, F], F] extends EntityService[E, T, G, F] {
   val profitRepo: ProfitRepo
   val operationRepo: OperationRepo
   val refundRepo: RefundRepo
@@ -16,6 +18,8 @@ trait CashService {
   val dbConfig: DatabaseConfig[JdbcProfile]
 
   import dbConfig.driver.api._
+
+  case class CashState(amount: BigDecimal)
 
   def getCurrentState: Future[CashState] = {
     val zero = BigDecimal(0)
@@ -50,20 +54,33 @@ trait CashService {
     }
   }
 
-  private def createValidationError(propertyName: String, error: String): Option[PropertyValidationError] =
-    Some(PropertyValidationError.single(propertyName, error))
+  private def createValidationError(propertyName: String, error: String) =
+    new PropertyValidationError(propertyName, error)
 
-  protected def checkAmount(amount: Option[BigDecimal]): Future[Option[PropertyValidationError]] = {
+  private def checkAmount(amount: Option[BigDecimal]): Future[Option[PropertyValidationError]] = {
     getCurrentState map { state =>
       amount match {
         case Some(x) if x > state.amount =>
-          createValidationError("amount", "Нельзя снять больше, чем находится в кассе")
+          Some(createValidationError("amount", "Нельзя снять больше, чем находится в кассе"))
         case Some(x) if x < 0 =>
-          createValidationError("amount", "Нельзя снять отрицательную сумму")
+          Some(createValidationError("amount", "Нельзя снять отрицательную сумму"))
         case None =>
-          createValidationError("amount", "Сумма должна быть указана")
+          Some(createValidationError("amount", "Сумма должна быть указана"))
         case _ => None
       }
     }
   }
+
+  override protected def validate(entity: E, performerId: Option[Int]): Future[ValidationResult] = {
+    super.validate(entity, performerId) flatMap {
+      case r: SuccessfulResult =>
+        checkAmount(getAmount(entity)) map {
+          case Some(e) => ValidationResult.propertyError(e)
+          case None => ValidationResult.success()
+        }
+      case r => Future.successful(r)
+    }
+  }
+
+  protected def getAmount(entity: E): Option[BigDecimal]
 }

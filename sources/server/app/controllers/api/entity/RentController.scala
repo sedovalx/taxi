@@ -37,7 +37,7 @@ class RentController @Inject() (
   override protected def afterCreate(json: JsValue, entity: Tables.Rent, identity: SystemUser): Tables.Rent = {
     val rent = super.afterCreate(json, entity, identity)
     val status = (json \ "status").as[RentStatus]
-    entityService.createNewStatus(rent, status, Some(identity.id))
+    entityService.createNewStatus(rent, status, identity.id)
     rent
   }
 
@@ -46,7 +46,7 @@ class RentController @Inject() (
     val status = (json \ "status").as[RentStatus]
     val actual = entityService.getCurrentStatus(rent)
     if (status != actual){
-      entityService.createNewStatus(rent, status, Some(identity.id))
+      entityService.createNewStatus(rent, status, identity.id)
     }
     rent
   }

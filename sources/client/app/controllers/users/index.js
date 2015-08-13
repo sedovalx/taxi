@@ -54,7 +54,9 @@ export default ListController.extend({
       let row = this.get("selectedRow");
       if (row && confirm("Вы подтверждаете удаление пользователя?")) {
         row.deleteRecord();
-        row.save();
+        row.save().catch(() => {
+			row.rollback();
+		});
       }
     },
     filterTable: function(){

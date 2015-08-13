@@ -27,15 +27,15 @@ class DriverController @Inject() (
   override val entitiesName: String = "drivers"
   override val entityName: String = "driver"
 
-  override protected def onCreateError(entity: Tables.Driver, err: Throwable): Result = {
-    onChangeError(entity, err, super.onCreateError)
+  override protected def onCreateError(entityName: String, err: Throwable): Result = {
+    onChangeError(entityName, err, super.onCreateError)
   }
 
-  override protected def onUpdateError(entity: Tables.Driver, err: Throwable): Result = {
-    onChangeError(entity, err, super.onUpdateError)
+  override protected def onUpdateError(entityId: Int, err: Throwable): Result = {
+    onChangeError(entityId, err, super.onUpdateError)
   }
 
-  private def onChangeError(entity: Driver, err: Throwable, fallback: (Driver, Throwable) => Result) = {
+  private def onChangeError[T](entity: T, err: Throwable, fallback: (T, Throwable) => Result) = {
     //todo: скорее всего по классу таблицы можно найти все поля с ограничением уникальности
     //по ним можно построить generic обработчик ошибок уникальности
     err match {
