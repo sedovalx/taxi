@@ -37,8 +37,11 @@
             <button type="button" class="btn btn-primary" {{action "createRent"}} {{bind-attr disabled=selectionRentIsNotEmpty}}>
                 <i class="fa fa-file-o"></i> Создать аренду
             </button>
-            <button type="button" class="btn btn-primary" {{action "gotoRentEdit"}} {{bind-attr disabled=selectionRentIsEmpty}}>
-                <i class="fa fa-edit"></i> Управление арендой
+            <button type="button" class="btn btn-primary" {{action "gotoRentInfo"}} {{bind-attr disabled=selectionRentIsEmpty}}>
+                <i class="fa fa-info"></i> Сводка по аренде
+            </button>
+            <button type="button" class="btn btn-primary" {{action "gotoRentManage"}} {{bind-attr disabled=selectionRentIsEmpty}}>
+                <i class="fa fa-cogs"></i> Управление арендой
             </button>
         </div>
         <div class="btn-group" role="group">

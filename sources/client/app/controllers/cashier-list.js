@@ -65,28 +65,6 @@ export default ListController.extend({
       //this.transitionToRoute("rents.new"/*,selected.get("id")*/);
 
     },
-    suspendRent:function(){
-      let selected = this.get("selectedRow");
-      let rentId = selected.get("rentId");
-      this.store.find("rent",rentId).then(rent => {
-        rent.set("status", "Suspended");
-        rent.save();
-        selected.set("status", "Suspended");
-        this.set("selectedRow",null);
-        this.set("selectedRow",selected);
-      });
-    },
-    resumeRent:function(){
-      let selected = this.get("selectedRow");
-      let rentId = selected.get("rentId");
-      this.store.find("rent",rentId).then(rent => {
-        rent.set("status", "Active");
-        rent.save();
-        selected.set("status", "Active");
-        this.set("selectedRow",null);
-        this.set("selectedRow",selected);
-      });
-    },
     createPaymentOperation: function(){
       let selected = this.get("selectedRow");
       this.transitionToRoute("operations.new", selected.get("rentId"),"payment");
@@ -119,16 +97,23 @@ export default ListController.extend({
       this.set('driver','');
       this.transitionToRoute("cashier-list", {queryParams: null});
     },
-    gotoRentEdit: function(){
+    gotoRentManage: function(){
       let selected = this.get("selectedRow");
       let rentId = selected.get("rentId");
       if (rentId != null) {
-        this.transitionToRoute("rent.edit", rentId, {queryParams: {tab: "general"}});
+        this.transitionToRoute("rent.manage", rentId);
+      }
+    },
+    gotoRentInfo: function(){
+      let selected = this.get("selectedRow");
+      let rentId = selected.get("rentId");
+      if (rentId != null) {
+        this.transitionToRoute("rent.info", rentId);
       }
     },
     gotoCash: function(){
       this.transitionToRoute("cash");
-      }
+    }
   },
   selectionRentIsEmpty: function(){
     let selected = this.get("selectedRow");

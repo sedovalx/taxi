@@ -23,7 +23,8 @@ Router.map(function() {
   });
   this.resource("rents", function() {
     this.resource("rent", { path: "/:rent_id" }, function(){
-      this.route("edit");
+      this.route("manage");
+      this.route("info");
       this.resource("refunds", function() {
         this.route("new");
       });

@@ -4,34 +4,16 @@ import TimeFormatMixin from 'client/mixins/time-format';
 // No import for moment, it's a global called `moment`
 
 export default RentController.extend(TimeFormatMixin, {
-  queryParams: ['tab', 'panel'],
-  tab: "general",
-  panel: "total",
-  isGeneral: function(){
-    return this.get('tab') === 'general';
-  }.property('tab'),
-  isTotal: function(){
-    return !this.get('isGeneral') && this.get('panel') === 'total';
-  }.property('panel', 'tab'),
-  minutesHumanize: function(){
-    let minutes = this.get('rentTotal.minutes');
-    let a = moment.duration(minutes, 'minutes');
-    return Math.floor(a.asDays()) + ' дней ' + a.hours() + ' часов ' + a.minutes() + ' минут';
-  }.property('rentTotal.minutes'),
   creationDateFormatted: function(){
     return this.formatDateTime(this.get('creationDate'));
   }.property('creationDate'),
 
-  isTotalPositive: function(){
-    return this.get('rentTotal.total') >= 0;
-  }.property('rentTotal.total'),
-
   disabledSetActive: function(){
-    // активизировать нельзя, если уже активна
-    return this.get("rentIsActive");
+    // активизировать если, что-угодно кроме приостановлена
+    return !this.get("rentIsSuspended");
   }.property("status"),
   disabledSetSuspended: function(){
-    // приостановить нельзя, если неактивна
+    // приостановить нельзя, если уже приостановлена
     return !this.get("rentIsActive");
   }.property("status"),
   disabledSetSettlingUp: function(){
@@ -57,15 +39,6 @@ export default RentController.extend(TimeFormatMixin, {
   }.property("status"),
 
   actions: {
-    showOperation: function(operation){
-      this.transitionToRoute('operations.edit', operation.operationId);
-    },
-    changeTab: function(tab) {
-      this.set("tab", tab);
-    },
-    switchPanel: function(panel) {
-      this.set('panel', panel);
-    },
     createRefund: function(){
       this.transitionToRoute("refunds.new", this.get("id"));
     },

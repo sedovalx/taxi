@@ -18,9 +18,6 @@ function defineAmountSign(history) {
 
 export default ProtectedRoute.extend(DirtyRouteMixin, {
   queryParams: {
-    tab: {
-      replace: true
-    },
     panel: {
       replace: true
     }
@@ -38,10 +35,5 @@ export default ProtectedRoute.extend(DirtyRouteMixin, {
     controller.set('model', model);
     controller.set('history', defineAmountSign(history));
     controller.set('rentTotal', total);
-  },
-  actions: {
-    invalidateModel: function(){
-      this.refresh();
-    }
   }
 });

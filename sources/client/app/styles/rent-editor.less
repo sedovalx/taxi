@@ -1,8 +1,10 @@
+@import "rent-history";
+
 @balance-positive-color: darkgreen;
 @balance-negative-color: darkred;
 
 .editor.rent-editor {
-  #info {
+  &.info {
     .panel.panel-default.total {
       .panel-title {
         a {
@@ -18,16 +20,9 @@
         }
       }
     }
-  }
 
-  .nav.nav-tabs {
-    .tab-header.info > a > span {
-      &.positive {
-        color: @balance-positive-color;
-      }
-      &.negative {
-        color: @balance-negative-color;
-      }
+    .command-panel {
+      margin-bottom: 15px;
     }
   }
 }

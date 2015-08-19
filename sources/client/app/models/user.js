@@ -18,10 +18,7 @@ export default DS.Model.extend({
     return role ? role.label : "";
   }.property("role"),
   fullName: function(){
-    var name = `${this.get("lastName")} ${this.get("firstName")}`;
-    if (this.get("middleName")){
-      name += " " + this.get("middleName");
-    }
+    let name = `${this.get("lastName") || ''} ${this.get("firstName") || ''} ${this.get("middleName") || ''}`;
     return name.trim() || this.get('login');
   }.property("firstName", "lastName", "middleName")
 });
