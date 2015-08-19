@@ -5,7 +5,7 @@ import javax.inject.Inject
 
 import models.entities.RentStatus
 import models.entities.RentStatus._
-import play.api.libs.json.{JsSuccess, JsError, JsValue, Json}
+import play.api.libs.json._
 import serialization.EnumSerializer
 import serialization.entity.Serialization
 import slick.backend.DatabaseConfig
@@ -21,10 +21,29 @@ class CashierQuery @Inject()(dbConfig: DatabaseConfig[JdbcProfile]) extends SqlQ
 
   override val name: String = "q-cashier-list"
 
-  private implicit val dataFormat = Json.format[DataItem]
   private implicit val getResult = GetResult[DataItem] { d => new DataItem(d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<, d.<<)}
   private implicit val enumReads = EnumSerializer.enumReads(RentStatus)
   private implicit val filterReads = Json.reads[Filter]
+  private implicit val dataWrites = new Writes[DataItem] {
+    override def writes(o: DataItem): JsValue = {
+      Json.obj(
+        "id" -> o.id.toString,
+        "rentId" -> o.rentId,
+        "rentCreationDate" -> o.rentCreationDate,
+        "driverId" -> o.driverId,
+        "car" -> o.car,
+        "driver" -> o.driver,
+        "presence" -> o.presence,
+        "payments" -> o.payments,
+        "fines" -> o.fines,
+        "repairs" -> o.repairs,
+        "total" -> o.total,
+        "mileage" -> o.mileage,
+        "service" -> o.service,
+        "status" -> o.status
+      )
+    }
+  }
 
   private case class Filter(
     car: Option[String] = None,
