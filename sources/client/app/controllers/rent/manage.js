@@ -1,7 +1,5 @@
 import RentController from "client/controllers/base/rent-controller";
 import TimeFormatMixin from 'client/mixins/time-format';
-/* global moment */
-// No import for moment, it's a global called `moment`
 
 export default RentController.extend(TimeFormatMixin, {
   creationDateFormatted: function(){
