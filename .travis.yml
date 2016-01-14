@@ -3,7 +3,10 @@ jdk: oraclejdk8
 sudo: false
 
 addons:
- - postgresql: "9.4"
+  postgresql: "9.4"
+
+services:
+  - postgresql
 
 # These directories are cached to S3 at the end of the build
 cache:
@@ -21,15 +24,14 @@ before_install:
  - cd ./sources
 
 install:
-# Install client dependencies
  - cd ./client
  - npm install -g bower
  - npm install -g ember-cli
  - npm install
  - bower install
  
- before_script:
-  - psql -c 'create database taxi-test;' -U postgres
+before_script:
+ - psql -c 'create database taxi-test;' -U postgres
  
 script:
 # Run client tests
